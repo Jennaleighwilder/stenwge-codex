@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import Narrative from "./Narrative";
 import AmbientAudio from "./AmbientAudio";
 import CodeFragment from "./CodeFragment";
+import VideoStage from "./VideoStage";
 
 const Scene3D = dynamic(() => import("./Scene3D"), { ssr: false });
 
@@ -72,10 +73,13 @@ export default function StenwgeCodex() {
 
   return (
     <div ref={containerRef} className="relative">
-      {/* fixed full-viewport WebGL canvas */}
+      {/* fixed full-viewport WebGL canvas — brine background + moon only */}
       <div className="fixed inset-0 z-0 pointer-events-none">
         <Scene3D progress={progress} />
       </div>
+
+      {/* video centerpiece, screen-blended over the brine */}
+      <VideoStage progress={progress} />
 
       {/* narrative overlay */}
       <Narrative progress={progress} />
