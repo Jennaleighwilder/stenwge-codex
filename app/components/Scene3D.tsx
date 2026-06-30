@@ -25,7 +25,6 @@ export default function Scene3D({ progress }: { progress: Progress }) {
       <fog attach="fog" args={["#020306", 10, 35]} />
 
       <ambientLight intensity={0.15} />
-      <pointLight position={[0, 4, 4]} intensity={0.6} color="#ffe8b0" />
 
       <Suspense fallback={null}>
         <CameraRig progress={progress} />
@@ -38,9 +37,9 @@ export default function Scene3D({ progress }: { progress: Progress }) {
 
         <EffectComposer>
           <Bloom
-            intensity={0.35}
-            luminanceThreshold={0.55}
-            luminanceSmoothing={0.9}
+            intensity={0.22}
+            luminanceThreshold={0.7}
+            luminanceSmoothing={0.92}
             mipmapBlur
           />
           <ChromaticAberration

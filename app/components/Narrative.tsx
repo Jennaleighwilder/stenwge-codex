@@ -97,16 +97,29 @@ export default function Narrative({ progress }: { progress: Progress }) {
             animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
             exit={{ opacity: 0, y: -14, filter: "blur(6px)" }}
             transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-            className="px-8 max-w-3xl text-center"
+            className="relative px-8 max-w-3xl text-center"
           >
+            {/* readability backdrop: soft radial dark plate behind text */}
+            <div
+              className="absolute inset-0 -m-12 -z-10 pointer-events-none"
+              style={{
+                background:
+                  "radial-gradient(ellipse at center, rgba(5,5,5,0.78) 0%, rgba(5,5,5,0.55) 35%, rgba(5,5,5,0) 75%)",
+              }}
+              aria-hidden
+            />
             {active.kicker && (
-              <div className="font-mono text-[10px] tracking-[0.4em] uppercase text-stone-400 mb-3">
+              <div className="font-mono text-[10px] tracking-[0.4em] uppercase text-stone-300 mb-3">
                 {active.kicker}
               </div>
             )}
             <p
-              className="font-serif text-2xl md:text-4xl lg:text-5xl leading-[1.25] text-stone-50 moon-glow shimmer"
-              style={{ textWrap: "balance" as any }}
+              className="font-serif text-2xl md:text-4xl lg:text-5xl leading-[1.25] text-stone-50"
+              style={{
+                textWrap: "balance" as any,
+                textShadow:
+                  "0 1px 2px rgba(0,0,0,0.95), 0 0 24px rgba(0,0,0,0.7)",
+              }}
             >
               {active.line}
             </p>
@@ -120,17 +133,31 @@ export default function Narrative({ progress }: { progress: Progress }) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 2 }}
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center"
+          className="relative px-6 text-center max-w-3xl"
         >
-          <div className="font-mono text-[10px] tracking-[0.6em] uppercase text-stone-500 mb-4">
-            the stenwge codex
+          <div
+            className="absolute inset-0 -m-16 -z-10 pointer-events-none"
+            style={{
+              background:
+                "radial-gradient(ellipse at center, rgba(5,5,5,0.85) 0%, rgba(5,5,5,0.55) 40%, rgba(5,5,5,0) 78%)",
+            }}
+            aria-hidden
+          />
+          <div className="font-mono text-[10px] tracking-[0.5em] uppercase text-stone-400 mb-5">
+            the forgotten code research institute
           </div>
-          <h1 className="font-serif italic text-5xl md:text-7xl text-stone-100 moon-glow">
+          <h1
+            className="font-serif italic text-5xl md:text-7xl text-stone-100"
+            style={{
+              textShadow:
+                "0 1px 2px rgba(0,0,0,0.95), 0 0 32px rgba(0,0,0,0.7)",
+            }}
+          >
             a small strange thing,
             <br />
             made with you.
           </h1>
-          <div className="mt-10 font-mono text-[11px] text-stone-400">
+          <div className="mt-10 font-mono text-[11px] text-stone-300">
             ↓ scroll ↓
           </div>
         </motion.div>

@@ -15,12 +15,13 @@ const cormorant = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
-  title: "The Stenwge Codex",
+  title: "The Forgotten Code Research Institute",
   description:
-    "An interactive artifact woven from a strange conversation. If you give a mouse a cookie, you give the world a fairy tale.",
+    "An interactive artifact from the Forgotten Code Research Institute — woven from a strange conversation between a mouse, a cat, a boot under the moon, and the bird who watched it all.",
   openGraph: {
-    title: "The Stenwge Codex",
-    description: "A small, strange artifact of human-and-machine storytelling.",
+    title: "The Forgotten Code Research Institute",
+    description:
+      "A small, strange artifact of human-and-machine storytelling.",
     type: "website",
   },
 };

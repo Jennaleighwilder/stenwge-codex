@@ -102,7 +102,7 @@ export default function StenwgeCodex() {
 
       {/* tiny footer credit */}
       <footer className="fixed bottom-3 left-3 z-30 text-[10px] font-mono text-stone-500 opacity-60 hover:opacity-100 transition">
-        <span className="block">the stenwge codex · v0</span>
+        <span className="block">the forgotten code research institute</span>
         <span className="block">scroll / move / listen</span>
       </footer>
 
