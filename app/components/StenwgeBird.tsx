@@ -3,9 +3,9 @@
 import { useMemo, useRef } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import {
-  AdditiveBlending,
   BufferAttribute,
   BufferGeometry,
+  NormalBlending,
   Points,
   ShaderMaterial,
   Vector3,
@@ -35,8 +35,9 @@ void main() {
   vSeed = aSeed;
   vec4 mv = modelViewMatrix * vec4(position, 1.0);
   gl_Position = projectionMatrix * mv;
-  float s = mix(6.0, 0.3, aAge);
-  gl_PointSize = s * uPixelRatio * (180.0 / -mv.z);
+  // gentle taper: head is small, tail dwindles to a thread
+  float s = mix(2.2, 0.2, aAge);
+  gl_PointSize = s * uPixelRatio * (110.0 / -mv.z);
 }
 `;
 const frag = /* glsl */ `
@@ -49,13 +50,12 @@ void main() {
   vec2 c = gl_PointCoord - 0.5;
   float d = length(c);
   float disc = smoothstep(0.5, 0.25, d);
-  // head: warm cream, tail: cool teal
-  vec3 head = vec3(1.0, 0.94, 0.78);
-  vec3 tail = vec3(0.4, 0.8, 0.95);
+  // head: muted cream, tail: muted teal — well below bloom threshold
+  vec3 head = vec3(0.78, 0.72, 0.60);
+  vec3 tail = vec3(0.30, 0.55, 0.70);
   vec3 col = mix(head, tail, smoothstep(0.0, 1.0, vAge));
-  // subtle flicker on seed
-  col *= 0.9 + 0.2 * sin(uTime * 4.0 + vSeed * 30.0);
-  float alpha = disc * (1.0 - vAge) * uAlpha;
+  col *= 0.9 + 0.15 * sin(uTime * 4.0 + vSeed * 30.0);
+  float alpha = disc * (1.0 - vAge) * uAlpha * 0.75;
   gl_FragColor = vec4(col, alpha);
 }
 `;
@@ -106,15 +106,16 @@ export default function StenwgeBird({ progress }: { progress: Progress }) {
     lastUpdate.current += delta;
 
     const t = progress.chapter + progress.local;
-    // appear chapter 5.5+, peak ch6, dissolve at ch7.5
+    // appear ch5.5+, peak ch6, fully gone by ch7.0 (before code-rain finale)
     let alpha = 0;
-    if (t > 5.3 && t < 7.6) {
-      alpha = Math.min(1, (t - 5.3) * 1.4) * (1 - Math.max(0, (t - 7.0) * 1.6));
+    if (t > 5.3 && t < 7.2) {
+      alpha =
+        Math.min(1, (t - 5.3) * 1.6) * (1 - Math.max(0, (t - 6.6) * 2.2));
     }
-    // bird brightens with low-band kicks for a heartbeat feel
-    const beatBoost = 1.0 + AudioState.lows * 0.6;
+    // very subtle low-band breathing, not a brightness explosion
+    const beatBoost = 1.0 + AudioState.lows * 0.18;
     matRef.current.uniforms.uAlpha.value +=
-      (alpha * beatBoost - matRef.current.uniforms.uAlpha.value) * 0.12;
+      (alpha * beatBoost - matRef.current.uniforms.uAlpha.value) * 0.1;
 
     // target: cursor in world space, mapped to camera plane
     target.current.x = progress.mouseX * (viewport.width * 0.4);
@@ -160,7 +161,7 @@ export default function StenwgeBird({ progress }: { progress: Progress }) {
         uniforms={uniforms}
         transparent
         depthWrite={false}
-        blending={AdditiveBlending}
+        blending={NormalBlending}
       />
     </points>
   );

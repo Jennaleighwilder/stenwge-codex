@@ -3,9 +3,8 @@
 import { useEffect, useMemo, useRef } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import {
-  AdditiveBlending,
   CanvasTexture,
-  PlaneGeometry,
+  NormalBlending,
   ShaderMaterial,
   Vector2,
 } from "three";
@@ -89,27 +88,34 @@ float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.545312
 void main() {
   vec2 aspect = vec2(uResolution.x / uResolution.y, 1.0);
   vec2 uv = vUv;
-  // cell grid (columns/rows of falling rain)
-  vec2 grid = vec2(80.0, 50.0);
+  // cell grid — fewer, wider columns so each glyph reads
+  vec2 grid = vec2(48.0, 28.0);
   vec2 cell = floor(uv * grid);
   vec2 inCell = fract(uv * grid);
 
-  // column-specific speed + offset
+  // column existence — only ~55% of columns rain at any one moment
   float colSeed = hash(vec2(cell.x, 0.5));
-  float speed = 0.4 + colSeed * 1.6;
+  float colActive = step(0.45, colSeed);
+
+  float speed = 1.4 + colSeed * 1.4;
   float colPhase = colSeed * 100.0;
-  float yScroll = mod(cell.y + uTime * speed + colPhase, grid.y);
-  // pick glyph per cell as function of time
-  float glyphSel = floor(hash(cell + floor(uTime * speed * 1.0)) * uCharCount);
-  // but along the head of the stream prefer chars from message
-  float headDist = mod(uTime * speed + colSeed * 50.0 - cell.y, grid.y);
-  bool isHead = headDist < 4.0 && headDist >= 0.0;
-  if (isHead) {
-    float mIdx = mod(floor((cell.x * 7.0 + uTime * 6.0)), uMessageLen);
+  // signed distance from the falling head
+  float headDist = mod(uTime * speed + colPhase - cell.y, grid.y);
+
+  // glyph: along head, use a message char; elsewhere, a slowly-changing random
+  float glyphSel;
+  if (headDist < 6.0) {
+    // walk through message offset by column so each column reads its own slice
+    float mIdx = mod(
+      floor(cell.x * 5.0 + uTime * speed * 2.0 - headDist),
+      uMessageLen
+    );
     glyphSel = texture2D(uMessage, vec2((mIdx + 0.5) / uMessageLen, 0.5)).r * 255.0;
+  } else {
+    glyphSel = floor(hash(cell + floor(uTime * 0.4)) * uCharCount);
   }
 
-  // map glyph index to atlas tile
+  // sample atlas (note flipped V)
   float gx = mod(glyphSel, uAtlasCols);
   float gy = floor(glyphSel / uAtlasCols);
   vec2 atlasUv = vec2(
@@ -118,15 +124,18 @@ void main() {
   );
   float glyph = texture2D(uAtlas, atlasUv).a;
 
-  // brightness: bright at head, dim trail, dark elsewhere
-  float trail = exp(-headDist * 0.15);
-  vec3 head = vec3(0.95, 1.0, 0.92);
-  vec3 tail = vec3(0.25, 0.95, 0.55);
-  vec3 col = mix(tail, head, exp(-headDist * 0.6));
-  float intensity = trail * glyph;
+  // intensity drops fast behind the head so streams look like trails not noise
+  float trail = exp(-headDist * 0.35);
+  // head pop (first 1.5 cells)
+  float headPop = exp(-headDist * 1.5);
+  // tail is muted teal-green, head is warm cream — both kept moderate
+  vec3 tailCol = vec3(0.18, 0.55, 0.34);
+  vec3 headCol = vec3(0.85, 0.92, 0.78);
+  vec3 col = mix(tailCol, headCol, headPop);
 
+  float intensity = trail * glyph * colActive;
   vec3 outCol = col * intensity * uAlpha;
-  gl_FragColor = vec4(outCol, intensity * uAlpha);
+  gl_FragColor = vec4(outCol, intensity * uAlpha * 0.9);
 }
 `;
 
@@ -206,7 +215,7 @@ export default function CodeRain({ progress }: { progress: Progress }) {
         transparent
         depthWrite={false}
         depthTest={false}
-        blending={AdditiveBlending}
+        blending={NormalBlending}
       />
     </mesh>
   );
