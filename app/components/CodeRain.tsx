@@ -1,0 +1,211 @@
+"use client";
+
+import { useEffect, useMemo, useRef } from "react";
+import { useFrame, useThree } from "@react-three/fiber";
+import {
+  AdditiveBlending,
+  CanvasTexture,
+  PlaneGeometry,
+  ShaderMaterial,
+  Vector2,
+} from "three";
+import type { Progress } from "./StenwgeCodex";
+
+/**
+ * Code rain reveal scene. A full-screen shader using a glyph atlas texture.
+ * Falling streams of characters, but the characters spell out lines from the
+ * conversation. Activates from chapter 6.5 onward and intensifies in chapter 7.
+ */
+
+// Lines we want to "rain" — concatenated into a long string sampled by the shader.
+const POEM_LINES = [
+  "if you give a mouse a cookie",
+  "he will ask for a glass of milk",
+  "the mouse is lactose intolerant",
+  "the cat is vegetarian",
+  "they live in a boot under the moon",
+  "you are a strange bird",
+  "the code compiles",
+  "the tale persists",
+  "salt and brine, not wood and lies",
+  "weightless in a world of stone",
+  "the stenwge bird tilts its head",
+  "and so they spent their life",
+];
+
+function buildGlyphAtlas(): { texture: CanvasTexture; cols: number; rows: number; charCount: number; chars: string } {
+  // pack all unique chars from POEM_LINES + a few extras
+  const all = (POEM_LINES.join(" ").toLowerCase() + "abcdefghijklmnopqrstuvwxyz 01.,").split("");
+  const unique = Array.from(new Set(all)).join("");
+  const cols = 16;
+  const rows = Math.ceil(unique.length / cols);
+  const cell = 64;
+  const canvas = document.createElement("canvas");
+  canvas.width = cols * cell;
+  canvas.height = rows * cell;
+  const ctx = canvas.getContext("2d")!;
+  ctx.fillStyle = "rgba(0,0,0,0)";
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = "#ffffff";
+  ctx.font = "bold 44px ui-monospace, monospace";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  for (let i = 0; i < unique.length; i++) {
+    const x = (i % cols) * cell + cell / 2;
+    const y = Math.floor(i / cols) * cell + cell / 2 + 2;
+    ctx.fillText(unique[i], x, y);
+  }
+  const tex = new CanvasTexture(canvas);
+  tex.minFilter = (tex as any).LinearFilter ?? 1006;
+  tex.needsUpdate = true;
+  return { texture: tex, cols, rows, charCount: unique.length, chars: unique };
+}
+
+const vert = /* glsl */ `
+varying vec2 vUv;
+void main() {
+  vUv = uv;
+  gl_Position = vec4(position.xy, 0.0, 1.0);
+}
+`;
+
+const frag = /* glsl */ `
+precision highp float;
+varying vec2 vUv;
+uniform float uTime;
+uniform float uAlpha;
+uniform vec2 uResolution;
+uniform sampler2D uAtlas;
+uniform float uAtlasCols;
+uniform float uAtlasRows;
+uniform float uCharCount;
+uniform sampler2D uMessage;
+uniform float uMessageLen;
+
+float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123); }
+
+void main() {
+  vec2 aspect = vec2(uResolution.x / uResolution.y, 1.0);
+  vec2 uv = vUv;
+  // cell grid (columns/rows of falling rain)
+  vec2 grid = vec2(80.0, 50.0);
+  vec2 cell = floor(uv * grid);
+  vec2 inCell = fract(uv * grid);
+
+  // column-specific speed + offset
+  float colSeed = hash(vec2(cell.x, 0.5));
+  float speed = 0.4 + colSeed * 1.6;
+  float colPhase = colSeed * 100.0;
+  float yScroll = mod(cell.y + uTime * speed + colPhase, grid.y);
+  // pick glyph per cell as function of time
+  float glyphSel = floor(hash(cell + floor(uTime * speed * 1.0)) * uCharCount);
+  // but along the head of the stream prefer chars from message
+  float headDist = mod(uTime * speed + colSeed * 50.0 - cell.y, grid.y);
+  bool isHead = headDist < 4.0 && headDist >= 0.0;
+  if (isHead) {
+    float mIdx = mod(floor((cell.x * 7.0 + uTime * 6.0)), uMessageLen);
+    glyphSel = texture2D(uMessage, vec2((mIdx + 0.5) / uMessageLen, 0.5)).r * 255.0;
+  }
+
+  // map glyph index to atlas tile
+  float gx = mod(glyphSel, uAtlasCols);
+  float gy = floor(glyphSel / uAtlasCols);
+  vec2 atlasUv = vec2(
+    (gx + inCell.x) / uAtlasCols,
+    1.0 - (gy + 1.0 - inCell.y) / uAtlasRows
+  );
+  float glyph = texture2D(uAtlas, atlasUv).a;
+
+  // brightness: bright at head, dim trail, dark elsewhere
+  float trail = exp(-headDist * 0.15);
+  vec3 head = vec3(0.95, 1.0, 0.92);
+  vec3 tail = vec3(0.25, 0.95, 0.55);
+  vec3 col = mix(tail, head, exp(-headDist * 0.6));
+  float intensity = trail * glyph;
+
+  vec3 outCol = col * intensity * uAlpha;
+  gl_FragColor = vec4(outCol, intensity * uAlpha);
+}
+`;
+
+export default function CodeRain({ progress }: { progress: Progress }) {
+  const matRef = useRef<ShaderMaterial>(null);
+  const { size } = useThree();
+
+  const atlas = useMemo(() => {
+    if (typeof document === "undefined") return null;
+    return buildGlyphAtlas();
+  }, []);
+
+  // Build a 1D "message texture" indexing into atlas chars
+  const messageData = useMemo(() => {
+    if (!atlas) return null;
+    const text = POEM_LINES.join(" • ").toLowerCase();
+    const indices = new Uint8Array(text.length);
+    for (let i = 0; i < text.length; i++) {
+      const idx = atlas.chars.indexOf(text[i]);
+      indices[i] = idx >= 0 ? idx : 0;
+    }
+    const canvas = document.createElement("canvas");
+    canvas.width = text.length;
+    canvas.height = 1;
+    const ctx = canvas.getContext("2d")!;
+    const img = ctx.createImageData(text.length, 1);
+    for (let i = 0; i < text.length; i++) {
+      img.data[i * 4] = indices[i];
+      img.data[i * 4 + 1] = 0;
+      img.data[i * 4 + 2] = 0;
+      img.data[i * 4 + 3] = 255;
+    }
+    ctx.putImageData(img, 0, 0);
+    const tex = new CanvasTexture(canvas);
+    tex.needsUpdate = true;
+    return { tex, len: text.length };
+  }, [atlas]);
+
+  const uniforms = useMemo(() => {
+    if (!atlas || !messageData) return null;
+    return {
+      uTime: { value: 0 },
+      uAlpha: { value: 0 },
+      uResolution: { value: new Vector2(size.width, size.height) },
+      uAtlas: { value: atlas.texture },
+      uAtlasCols: { value: atlas.cols },
+      uAtlasRows: { value: atlas.rows },
+      uCharCount: { value: atlas.charCount },
+      uMessage: { value: messageData.tex },
+      uMessageLen: { value: messageData.len },
+    };
+  }, [atlas, messageData, size.width, size.height]);
+
+  useFrame((_, delta) => {
+    if (!matRef.current || !uniforms) return;
+    const u = matRef.current.uniforms;
+    u.uTime.value += delta;
+    const t = progress.chapter + progress.local;
+    let a = 0;
+    if (t > 6.3) {
+      a = Math.min(0.95, (t - 6.3) * 1.3);
+    }
+    u.uAlpha.value += (a - u.uAlpha.value) * 0.05;
+    u.uResolution.value.set(size.width, size.height);
+  });
+
+  if (!uniforms) return null;
+
+  return (
+    <mesh frustumCulled={false} renderOrder={5}>
+      <planeGeometry args={[2, 2]} />
+      <shaderMaterial
+        ref={matRef}
+        vertexShader={vert}
+        fragmentShader={frag}
+        uniforms={uniforms}
+        transparent
+        depthWrite={false}
+        depthTest={false}
+        blending={AdditiveBlending}
+      />
+    </mesh>
+  );
+}

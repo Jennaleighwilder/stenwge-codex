@@ -1,26 +1,96 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #050505;
+  --foreground: #f5f1e6;
+  --salt: #f5f1e6;
+  --brine: #4a8fc4;
+  --moon: #ffe8b0;
+  --stone: #2a2a2a;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-salt: var(--salt);
+  --color-brine: var(--brine);
+  --color-moon: var(--moon);
+  --color-stone: var(--stone);
+  --font-mono: var(--font-mono);
+  --font-serif: var(--font-serif);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+html,
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-serif), Georgia, serif;
+}
+
+/* hide default scrollbar but keep functionality */
+::-webkit-scrollbar {
+  width: 0;
+  background: transparent;
+}
+html {
+  scrollbar-width: none;
+}
+
+/* selection */
+::selection {
+  background: var(--moon);
+  color: #050505;
+}
+
+/* cursor as a small salt crystal when over interactive zones */
+.cursor-bird {
+  cursor: none;
+}
+
+/* shimmer for active text */
+@keyframes shimmer {
+  0%,
+  100% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+.shimmer {
+  animation: shimmer 4s ease-in-out infinite;
+}
+
+/* type-on caret */
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+.caret::after {
+  content: "▍";
+  margin-left: 2px;
+  animation: blink 0.9s steps(1) infinite;
+  color: var(--moon);
+}
+
+/* moon glow */
+.moon-glow {
+  text-shadow: 0 0 30px rgba(255, 232, 176, 0.4),
+    0 0 60px rgba(255, 232, 176, 0.2);
+}
+
+/* prevent FOUC */
+.fade-in {
+  animation: fade 1.4s ease-out forwards;
+}
+@keyframes fade {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }

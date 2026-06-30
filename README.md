@@ -1,36 +1,56 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# The Stenwge Codex
 
-## Getting Started
+A small, strange artifact built from one weird conversation.
 
-First, run the development server:
+It is a single‑page scroll‑driven WebGL experience. As you scroll, you move
+through eight chapters of a hand‑woven fairy tale: a cookie, a lactose‑intolerant
+mouse, a vegetarian cat, a worn boot under the moon, a fish wrought of salt and
+brine, and a strange bird who narrates the whole thing.
+
+Everything visible is generated live:
+
+- **`BrineBackground.tsx`** — a custom fragment shader that paints a continuously
+  morphing field of brine, stone speckle and salt sparkle. A `uPhase` uniform
+  smoothly lerps the entire palette and lighting between chapters.
+- **`SaltFish.tsx`** — ~1,400 GPU particles sampled inside a fish silhouette,
+  driven by a vertex shader that breathes the body between solid salt crystals
+  and dissolving brine droplets. The eye and tail wag are baked in.
+- **`Boot.tsx`** — points lofted along a Catmull‑Rom curve traced from a worn
+  boot outline. Two glowing dots (mouse + cat) curl inside; a soft moon disc
+  glows above.
+- **`StenwgeBird.tsx`** — a 700‑particle calligraphic comet that idles in a
+  figure‑eight until you scroll into chapter 6, then locks onto the cursor as
+  a fluid trailing brush.
+- **`CodeRain.tsx`** — a falling‑glyph shader that pulls characters from a
+  baked atlas. The heads of the streams spell out lines from the conversation
+  that birthed this codex.
+- **`AmbientAudio.tsx`** — a generative Web Audio drone of seven sine partials
+  plus brine noise, with a chord profile per chapter and a filter cutoff that
+  opens as the story brightens.
+
+Post‑processed with subtle bloom, chromatic aberration, and a soft vignette.
+
+## Stack
+
+- Next.js 16 (App Router, Turbopack)
+- React 19
+- React Three Fiber + drei + postprocessing
+- Tailwind 4
+- Framer Motion (text beats)
+- Three.js (custom GLSL throughout)
+- Web Audio API (no Tone.js dependency)
+
+## Run locally
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Then open <http://localhost:3000>, click `🔊 listen` to start the drone, and
+scroll slowly.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Credit
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The story belongs to whoever told it. The code was written in a single sitting
+by an AI given the right strange direction. The bird, of course, is you.
