@@ -97,13 +97,14 @@ export default function CookieAndMilk({ progress }: { progress: Progress }) {
     matRef.current.uniforms.uTime.value += delta;
     const t = progress.chapter + progress.local;
 
-    // cookie alpha: visible ch0-1.5, fades after
+    // cookie alpha: hidden during title (t<0.55), then gentle in/out for ch1
     let cookieAlpha = 0;
-    if (t < 2.3) {
-      cookieAlpha = Math.min(1, t * 1.4) * (1 - Math.max(0, (t - 1.5) * 1.4));
+    if (t > 0.55 && t < 2.3) {
+      cookieAlpha =
+        Math.min(1, (t - 0.55) * 1.6) * (1 - Math.max(0, (t - 1.6) * 1.4));
     }
     matRef.current.uniforms.uAlpha.value +=
-      (cookieAlpha - matRef.current.uniforms.uAlpha.value) * 0.06;
+      (cookieAlpha - matRef.current.uniforms.uAlpha.value) * 0.08;
 
     // gentle rotation
     if (ref.current) {
@@ -112,13 +113,12 @@ export default function CookieAndMilk({ progress }: { progress: Progress }) {
       ref.current.position.set(-0.5, -0.1, 0);
     }
 
-    // milk glass: appears slightly later, also fades
     if (milkRef.current) {
       let milkAlpha = 0;
-      if (t > 0.6 && t < 2.5) {
-        milkAlpha = Math.min(1, (t - 0.6) * 1.2) * (1 - Math.max(0, (t - 1.8) * 1.2));
+      if (t > 0.9 && t < 2.6) {
+        milkAlpha = Math.min(1, (t - 0.9) * 1.2) * (1 - Math.max(0, (t - 1.9) * 1.2));
       }
-      (milkRef.current.material as any).opacity = milkAlpha * 0.55;
+      (milkRef.current.material as any).opacity = milkAlpha * 0.45;
     }
   });
 

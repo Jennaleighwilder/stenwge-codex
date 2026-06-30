@@ -127,11 +127,11 @@ void main() {
   float saltIntensity = smoothstep(2.5, 4.5, uPhase) * (1.0 - smoothstep(6.5, 7.5, uPhase));
   float sa = salt(uv * aspect + flow * 0.5, 1.0) + salt(uv * aspect * 1.5 - flow, 7.0) * 0.6;
 
-  // moon halo for chapter 3
-  float moonMask = smoothstep(2.5, 3.0, uPhase) * (1.0 - smoothstep(4.0, 4.6, uPhase));
-  vec2 moonPos = vec2(0.6, 0.65);
+  // moon halo for chapter 3 — hard-clipped so it can't bleed into earlier chapters
+  float moonMask = smoothstep(2.6, 3.1, uPhase) * (1.0 - smoothstep(4.0, 4.6, uPhase));
+  vec2 moonPos = vec2(0.62, 0.68);
   float moonDist = length((uv - moonPos) * aspect);
-  float moonGlow = smoothstep(0.5, 0.0, moonDist) * 0.5;
+  float moonGlow = smoothstep(0.45, 0.0, moonDist) * 0.35;
 
   vec3 col = base;
   col = mix(col, col + vec3(0.04, 0.06, 0.10) * brine, 0.6 + 0.4 * smoothstep(3.0, 5.0, uPhase));
