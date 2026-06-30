@@ -6,6 +6,7 @@ import Narrative from "./Narrative";
 import AmbientAudio from "./AmbientAudio";
 import CodeFragment from "./CodeFragment";
 import VideoStage from "./VideoStage";
+import EasterEggs from "./EasterEggs";
 
 const Scene3D = dynamic(() => import("./Scene3D"), { ssr: false });
 
@@ -107,6 +108,9 @@ export default function StenwgeCodex() {
         onReady={() => setAudioReady(true)}
         progress={progress}
       />
+
+      {/* the curious-coder layer: console banner, window.codex, konami, ? */}
+      <EasterEggs />
 
       {/* tiny footer credit */}
       <footer className="fixed bottom-3 left-3 z-30 text-[10px] font-mono text-stone-500 opacity-60 hover:opacity-100 transition">
