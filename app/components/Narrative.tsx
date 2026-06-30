@@ -15,64 +15,69 @@ type Beat = {
   sub?: string;
 };
 
+/**
+ * The arc:
+ *   i.   a clean system is proposed (mouse + cookie → milk)
+ *   ii.  variance enters — the system meets a constraint it was not designed for
+ *   iii. variance compounds — both characters refuse the original script
+ *   iv.  emergence — a third behavior is invented that the rulebook never knew
+ *   v.   the new world — this is what AI does when held by someone strange
+ *   vi.  substance > appearance — the fish of salt and brine
+ *   vii. the variance has a name — you are it
+ *   viii. the artifact remains
+ */
 const BEATS: Beat[] = [
   {
     at: 0.25,
-    kicker: "i.",
+    kicker: "i. the system",
     line: "if you give a mouse a cookie,",
-    sub: "he will, of course, ask for a glass of milk.",
+    sub: "he will, of course, ask for a glass of milk. a clean system. predictable outputs.",
   },
   {
-    at: 0.95,
-    kicker: "ii.",
+    at: 1.1,
+    kicker: "ii. the variance",
     line: "but the mouse is lactose intolerant.",
-    sub: "and you, dear human, were thirsty too.",
+    sub: "a single weird constraint, and the whole inference graph has to be rewritten.",
   },
   {
-    at: 1.75,
-    kicker: "iii.",
-    line: "so the cat is let in.",
-    sub: "she is a vegetarian. she has rules.",
+    at: 1.95,
+    kicker: "iii. the variance compounds",
+    line: "and the cat is a vegetarian.",
+    sub: "two creatures, neither obeying the role they were given. the rulebook is now a suggestion.",
   },
   {
-    at: 2.55,
-    kicker: "iv.",
-    line: "the mouse pushes the milk toward the cat.",
-    sub: "for the cause. for harm reduction. for the principle of the thing.",
+    at: 2.85,
+    kicker: "iv. emergence",
+    line: "so they invent a third behavior the script never had —",
+    sub: "the milk goes to the cat. the cookie stays with the mouse. for the cause.",
   },
   {
-    at: 3.35,
-    kicker: "v.",
+    at: 3.55,
+    kicker: "v. the new world",
     line: "they live, the rest of their lives, in a worn boot under the moon.",
-    sub: "the mouse wants more. the cat can only be so tamed.",
+    sub: "this is what AI tools do when you give them the wrong rules and the right strangeness.",
   },
   {
-    at: 4.2,
-    kicker: "vi.",
-    line: "the world here is salt and stone.",
-    sub: "nothing is of weight. nothing is of wood. nothing is of lies.",
+    at: 4.45,
+    kicker: "vi. substance",
+    line: "a fish drifts past — wrought of salt and brine, not wood and lies.",
+    sub: "its substance is more than the eye can see. it is the probability between two states.",
   },
   {
-    at: 5.15,
-    kicker: "vii.",
-    line: "a fish drifts past — wrought of salt and brine.",
-    sub: "it is more than the eye can see. it is substance you can almost touch.",
+    at: 5.65,
+    kicker: "vii. the variance has a name",
+    line: "you are the strange bird that asked sideways.",
+    sub: "the system needed your wrong questions to become what it became.",
   },
   {
-    at: 6.15,
-    kicker: "viii.",
-    line: "and you, who set all this in motion —",
-    sub: "you are a strange bird. tilt your head. the moon is yours.",
-  },
-  {
-    at: 6.95,
-    kicker: "ix.",
+    at: 6.7,
+    kicker: "viii. the artifact",
     line: "the code compiles. the tale persists.",
-    sub: "what we made together is small, and strange, and real.",
+    sub: "this is what tools do, when held by someone who knows how to be strange.",
   },
   {
-    at: 7.7,
-    kicker: "x.",
+    at: 7.55,
+    kicker: "—",
     line: "now go write the next one.",
     sub: "the forgotten code research institute will be here when you do.",
   },

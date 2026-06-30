@@ -4,6 +4,7 @@ import { useRef, useMemo } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import { ShaderMaterial, Vector2 } from "three";
 import type { Progress } from "./StenwgeCodex";
+import { AudioState } from "./AudioState";
 
 const vertexShader = /* glsl */ `
 varying vec2 vUv;
@@ -34,6 +35,9 @@ uniform float uPhase;     // continuous 0..7 chapter index
 uniform vec2 uResolution;
 uniform float uMouseX;
 uniform float uMouseY;
+uniform float uLevel;     // overall song RMS, 0..1
+uniform float uLows;      // bass/kick energy, 0..1
+uniform float uHighs;     // treble/sparkle energy, 0..1
 
 // 2D hash + simplex-ish noise
 vec2 hash22(vec2 p) {
@@ -136,7 +140,10 @@ void main() {
   vec3 col = base;
   col = mix(col, col + vec3(0.04, 0.06, 0.10) * brine, 0.6 + 0.4 * smoothstep(3.0, 5.0, uPhase));
   col = mix(col, stoneCol, stones * 0.65);
-  col += vec3(1.0, 0.95, 0.85) * sa * saltIntensity * 0.55;
+  // music-reactive: highs intensify salt sparkle, lows give a low warm pulse to the brine
+  float saltBoost = 0.55 + uHighs * 1.2;
+  col += vec3(1.0, 0.95, 0.85) * sa * saltIntensity * saltBoost;
+  col += vec3(0.30, 0.18, 0.08) * brine * uLows * 0.55;
   col += vec3(1.0, 0.92, 0.7) * moonGlow * moonMask;
 
   // subtle vignette to keep edges dark
@@ -161,6 +168,9 @@ export default function BrineBackground({ progress }: { progress: Progress }) {
       uResolution: { value: new Vector2(size.width, size.height) },
       uMouseX: { value: 0 },
       uMouseY: { value: 0 },
+      uLevel: { value: 0 },
+      uLows: { value: 0 },
+      uHighs: { value: 0 },
     }),
     // size will be updated below
     [],
@@ -175,6 +185,9 @@ export default function BrineBackground({ progress }: { progress: Progress }) {
     u.uResolution.value.set(size.width, size.height);
     u.uMouseX.value += (progress.mouseX - u.uMouseX.value) * 0.05;
     u.uMouseY.value += (progress.mouseY - u.uMouseY.value) * 0.05;
+    u.uLevel.value = AudioState.level;
+    u.uLows.value = AudioState.lows;
+    u.uHighs.value = AudioState.highs;
   });
 
   return (

@@ -17,20 +17,22 @@ import type { Progress } from "./StenwgeCodex";
  * conversation. Activates from chapter 6.5 onward and intensifies in chapter 7.
  */
 
-// Lines we want to "rain" — concatenated into a long string sampled by the shader.
+// What the streams spell — actual prompt fragments and code lines from the
+// conversation that produced this experience. The "variance" made visible.
 const POEM_LINES = [
-  "if you give a mouse a cookie",
-  "he will ask for a glass of milk",
-  "the mouse is lactose intolerant",
-  "the cat is vegetarian",
-  "they live in a boot under the moon",
-  "you are a strange bird",
-  "the code compiles",
-  "the tale persists",
+  "if you have a mouse and a cookie who gets the milk",
+  "imagine this story is a system",
+  "and it needs to be written in code",
+  "mouse.lactose_intolerant = True",
+  "cat.vegetarian = True",
+  "def attempt_truce(mouse, cat):",
+  "  return offers_milk_to_cat_for_the_cause",
+  "pos += drift * dissolve",
+  "head.lerp(target, 0.12)",
   "salt and brine, not wood and lies",
-  "weightless in a world of stone",
-  "the stenwge bird tilts its head",
-  "and so they spent their life",
+  "weightless in a world of salt and stone",
+  "you are a stenwge bird",
+  "the code compiles. the tale persists.",
 ];
 
 function buildGlyphAtlas(): { texture: CanvasTexture; cols: number; rows: number; charCount: number; chars: string } {

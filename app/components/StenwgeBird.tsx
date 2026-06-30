@@ -11,6 +11,7 @@ import {
   Vector3,
 } from "three";
 import type { Progress } from "./StenwgeCodex";
+import { AudioState } from "./AudioState";
 
 /**
  * The Stenwge Bird. ~700 particles forming a trailing comet that follows the cursor.
@@ -110,8 +111,10 @@ export default function StenwgeBird({ progress }: { progress: Progress }) {
     if (t > 5.3 && t < 7.6) {
       alpha = Math.min(1, (t - 5.3) * 1.4) * (1 - Math.max(0, (t - 7.0) * 1.6));
     }
+    // bird brightens with low-band kicks for a heartbeat feel
+    const beatBoost = 1.0 + AudioState.lows * 0.6;
     matRef.current.uniforms.uAlpha.value +=
-      (alpha - matRef.current.uniforms.uAlpha.value) * 0.08;
+      (alpha * beatBoost - matRef.current.uniforms.uAlpha.value) * 0.12;
 
     // target: cursor in world space, mapped to camera plane
     target.current.x = progress.mouseX * (viewport.width * 0.4);

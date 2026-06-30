@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import Narrative from "./Narrative";
 import AmbientAudio from "./AmbientAudio";
+import CodeFragment from "./CodeFragment";
 
 const Scene3D = dynamic(() => import("./Scene3D"), { ssr: false });
 
@@ -78,6 +79,9 @@ export default function StenwgeCodex() {
 
       {/* narrative overlay */}
       <Narrative progress={progress} />
+
+      {/* live code fragments — the actual AI artifact behind each chapter */}
+      <CodeFragment progress={progress} />
 
       {/* spacer divs to drive scroll – each chapter is ~100vh tall */}
       <div className="relative z-10 pointer-events-none">
