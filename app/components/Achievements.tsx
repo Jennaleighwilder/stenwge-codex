@@ -160,30 +160,49 @@ export function AchievementsPanel() {
 
   return (
     <>
+      {/* prominent chip — much more visible than before */}
       <button
         onClick={() => {
           setOpen((v) => !v);
           Achievements.unlock("cheatsheet");
         }}
-        className="fixed top-4 left-4 z-40 px-2.5 py-1.5 rounded-full text-[10px] font-mono bg-stone-900/40 backdrop-blur border border-stone-800 text-stone-400 hover:text-stone-100 hover:bg-stone-800/70 transition pointer-events-auto"
+        className="fixed top-4 left-4 z-40 flex items-center gap-2 px-3.5 py-2 rounded-full text-[12px] font-mono bg-stone-900/80 backdrop-blur border border-amber-200/30 text-stone-100 hover:bg-stone-800 hover:border-amber-200/60 transition pointer-events-auto shadow-lg"
         aria-label="discoveries"
-        title="discoveries"
+        title="open the discoveries panel"
       >
-        ★ {found} / {total}
+        <span className="text-amber-200 text-base leading-none">★</span>
+        <span className="tabular-nums">
+          {found}
+          <span className="text-stone-500"> / {total}</span>
+        </span>
+        <span className="text-stone-400 text-[10px] uppercase tracking-widest pl-1 border-l border-stone-700 ml-1">
+          {open ? "close" : "discoveries"}
+        </span>
       </button>
 
+      {/* prominent unlock toast — bigger, slower, with shine */}
       {toast && (
-        <div className="fixed top-16 left-4 z-40 px-3 py-2 rounded text-[11px] font-mono bg-stone-900/85 backdrop-blur border border-stone-700 text-stone-100 pointer-events-none animate-[fade_2.4s_ease-out_forwards]">
-          ★ {toast}
+        <div className="fixed top-[68px] left-4 z-40 px-4 py-2.5 rounded-md text-[12px] font-mono bg-amber-200 text-stone-950 pointer-events-none animate-[fade_3.4s_ease-out_forwards] shadow-2xl flex items-center gap-2 border border-amber-300">
+          <span className="text-base leading-none">★</span>
+          <span>
+            <span className="font-bold tracking-wide">unlocked</span> · {toast}
+          </span>
         </div>
       )}
 
       {open && (
-        <div
-          className="fixed top-14 left-4 z-50 w-72 max-h-[70vh] overflow-auto rounded-md border border-stone-700 bg-stone-950/95 backdrop-blur p-4 font-mono text-[11px] text-stone-300 pointer-events-auto"
-        >
-          <div className="text-[10px] tracking-[0.3em] uppercase text-stone-500 mb-3">
-            discoveries · {found}/{total}
+        <div className="fixed top-[70px] left-4 z-50 w-80 max-h-[70vh] overflow-auto rounded-md border border-amber-200/20 bg-stone-950/97 backdrop-blur p-5 font-mono text-[11px] text-stone-300 pointer-events-auto shadow-2xl">
+          <div className="flex items-baseline justify-between mb-4">
+            <div className="text-[10px] tracking-[0.3em] uppercase text-amber-200/80">
+              discoveries · {found}/{total}
+            </div>
+            <div className="text-[9px] text-stone-500">{Math.round((found / total) * 100)}%</div>
+          </div>
+          <div className="h-1 mb-4 rounded-full bg-stone-800 overflow-hidden">
+            <div
+              className="h-full bg-amber-200/80 transition-all"
+              style={{ width: `${(found / total) * 100}%` }}
+            />
           </div>
           <ul className="space-y-1.5">
             {ALL_IDS.map((id) => {
@@ -194,29 +213,35 @@ export function AchievementsPanel() {
                   className={
                     got
                       ? "text-stone-100"
-                      : "text-stone-600 line-through decoration-stone-700"
+                      : "text-stone-500"
                   }
                 >
-                  {got ? "★" : "☆"} {DESCRIPTIONS[id]}
+                  <span className={got ? "text-amber-200" : "text-stone-700"}>
+                    {got ? "★" : "☆"}
+                  </span>{" "}
+                  {DESCRIPTIONS[id]}
                 </li>
               );
             })}
           </ul>
-          <button
-            onClick={() => Achievements.reset()}
-            className="mt-4 text-[9px] uppercase tracking-[0.2em] text-stone-500 hover:text-stone-300"
-          >
-            reset
-          </button>
+          <div className="mt-5 pt-4 border-t border-stone-800 flex items-center justify-between text-[10px]">
+            <span className="text-stone-500">press <span className="text-stone-200">?</span> for keys</span>
+            <button
+              onClick={() => Achievements.reset()}
+              className="uppercase tracking-[0.2em] text-stone-500 hover:text-amber-200"
+            >
+              reset
+            </button>
+          </div>
         </div>
       )}
 
       <style>{`
         @keyframes fade {
-          0% { opacity: 0; transform: translateY(-4px); }
-          10% { opacity: 1; transform: none; }
-          85% { opacity: 1; }
-          100% { opacity: 0; }
+          0% { opacity: 0; transform: translateY(-6px) scale(0.96); }
+          8% { opacity: 1; transform: none; }
+          88% { opacity: 1; }
+          100% { opacity: 0; transform: translateY(-4px); }
         }
       `}</style>
     </>

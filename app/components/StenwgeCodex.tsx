@@ -154,16 +154,120 @@ export default function StenwgeCodex() {
         }}
       />
 
-      {/* tiny footer credit */}
-      <footer className="fixed bottom-3 left-3 z-30 text-[10px] font-mono text-stone-500 opacity-60 hover:opacity-100 transition pointer-events-none">
-        <span className="block">the forgotten code research institute</span>
-        <span className="block">space · 1-7 · ? · r</span>
+      {/* visible keyboard hint bar — always there, intentional & legible */}
+      <div className="fixed bottom-3 left-1/2 -translate-x-1/2 z-30 pointer-events-none flex items-center gap-3 px-3 py-1.5 text-[10px] font-mono text-stone-400">
+        <KeyHint label="space">pause</KeyHint>
+        <KeyHint label="1–8">chapter</KeyHint>
+        <KeyHint label="?">keys</KeyHint>
+        <KeyHint label="r">restart</KeyHint>
+        <KeyHint label="m">mute</KeyHint>
+        <span className="text-stone-600">·</span>
+        <span className="text-stone-500">
+          devtools → <span className="text-stone-200">codex.help()</span>
+        </span>
+      </div>
+
+      {/* footer credit, lower-left */}
+      <footer className="fixed bottom-3 left-3 z-30 text-[9px] font-mono text-stone-600 opacity-70 pointer-events-none">
+        the forgotten code research institute
       </footer>
 
       {/* chapter indicator */}
-      <div className="fixed bottom-3 right-3 z-30 text-[10px] font-mono text-stone-500 opacity-60 pointer-events-none">
+      <div className="fixed bottom-3 right-3 z-30 text-[10px] font-mono text-stone-500 opacity-70 pointer-events-none tabular-nums">
         ch {progress.chapter + 1} / {CHAPTERS}
       </div>
+
+      {/* first-load tutorial banner — auto-dismisses */}
+      <TutorialBanner />
+    </div>
+  );
+}
+
+function KeyHint({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <span className="inline-flex items-center gap-1">
+      <kbd className="px-1.5 py-0.5 rounded border border-stone-700 bg-stone-900/70 text-stone-200 text-[9px] font-mono">
+        {label}
+      </kbd>
+      <span className="text-stone-500">{children}</span>
+    </span>
+  );
+}
+
+const TUTORIAL_KEY = "fcri:tutorial-seen";
+
+function TutorialBanner() {
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    try {
+      const seen = localStorage.getItem(TUTORIAL_KEY);
+      if (!seen) {
+        setShow(true);
+        const t = setTimeout(() => {
+          setShow(false);
+          try {
+            localStorage.setItem(TUTORIAL_KEY, "1");
+          } catch {}
+        }, 9000);
+        return () => clearTimeout(t);
+      }
+    } catch {}
+  }, []);
+
+  if (!show) return null;
+
+  return (
+    <div
+      className="fixed top-20 left-1/2 -translate-x-1/2 z-[60] max-w-xl w-[92%] rounded-md border border-amber-200/30 bg-stone-950/95 backdrop-blur px-5 py-4 font-mono text-[12px] text-stone-200 shadow-2xl pointer-events-auto"
+      style={{ animation: "tutSlide 9s ease-out forwards" }}
+    >
+      <div className="flex items-start gap-3">
+        <span className="text-amber-200 text-lg leading-none">★</span>
+        <div className="flex-1">
+          <div className="text-[10px] tracking-[0.3em] uppercase text-amber-200/80 mb-1.5">
+            welcome to the codex
+          </div>
+          <p className="text-stone-300 leading-relaxed">
+            the story plays itself — <span className="text-stone-100">no scrolling</span>.{" "}
+            <span className="text-stone-100">23 things</span> are hidden across this site.
+            press{" "}
+            <kbd className="px-1.5 py-0.5 rounded border border-stone-700 bg-stone-900 text-stone-100 text-[10px]">
+              ?
+            </kbd>{" "}
+            for keys, click the{" "}
+            <span className="text-amber-200">★</span> top-left for the list, or
+            open DevTools and type{" "}
+            <code className="text-amber-100">codex.help()</code>.
+          </p>
+        </div>
+        <button
+          onClick={() => {
+            setShow(false);
+            try {
+              localStorage.setItem(TUTORIAL_KEY, "1");
+            } catch {}
+          }}
+          className="text-stone-500 hover:text-stone-100 text-sm leading-none"
+          aria-label="dismiss"
+        >
+          ×
+        </button>
+      </div>
+      <style>{`
+        @keyframes tutSlide {
+          0% { opacity: 0; transform: translate(-50%, -10px); }
+          5% { opacity: 1; transform: translate(-50%, 0); }
+          90% { opacity: 1; }
+          100% { opacity: 0; transform: translate(-50%, -8px); }
+        }
+      `}</style>
     </div>
   );
 }
