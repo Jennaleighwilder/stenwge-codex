@@ -16,7 +16,7 @@ const nextConfig: NextConfig = {
           {
             key: "X-Discover",
             value:
-              "/api/codex,/api/teapot,/robots.txt — open DevTools, type 'stenwge', press ?",
+              "/api/codex,/api/teapot,/api/raft,/api/dream,/robots.txt,/.well-known/security.txt,/the-bird — DevTools · codex.help() · type 'stenwge' · press ?",
           },
         ],
       },

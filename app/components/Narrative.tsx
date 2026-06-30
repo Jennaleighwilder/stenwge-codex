@@ -185,7 +185,7 @@ export default function Narrative({ progress }: { progress: Progress }) {
             made with you.
           </h1>
           <div className="mt-10 font-mono text-[11px] text-stone-300">
-            ↓ scroll ↓
+            auto · space to pause · ? for keys
           </div>
         </motion.div>
       )}
