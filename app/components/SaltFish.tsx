@@ -186,26 +186,26 @@ export default function SaltFish({ progress }: { progress: Progress }) {
     const u = matRef.current.uniforms;
     u.uTime.value += delta;
 
-    // fade in during ch4 (sink) and ch5 (sea), peak at 5.5, fade out by 7
+    // visible only chapters 5-6 so it doesn't smear over the boot scene
     const t = progress.chapter + progress.local;
     let alpha = 0;
-    if (t > 3.0 && t < 7.0) {
-      alpha = Math.min(1, (t - 3.2) * 2) * (1 - Math.max(0, (t - 6.0) * 1.5));
+    if (t > 4.7 && t < 7.0) {
+      alpha = Math.min(1, (t - 4.7) * 2.2) * (1 - Math.max(0, (t - 6.1) * 1.6));
     }
-    u.uAlpha.value += (alpha - u.uAlpha.value) * 0.08;
+    u.uAlpha.value += (alpha - u.uAlpha.value) * 0.1;
 
     // breathe between solid and brine continuously
     const breathe = 0.35 + 0.35 * Math.sin(u.uTime.value * 0.8);
     u.uDissolve.value = breathe;
 
-    // swim across scene during ch5
-    const swimT = Math.max(0, Math.min(1, (t - 4.5) / 1.5));
+    // swim across scene during ch5-6
+    const swimT = Math.max(0, Math.min(1, (t - 4.7) / 1.5));
     u.uSwim.value.x = -2.2 + swimT * 4.0;
     u.uSwim.value.y = Math.sin(u.uTime.value * 0.5) * 0.2;
 
     // gently dissolve out into ch6+
-    if (t > 5.8) {
-      const d = Math.min(1, (t - 5.8) * 1.5);
+    if (t > 6.0) {
+      const d = Math.min(1, (t - 6.0) * 1.5);
       u.uDissolve.value = Math.max(u.uDissolve.value, d);
     }
   });

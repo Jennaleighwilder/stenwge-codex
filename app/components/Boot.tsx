@@ -3,22 +3,22 @@
 import { useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import {
-  BufferAttribute,
-  BufferGeometry,
-  CatmullRomCurve3,
+  DoubleSide,
+  Group,
   Mesh,
-  ShaderMaterial,
-  Vector3,
+  MeshBasicMaterial,
+  Shape,
+  ShapeGeometry,
 } from "three";
 import type { Progress } from "./StenwgeCodex";
 
 /**
- * The boot under the moon. Constructed by lofting points along a 2D silhouette
- * traced from a worn boot. Inside: two tiny glowing dots (mouse + cat).
- * Above: a soft moon disc.
+ * The boot under the moon. Drawn as a solid leather silhouette mesh
+ * (Shape geometry) with a softer rim glow. Inside curl a tiny mouse
+ * and a slightly larger cat — both rendered as small composite shapes
+ * so they actually read as creatures, not random dots.
  */
 
-// silhouette points of a boot (rough outline, hand-tuned)
 const BOOT_PATH: [number, number][] = [
   [-1.0, -0.55],
   [-0.95, -0.35],
@@ -39,167 +39,219 @@ const BOOT_PATH: [number, number][] = [
   [0.5, -0.6],
   [0.0, -0.62],
   [-0.5, -0.6],
-  [-1.0, -0.55],
 ];
 
-function buildBootPoints(count = 1000): { positions: Float32Array; widths: Float32Array } {
-  const pts = BOOT_PATH.map(([x, y]) => new Vector3(x, y, 0));
-  const curve = new CatmullRomCurve3(pts, true, "catmullrom", 0.3);
-  const positions = new Float32Array(count * 3);
-  const widths = new Float32Array(count);
-  for (let i = 0; i < count; i++) {
-    const t = i / count;
-    const p = curve.getPoint(t);
-    // jitter outward slightly for "worn leather"
-    const jit = (Math.random() - 0.5) * 0.025;
-    positions[i * 3] = p.x + jit;
-    positions[i * 3 + 1] = p.y + jit * 0.8;
-    positions[i * 3 + 2] = (Math.random() - 0.5) * 0.04;
-    widths[i] = Math.random();
+function buildBootShape(): Shape {
+  const s = new Shape();
+  s.moveTo(BOOT_PATH[0][0], BOOT_PATH[0][1]);
+  for (let i = 1; i < BOOT_PATH.length; i++) {
+    s.lineTo(BOOT_PATH[i][0], BOOT_PATH[i][1]);
   }
-  return { positions, widths };
+  s.closePath();
+  return s;
 }
 
-const bootVert = /* glsl */ `
-attribute float aWidth;
-uniform float uTime;
-uniform float uAlpha;
-uniform float uPixelRatio;
-varying float vSeed;
-void main() {
-  vSeed = aWidth;
-  vec3 pos = position;
-  vec4 mv = modelViewMatrix * vec4(pos, 1.0);
-  gl_Position = projectionMatrix * mv;
-  gl_PointSize = (1.0 + aWidth * 1.4) * uPixelRatio * (130.0 / -mv.z);
+/** A small mouse: round body + smaller head + ear + thin tail line. */
+function Mouse({ alphaRef }: { alphaRef: React.MutableRefObject<number> }) {
+  const groupRef = useRef<Group>(null);
+  const bodyRef = useRef<Mesh>(null);
+  const headRef = useRef<Mesh>(null);
+  const earRef = useRef<Mesh>(null);
+  const tailRef = useRef<Mesh>(null);
+
+  useFrame((_, dt) => {
+    const a = alphaRef.current;
+    for (const r of [bodyRef, headRef, earRef, tailRef]) {
+      if (r.current) (r.current.material as MeshBasicMaterial).opacity = a;
+    }
+    if (groupRef.current) {
+      groupRef.current.position.y = -0.32 + Math.sin(performance.now() * 0.001) * 0.01;
+    }
+  });
+
+  return (
+    <group ref={groupRef} position={[-0.45, -0.32, 0.02]}>
+      {/* body */}
+      <mesh ref={bodyRef}>
+        <circleGeometry args={[0.07, 32]} />
+        <meshBasicMaterial color="#f5e9c7" transparent opacity={0} />
+      </mesh>
+      {/* head, slightly forward */}
+      <mesh ref={headRef} position={[0.08, 0.015, 0]}>
+        <circleGeometry args={[0.045, 24]} />
+        <meshBasicMaterial color="#f8eed3" transparent opacity={0} />
+      </mesh>
+      {/* round ear */}
+      <mesh ref={earRef} position={[0.06, 0.06, 0]}>
+        <circleGeometry args={[0.022, 16]} />
+        <meshBasicMaterial color="#e6d5a7" transparent opacity={0} />
+      </mesh>
+      {/* thin curled tail (using elongated ellipse) */}
+      <mesh
+        ref={tailRef}
+        position={[-0.1, -0.02, 0]}
+        rotation={[0, 0, 0.6]}
+        scale={[1, 0.18, 1]}
+      >
+        <circleGeometry args={[0.06, 20]} />
+        <meshBasicMaterial color="#e6d5a7" transparent opacity={0} />
+      </mesh>
+    </group>
+  );
 }
-`;
-const bootFrag = /* glsl */ `
-precision highp float;
-varying float vSeed;
-uniform float uAlpha;
-void main() {
-  vec2 c = gl_PointCoord - 0.5;
-  float d = length(c);
-  float disc = smoothstep(0.5, 0.32, d);
-  vec3 leather = mix(vec3(0.42, 0.28, 0.16), vec3(0.18, 0.12, 0.07), vSeed);
-  float alpha = disc * uAlpha * 0.85;
-  gl_FragColor = vec4(leather, alpha);
+
+/** A larger cat: body + head + two triangular ears + tail. */
+function Cat({ alphaRef }: { alphaRef: React.MutableRefObject<number> }) {
+  const groupRef = useRef<Group>(null);
+  const bodyRef = useRef<Mesh>(null);
+  const headRef = useRef<Mesh>(null);
+  const ear1Ref = useRef<Mesh>(null);
+  const ear2Ref = useRef<Mesh>(null);
+  const tailRef = useRef<Mesh>(null);
+
+  useFrame((_, dt) => {
+    const a = alphaRef.current;
+    for (const r of [bodyRef, headRef, ear1Ref, ear2Ref, tailRef]) {
+      if (r.current) (r.current.material as MeshBasicMaterial).opacity = a;
+    }
+    if (groupRef.current) {
+      groupRef.current.position.y = -0.28 + Math.cos(performance.now() * 0.0008) * 0.012;
+    }
+  });
+
+  return (
+    <group ref={groupRef} position={[0.32, -0.28, 0.02]}>
+      {/* body — curled, oval */}
+      <mesh ref={bodyRef} scale={[1.3, 0.85, 1]}>
+        <circleGeometry args={[0.13, 36]} />
+        <meshBasicMaterial color="#7fa9d8" transparent opacity={0} />
+      </mesh>
+      {/* head */}
+      <mesh ref={headRef} position={[0.14, 0.06, 0]}>
+        <circleGeometry args={[0.08, 28]} />
+        <meshBasicMaterial color="#94b7df" transparent opacity={0} />
+      </mesh>
+      {/* triangular ears using rotated narrow circles (approx) */}
+      <mesh
+        ref={ear1Ref}
+        position={[0.11, 0.13, 0]}
+        rotation={[0, 0, -0.4]}
+        scale={[0.6, 1, 1]}
+      >
+        <circleGeometry args={[0.04, 3]} />
+        <meshBasicMaterial color="#7aa3d2" transparent opacity={0} />
+      </mesh>
+      <mesh
+        ref={ear2Ref}
+        position={[0.18, 0.13, 0]}
+        rotation={[0, 0, 0.4]}
+        scale={[0.6, 1, 1]}
+      >
+        <circleGeometry args={[0.04, 3]} />
+        <meshBasicMaterial color="#7aa3d2" transparent opacity={0} />
+      </mesh>
+      {/* tail curled over body */}
+      <mesh
+        ref={tailRef}
+        position={[-0.13, 0.05, 0]}
+        rotation={[0, 0, 0.8]}
+        scale={[1, 0.18, 1]}
+      >
+        <circleGeometry args={[0.13, 24]} />
+        <meshBasicMaterial color="#7aa3d2" transparent opacity={0} />
+      </mesh>
+    </group>
+  );
 }
-`;
 
 export default function Boot({ progress }: { progress: Progress }) {
-  const ref = useRef<Mesh>(null);
-  const matRef = useRef<ShaderMaterial>(null);
-  const mouseRef = useRef<Mesh>(null);
-  const catRef = useRef<Mesh>(null);
+  const groupRef = useRef<Group>(null);
+  const bootRef = useRef<Mesh>(null);
+  const bootGlowRef = useRef<Mesh>(null);
   const moonRef = useRef<Mesh>(null);
+  const creatureAlpha = useRef(0);
 
-  const { geom } = useMemo(() => {
-    const g = new BufferGeometry();
-    const { positions, widths } = buildBootPoints(1100);
-    g.setAttribute("position", new BufferAttribute(positions, 3));
-    g.setAttribute("aWidth", new BufferAttribute(widths, 1));
-    return { geom: g };
+  const { bootGeom, glowGeom } = useMemo(() => {
+    const shape = buildBootShape();
+    return {
+      bootGeom: new ShapeGeometry(shape, 64),
+      glowGeom: new ShapeGeometry(shape, 64),
+    };
   }, []);
 
-  const uniforms = useMemo(
-    () => ({
-      uTime: { value: 0 },
-      uAlpha: { value: 0 },
-      uPixelRatio: {
-        value:
-          typeof window !== "undefined" ? Math.min(window.devicePixelRatio, 2) : 1,
-      },
-    }),
-    [],
-  );
-
-  useFrame((_, delta) => {
-    if (!matRef.current) return;
-    matRef.current.uniforms.uTime.value += delta;
-
-    // visible from ch2 (cat enters) through ch4 (sinking)
+  useFrame(() => {
     const t = progress.chapter + progress.local;
     let alpha = 0;
     if (t > 1.8 && t < 5.0) {
       alpha = Math.min(1, (t - 1.8) * 1.2) * (1 - Math.max(0, (t - 4.0) * 1.0));
     }
-    matRef.current.uniforms.uAlpha.value +=
-      (alpha - matRef.current.uniforms.uAlpha.value) * 0.06;
 
-    // mouse / cat positions inside boot, gentle bob
-    if (mouseRef.current) {
-      mouseRef.current.position.set(
-        -0.5 + Math.sin(matRef.current.uniforms.uTime.value * 1.4) * 0.02,
-        -0.25 + Math.cos(matRef.current.uniforms.uTime.value * 1.1) * 0.02,
-        0.02,
-      );
-      const mAlpha = alpha;
-      (mouseRef.current.material as any).opacity = mAlpha;
+    if (bootRef.current) {
+      (bootRef.current.material as MeshBasicMaterial).opacity = alpha * 0.95;
     }
-    if (catRef.current) {
-      catRef.current.position.set(
-        0.4 + Math.sin(matRef.current.uniforms.uTime.value * 0.8 + 1) * 0.02,
-        -0.2 + Math.cos(matRef.current.uniforms.uTime.value * 0.9 + 1) * 0.02,
-        0.02,
-      );
-      (catRef.current.material as any).opacity = alpha;
+    if (bootGlowRef.current) {
+      (bootGlowRef.current.material as MeshBasicMaterial).opacity = alpha * 0.18;
     }
+    creatureAlpha.current = alpha;
 
-    // moon, visible during ch3 mostly
     if (moonRef.current) {
       const mt = t;
       let ma = 0;
       if (mt > 2.4 && mt < 4.5) {
-        ma = Math.min(1, (mt - 2.4) * 1.4) * (1 - Math.max(0, (mt - 3.8) * 1.2));
+        ma =
+          Math.min(1, (mt - 2.4) * 1.4) *
+          (1 - Math.max(0, (mt - 3.8) * 1.2));
       }
-      (moonRef.current.material as any).opacity = ma;
+      (moonRef.current.material as MeshBasicMaterial).opacity = ma;
       moonRef.current.position.set(1.6, 1.3, -1.0);
     }
 
-    // boot itself bobs gently
-    if (ref.current) {
-      ref.current.position.y = -0.2 + Math.sin(matRef.current.uniforms.uTime.value * 0.6) * 0.02;
-      ref.current.rotation.z = Math.sin(matRef.current.uniforms.uTime.value * 0.3) * 0.03;
+    if (groupRef.current) {
+      const ms = performance.now() * 0.0005;
+      groupRef.current.position.y = -0.05 + Math.sin(ms) * 0.02;
+      groupRef.current.rotation.z = Math.sin(ms * 0.6) * 0.025;
     }
   });
 
   return (
     <group>
-      <points
-        ref={ref as any}
-        geometry={geom}
-        position={[0, -0.2, 0]}
-        renderOrder={1}
-      >
-        <shaderMaterial
-          ref={matRef}
-          vertexShader={bootVert}
-          fragmentShader={bootFrag}
-          uniforms={uniforms}
-          transparent
-          depthWrite={false}
-        />
-      </points>
-
-      {/* mouse: tiny warm-white sphere */}
-      <mesh ref={mouseRef} renderOrder={3}>
-        <sphereGeometry args={[0.045, 16, 16]} />
-        <meshBasicMaterial color="#fff2c8" transparent opacity={0} />
-      </mesh>
-
-      {/* cat: slightly larger, cool-blue sphere */}
-      <mesh ref={catRef} renderOrder={3}>
-        <sphereGeometry args={[0.07, 16, 16]} />
-        <meshBasicMaterial color="#9ec9ff" transparent opacity={0} />
-      </mesh>
-
       {/* moon */}
       <mesh ref={moonRef} renderOrder={0}>
-        <circleGeometry args={[0.5, 64]} />
-        <meshBasicMaterial color="#ffe8b0" transparent opacity={0} />
+        <circleGeometry args={[0.42, 64]} />
+        <meshBasicMaterial color="#f4dca3" transparent opacity={0} />
       </mesh>
+
+      {/* boot itself, fills the shape */}
+      <group ref={groupRef} position={[0, -0.05, 0]}>
+        {/* soft halo behind boot */}
+        <mesh
+          ref={bootGlowRef}
+          geometry={glowGeom}
+          scale={[1.12, 1.12, 1]}
+          position={[0, 0, -0.02]}
+          renderOrder={1}
+        >
+          <meshBasicMaterial
+            color="#8a6034"
+            transparent
+            opacity={0}
+            side={DoubleSide}
+          />
+        </mesh>
+        {/* filled boot silhouette */}
+        <mesh ref={bootRef} geometry={bootGeom} renderOrder={2}>
+          <meshBasicMaterial
+            color="#3a2614"
+            transparent
+            opacity={0}
+            side={DoubleSide}
+          />
+        </mesh>
+
+        {/* creatures inside */}
+        <Mouse alphaRef={creatureAlpha} />
+        <Cat alphaRef={creatureAlpha} />
+      </group>
     </group>
   );
 }

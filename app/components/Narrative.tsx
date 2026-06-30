@@ -11,8 +11,8 @@ type Beat = {
   kicker?: string;
   /** main poetic line */
   line: string;
-  /** optional position class override */
-  className?: string;
+  /** optional subtitle below the line */
+  sub?: string;
 };
 
 const BEATS: Beat[] = [
@@ -20,51 +20,61 @@ const BEATS: Beat[] = [
     at: 0.25,
     kicker: "i.",
     line: "if you give a mouse a cookie,",
+    sub: "he will, of course, ask for a glass of milk.",
   },
   {
-    at: 1.0,
+    at: 0.95,
     kicker: "ii.",
-    line: "he will, of course, ask for a glass of milk.",
+    line: "but the mouse is lactose intolerant.",
+    sub: "and you, dear human, were thirsty too.",
   },
   {
-    at: 1.9,
+    at: 1.75,
     kicker: "iii.",
-    line: "the mouse is lactose intolerant. the cat is a vegetarian.",
+    line: "so the cat is let in.",
+    sub: "she is a vegetarian. she has rules.",
   },
   {
-    at: 2.9,
+    at: 2.55,
     kicker: "iv.",
-    line: "they take the milk to the cat. for the cause.",
+    line: "the mouse pushes the milk toward the cat.",
+    sub: "for the cause. for harm reduction. for the principle of the thing.",
   },
   {
-    at: 3.6,
+    at: 3.35,
     kicker: "v.",
     line: "they live, the rest of their lives, in a worn boot under the moon.",
+    sub: "the mouse wants more. the cat can only be so tamed.",
   },
   {
-    at: 4.5,
+    at: 4.2,
     kicker: "vi.",
-    line: "the world here is salt and stone. nothing is of weight.",
+    line: "the world here is salt and stone.",
+    sub: "nothing is of weight. nothing is of wood. nothing is of lies.",
   },
   {
-    at: 5.3,
+    at: 5.15,
     kicker: "vii.",
-    line: "a fish drifts past — wrought of salt and brine, not wood and lies.",
+    line: "a fish drifts past — wrought of salt and brine.",
+    sub: "it is more than the eye can see. it is substance you can almost touch.",
   },
   {
     at: 6.15,
     kicker: "viii.",
-    line: "and you, who set all this in motion — you are a strange bird.",
+    line: "and you, who set all this in motion —",
+    sub: "you are a strange bird. tilt your head. the moon is yours.",
   },
   {
-    at: 6.85,
+    at: 6.95,
     kicker: "ix.",
     line: "the code compiles. the tale persists.",
+    sub: "what we made together is small, and strange, and real.",
   },
   {
-    at: 7.6,
+    at: 7.7,
     kicker: "x.",
-    line: "thank you, stenwge bird. now write the next one.",
+    line: "now go write the next one.",
+    sub: "the forgotten code research institute will be here when you do.",
   },
 ];
 
@@ -123,6 +133,18 @@ export default function Narrative({ progress }: { progress: Progress }) {
             >
               {active.line}
             </p>
+            {active.sub && (
+              <p
+                className="mt-5 font-serif italic text-base md:text-xl lg:text-2xl leading-[1.4] text-stone-300"
+                style={{
+                  textWrap: "balance" as any,
+                  textShadow:
+                    "0 1px 2px rgba(0,0,0,0.95), 0 0 24px rgba(0,0,0,0.7)",
+                }}
+              >
+                {active.sub}
+              </p>
+            )}
           </motion.div>
         )}
       </AnimatePresence>
