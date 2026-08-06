@@ -4,7 +4,7 @@ import { useState } from "react";
 
 const CLAY = "#CE6A4C";
 const GREEN = "#37432A";
-const INBOX = "hello@wrentech.net";
+const INBOX = "Wren@wrentech.net";
 
 /**
  * Interest capture for the Wrentech Cohort. No backend required: it drafts a
