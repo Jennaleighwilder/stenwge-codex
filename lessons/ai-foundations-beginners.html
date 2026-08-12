@@ -3,232 +3,270 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>AI, Un-Scary: A 45-Minute Playground</title>
+<title>AI, Actually Explained</title>
 <style>
   :root{
-    --bg:#0f1020;
-    --bg2:#171933;
-    --card:#1e2145;
-    --card2:#262a58;
-    --ink:#f4f5ff;
-    --muted:#b6b9e0;
-    --accent:#ff5da2;      /* hot pink */
-    --accent2:#ffd23f;     /* zappy yellow */
-    --good:#38e08b;
-    --good2:#0fb968;
+    --bg:#0d0f1c;
+    --bg2:#141733;
+    --card:#1a1e3d;
+    --card2:#232852;
+    --ink:#f2f4ff;
+    --muted:#a9adde;
+    --line:rgba(255,255,255,.09);
+    --accent:#ff5c8a;      /* coral-pink */
+    --accent2:#ffcf4d;     /* amber */
+    --teal:#37e0c8;
+    --good:#37e08b;
+    --good2:#12a866;
     --bad:#ff7a7a;
-    --pop:#7b5cff;         /* purple */
-    --ring:rgba(255,93,162,.5);
-    --shadow:0 18px 40px rgba(0,0,0,.45);
+    --pop:#8b6cff;         /* violet */
+    --ring:rgba(255,92,138,.5);
+    --shadow:0 18px 44px rgba(0,0,0,.5);
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   html,body{margin:0;padding:0}
   body{
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    background:radial-gradient(1200px 800px at 15% -10%,#2a2160 0%,transparent 55%),
-               radial-gradient(1000px 700px at 110% 10%,#3a1550 0%,transparent 50%),
-               var(--bg);
-    color:var(--ink);
-    line-height:1.5;
-    min-height:100vh;
-    overflow-x:hidden;
+    background:
+      radial-gradient(1200px 760px at 12% -12%,#28215f 0%,transparent 55%),
+      radial-gradient(1000px 680px at 112% 6%,#3a1550 0%,transparent 52%),
+      var(--bg);
+    color:var(--ink);line-height:1.55;min-height:100vh;overflow-x:hidden;
   }
-  .wrap{max-width:820px;margin:0 auto;padding:16px 16px 120px}
+  .wrap{max-width:840px;margin:0 auto;padding:16px 16px 130px}
 
   /* ---------- Top bar / progress ---------- */
-  .topbar{
-    position:sticky;top:0;z-index:40;
-    backdrop-filter:blur(10px);
-    background:linear-gradient(180deg,rgba(15,16,32,.92),rgba(15,16,32,.55));
-    padding:12px 16px 10px;border-bottom:1px solid rgba(255,255,255,.08);
-  }
-  .topbar-inner{max-width:820px;margin:0 auto}
-  .brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.3px}
-  .brand .logo{font-size:22px}
+  .topbar{position:sticky;top:0;z-index:40;backdrop-filter:blur(10px);
+    background:linear-gradient(180deg,rgba(13,15,28,.93),rgba(13,15,28,.55));
+    padding:11px 16px 10px;border-bottom:1px solid var(--line)}
+  .topbar-inner{max-width:840px;margin:0 auto}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.2px}
+  .brand .logo{font-size:20px}
   .brand small{font-weight:600;color:var(--muted);font-size:12px}
-  .progress-track{margin-top:10px;height:14px;border-radius:20px;background:#0c0d1e;
-    box-shadow:inset 0 2px 6px rgba(0,0,0,.6);overflow:hidden;position:relative}
+  .progress-track{margin-top:9px;height:12px;border-radius:20px;background:#090a18;
+    box-shadow:inset 0 2px 6px rgba(0,0,0,.6);overflow:hidden}
   .progress-fill{height:100%;width:0%;border-radius:20px;
-    background:linear-gradient(90deg,var(--accent),var(--accent2));
-    transition:width .5s cubic-bezier(.2,.9,.3,1)}
-  .dots{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
-  .dot{width:26px;height:8px;border-radius:20px;background:#2a2c55;transition:.3s}
+    background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .5s cubic-bezier(.2,.9,.3,1)}
+  .dots{display:flex;gap:5px;margin-top:8px;flex-wrap:wrap}
+  .dot{width:24px;height:7px;border-radius:20px;background:#2a2f5c;transition:.3s;cursor:pointer}
   .dot.done{background:var(--good)}
   .dot.current{background:var(--accent2);box-shadow:0 0 0 3px var(--ring)}
 
-  /* ---------- Cards / steps ---------- */
+  /* ---------- Steps / cards ---------- */
   .step{display:none;animation:pop .45s cubic-bezier(.2,.9,.3,1)}
   .step.active{display:block}
-  @keyframes pop{from{opacity:0;transform:translateY(18px) scale(.98)}to{opacity:1;transform:none}}
-  .card{
-    background:linear-gradient(180deg,var(--card),var(--bg2));
-    border:1px solid rgba(255,255,255,.08);
-    border-radius:24px;padding:22px;margin-top:16px;box-shadow:var(--shadow);
-  }
-  .kicker{display:inline-block;font-weight:800;font-size:12px;letter-spacing:1.5px;
-    text-transform:uppercase;color:#0f1020;background:var(--accent2);
-    padding:5px 12px;border-radius:999px}
-  h1{font-size:clamp(26px,6vw,44px);line-height:1.05;margin:14px 0 6px;font-weight:900}
-  h2{font-size:clamp(22px,5vw,34px);line-height:1.08;margin:12px 0 6px;font-weight:900}
-  .sub{color:var(--muted);font-size:clamp(15px,3.6vw,18px);margin:0 0 6px}
-  .big{font-size:clamp(18px,4.4vw,22px)}
+  @keyframes pop{from{opacity:0;transform:translateY(16px) scale(.985)}to{opacity:1;transform:none}}
+  .card{background:linear-gradient(180deg,var(--card),var(--bg2));border:1px solid var(--line);
+    border-radius:22px;padding:24px;margin-top:16px;box-shadow:var(--shadow)}
+  .kicker{display:inline-flex;align-items:center;gap:7px;font-weight:800;font-size:12px;letter-spacing:1.4px;
+    text-transform:uppercase;color:#0d0f1c;background:var(--accent2);padding:5px 12px;border-radius:999px}
+  .kicker.teal{background:var(--teal)}
+  .kicker.pink{background:var(--accent);color:#fff}
+  h1{font-size:clamp(28px,6vw,46px);line-height:1.04;margin:16px 0 8px;font-weight:900;letter-spacing:-.5px;text-wrap:balance}
+  h2{font-size:clamp(23px,5vw,34px);line-height:1.08;margin:14px 0 8px;font-weight:900;letter-spacing:-.4px;text-wrap:balance}
+  h3{font-size:17px;margin:0 0 8px;font-weight:800}
+  .sub{color:var(--muted);font-size:clamp(15px,3.4vw,18px);margin:0 0 8px}
+  .lead{font-size:clamp(16px,3.6vw,19px)}
   .hl{color:var(--accent2);font-weight:800}
   .hl2{color:var(--accent);font-weight:800}
+  .hlt{color:var(--teal);font-weight:800}
   .tiny{font-size:13px;color:var(--muted)}
   .center{text-align:center}
+  code{font-family:var(--mono);background:#090a18;border:1px solid var(--line);border-radius:6px;padding:1px 6px;font-size:.9em;color:#d5d8ff}
+
+  /* stat row */
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0}
+  .stat{background:var(--card2);border:1px solid var(--line);border-radius:14px;padding:12px;text-align:center}
+  .stat b{display:block;font-size:clamp(18px,5vw,26px);color:var(--accent2);font-weight:900;line-height:1.1}
+  .stat span{font-size:12px;color:var(--muted);font-weight:600}
+
+  /* "go deeper" */
+  .deeper{margin-top:16px;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:rgba(139,108,255,.07)}
+  .deeper > summary{cursor:pointer;list-style:none;padding:13px 16px;font-weight:800;font-size:15px;
+    display:flex;align-items:center;gap:10px;color:var(--ink)}
+  .deeper > summary::-webkit-details-marker{display:none}
+  .deeper > summary .chev{margin-left:auto;transition:.25s;color:var(--pop)}
+  .deeper[open] > summary .chev{transform:rotate(90deg)}
+  .deeper .body{padding:0 16px 16px;font-size:15px;color:#dfe2ff}
+  .deeper .body p{margin:8px 0}
+  .deeper .body b{color:var(--ink)}
+
+  /* callout */
+  .note{border-left:4px solid var(--teal);background:rgba(55,224,200,.08);border-radius:0 12px 12px 0;
+    padding:12px 16px;margin:14px 0;font-size:15px}
+  .note.warn{border-color:var(--accent2);background:rgba(255,207,77,.09)}
 
   /* ---------- Buttons ---------- */
-  .btn{
-    appearance:none;border:none;cursor:pointer;font-weight:800;
-    font-size:17px;padding:15px 22px;border-radius:16px;color:#0f1020;
-    background:linear-gradient(180deg,var(--accent2),#f6b800);
-    box-shadow:0 8px 0 #b98600,0 14px 22px rgba(0,0,0,.35);
-    transition:transform .06s ease, box-shadow .06s ease;user-select:none;
-  }
-  .btn:active{transform:translateY(6px);box-shadow:0 2px 0 #b98600,0 8px 14px rgba(0,0,0,.35)}
-  .btn.pink{background:linear-gradient(180deg,var(--accent),#e23b83);color:#fff;box-shadow:0 8px 0 #9c2258,0 14px 22px rgba(0,0,0,.35)}
-  .btn.pink:active{box-shadow:0 2px 0 #9c2258,0 8px 14px rgba(0,0,0,.35)}
-  .btn.ghost{background:transparent;color:var(--ink);border:2px solid rgba(255,255,255,.25);
-    box-shadow:none}
+  .btn{appearance:none;border:none;cursor:pointer;font-weight:800;font-size:16px;padding:14px 20px;border-radius:14px;
+    color:#0d0f1c;background:linear-gradient(180deg,var(--accent2),#f0b400);
+    box-shadow:0 7px 0 #b98600,0 12px 20px rgba(0,0,0,.35);transition:transform .06s, box-shadow .06s;user-select:none}
+  .btn:active{transform:translateY(5px);box-shadow:0 2px 0 #b98600,0 8px 14px rgba(0,0,0,.35)}
+  .btn.pink{background:linear-gradient(180deg,var(--accent),#e23b6f);color:#fff;box-shadow:0 7px 0 #9c1f4b,0 12px 20px rgba(0,0,0,.35)}
+  .btn.pink:active{box-shadow:0 2px 0 #9c1f4b,0 8px 14px rgba(0,0,0,.35)}
+  .btn.ghost{background:transparent;color:var(--ink);border:2px solid rgba(255,255,255,.22);box-shadow:none}
   .btn.ghost:active{transform:translateY(2px)}
-  .btn.small{font-size:14px;padding:10px 14px;border-radius:12px}
+  .btn.small{font-size:14px;padding:10px 14px;border-radius:11px}
   .btn[disabled]{opacity:.4;cursor:not-allowed;transform:none!important}
-  .btnrow{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:18px}
-  .spacer{flex:1}
+  .navbtns{display:flex;justify-content:space-between;gap:12px;margin-top:22px;flex-wrap:wrap}
 
-  .navbtns{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
-
-  /* ---------- Choice chips ---------- */
-  .choices{display:grid;grid-template-columns:1fr;gap:12px;margin-top:16px}
-  @media(min-width:560px){.choices.two{grid-template-columns:1fr 1fr}}
-  .choice{
-    text-align:left;background:var(--card2);border:2px solid rgba(255,255,255,.09);
-    border-radius:16px;padding:16px 18px;font-size:17px;font-weight:700;cursor:pointer;
-    color:var(--ink);transition:.15s;display:flex;align-items:center;gap:12px;
-  }
+  /* choices */
+  .choices{display:grid;grid-template-columns:1fr;gap:11px;margin-top:16px}
+  .choice{text-align:left;background:var(--card2);border:2px solid var(--line);border-radius:14px;padding:15px 17px;
+    font-size:16px;font-weight:700;cursor:pointer;color:var(--ink);transition:.15s;display:flex;align-items:center;gap:12px}
   .choice:hover{transform:translateY(-2px);border-color:var(--accent)}
-  .choice .em{font-size:26px}
-  .choice.correct{border-color:var(--good);background:rgba(56,224,139,.14);box-shadow:0 0 0 3px rgba(56,224,139,.25)}
+  .choice .em{font-size:22px;flex-shrink:0}
+  .choice.correct{border-color:var(--good);background:rgba(55,224,139,.14);box-shadow:0 0 0 3px rgba(55,224,139,.22)}
   .choice.wrong{border-color:var(--bad);background:rgba(255,122,122,.12)}
-  .choice.locked{pointer-events:none;opacity:.85}
-
-  .feedback{margin-top:14px;border-radius:14px;padding:14px 16px;font-weight:700;display:none}
+  .choice.locked{pointer-events:none}
+  .feedback{margin-top:14px;border-radius:13px;padding:14px 16px;font-weight:600;display:none;font-size:15px}
   .feedback.show{display:block;animation:pop .3s}
-  .feedback.win{background:rgba(56,224,139,.14);border:1px solid rgba(56,224,139,.4)}
-  .feedback.nope{background:rgba(255,210,63,.12);border:1px solid rgba(255,210,63,.4)}
+  .feedback.win{background:rgba(55,224,139,.13);border:1px solid rgba(55,224,139,.4)}
+  .feedback.nope{background:rgba(255,207,77,.11);border:1px solid rgba(255,207,77,.4)}
+  .feedback b{color:var(--ink)}
 
-  /* ---------- Reveal boxes (Step 0 + tap reveals) ---------- */
-  .grid-reveal{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:16px}
-  @media(min-width:560px){.grid-reveal{grid-template-columns:repeat(3,1fr)}}
-  .mystery{
-    position:relative;border-radius:18px;padding:18px 12px;min-height:104px;cursor:pointer;
-    background:linear-gradient(180deg,#2a2d5e,#20224a);border:2px solid rgba(255,255,255,.08);
-    display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
-    transition:.2s;overflow:hidden;
-  }
+  /* reveal grid */
+  .grid-reveal{display:grid;grid-template-columns:repeat(2,1fr);gap:11px;margin-top:16px}
+  @media(min-width:600px){.grid-reveal{grid-template-columns:repeat(3,1fr)}}
+  .mystery{position:relative;border-radius:16px;padding:15px 12px;min-height:116px;cursor:pointer;
+    background:linear-gradient(180deg,#252a58,#1c2047);border:2px solid var(--line);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;transition:.2s;overflow:hidden}
   .mystery:hover{transform:translateY(-3px);border-color:var(--accent2)}
-  .mystery .q{font-size:30px}
-  .mystery .label{font-size:13px;color:var(--muted);margin-top:6px;font-weight:700}
-  .mystery.revealed{background:linear-gradient(180deg,var(--good2),#0a8f52);border-color:var(--good)}
-  .mystery .front,.mystery .back{transition:.3s}
-  .mystery .back{display:none;font-weight:800}
+  .mystery .q{font-size:26px}
+  .mystery .label{font-size:13px;color:var(--muted);margin-top:6px;font-weight:700;line-height:1.3}
+  .mystery.revealed{background:linear-gradient(180deg,var(--good2),#0a7f4d);border-color:var(--good)}
+  .mystery .back{display:none;font-weight:600;font-size:13px;line-height:1.35}
   .mystery.revealed .front{display:none}
-  .mystery.revealed .back{display:block;font-size:15px}
-  .counter-big{font-size:clamp(44px,12vw,72px);font-weight:900;color:var(--accent2);line-height:1}
+  .mystery.revealed .back{display:block}
+  .mystery .kind{font-size:10px;letter-spacing:1px;text-transform:uppercase;font-weight:800;color:var(--accent2);margin-top:6px}
+  .mystery.revealed .kind{color:#d9ffe9}
+  .counter-big{font-size:clamp(40px,11vw,64px);font-weight:900;color:var(--accent2);line-height:1}
 
-  /* ---------- Fill the blank ---------- */
-  .sentence{font-size:clamp(20px,5vw,30px);font-weight:800;margin:10px 0 4px}
-  .blank{display:inline-block;min-width:120px;border-bottom:4px dashed var(--accent);
-    color:var(--accent2);padding:0 8px}
-  .wordbank{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
-  .word{background:var(--card2);border:2px solid rgba(255,255,255,.1);border-radius:12px;
-    padding:12px 16px;font-weight:800;font-size:17px;cursor:pointer;transition:.15s}
-  .word:hover{transform:translateY(-2px);border-color:var(--accent2)}
-  .word .pct{display:block;font-size:11px;color:var(--muted);font-weight:700;margin-top:2px}
-  .word.picked{border-color:var(--accent2);background:rgba(255,210,63,.14)}
-  .meter{height:12px;border-radius:8px;background:#0c0d1e;overflow:hidden;margin-top:6px}
-  .meter > span{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));width:0;transition:.6s}
+  /* predictor / tokens */
+  .sentence{font-size:clamp(19px,4.6vw,27px);font-weight:800;margin:8px 0 2px}
+  .blank{display:inline-block;min-width:120px;border-bottom:4px dashed var(--accent);color:var(--accent2);padding:0 8px}
+  .probrow{display:flex;flex-direction:column;gap:9px;margin-top:16px}
+  .prob{display:grid;grid-template-columns:120px 1fr auto;align-items:center;gap:10px;cursor:pointer;
+    background:var(--card2);border:2px solid var(--line);border-radius:12px;padding:9px 12px;transition:.15s}
+  @media(max-width:480px){.prob{grid-template-columns:96px 1fr auto}}
+  .prob:hover{border-color:var(--accent2);transform:translateX(3px)}
+  .prob .w{font-weight:800;font-family:var(--mono);font-size:15px}
+  .prob .bar{height:14px;border-radius:8px;background:#090a18;overflow:hidden}
+  .prob .bar > i{display:block;height:100%;background:linear-gradient(90deg,var(--pop),var(--accent));width:0;transition:.7s cubic-bezier(.2,.9,.3,1)}
+  .prob .pct{font-family:var(--mono);font-weight:800;font-size:14px;color:var(--muted);min-width:44px;text-align:right}
+  .prob.picked{border-color:var(--accent2);background:rgba(255,207,77,.12)}
 
-  /* ---------- Slider of consequences ---------- */
-  .slabel{display:flex;justify-content:space-between;font-weight:800;margin-top:10px}
-  input[type=range]{ -webkit-appearance:none;appearance:none;width:100%;height:16px;border-radius:20px;
-    background:linear-gradient(90deg,var(--accent),var(--accent2));outline:none;margin:14px 0 4px}
-  input[type=range]::-webkit-slider-thumb{ -webkit-appearance:none;width:34px;height:34px;border-radius:50%;
+  .tempwrap{margin-top:18px;background:#090a18;border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+  input[type=range]{ -webkit-appearance:none;appearance:none;width:100%;height:14px;border-radius:20px;
+    background:linear-gradient(90deg,var(--teal),var(--accent),var(--accent2));outline:none;margin:12px 0 4px}
+  input[type=range]::-webkit-slider-thumb{ -webkit-appearance:none;width:30px;height:30px;border-radius:50%;
     background:#fff;border:5px solid var(--pop);cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.5)}
-  input[type=range]::-moz-range-thumb{width:34px;height:34px;border-radius:50%;background:#fff;
-    border:5px solid var(--pop);cursor:pointer}
-  .robo-output{margin-top:14px;background:#0c0d1e;border-radius:16px;padding:18px;min-height:92px;
-    font-size:clamp(16px,4vw,20px);font-weight:700;transition:.2s;border:1px solid rgba(255,255,255,.08)}
-  .datacount{font-size:clamp(28px,8vw,44px);font-weight:900;color:var(--accent2)}
+  input[type=range]::-moz-range-thumb{width:30px;height:30px;border-radius:50%;background:#fff;border:5px solid var(--pop);cursor:pointer}
+  .tempout{margin-top:10px;font-size:16px;font-weight:600;min-height:48px}
 
-  /* ---------- Drag to sort ---------- */
-  .pool{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0;justify-content:center;min-height:60px}
-  .dragitem{background:var(--card2);border:2px solid rgba(255,255,255,.12);border-radius:14px;
-    padding:12px 14px;font-weight:800;font-size:16px;cursor:grab;user-select:none;transition:.15s;
-    touch-action:none;display:inline-flex;align-items:center;gap:8px}
+  /* training visual */
+  .netwrap{margin-top:16px;background:#090a18;border:1px solid var(--line);border-radius:14px;padding:16px}
+  .weights{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;margin:6px 0 12px}
+  .cell{aspect-ratio:1;border-radius:5px;background:#2a2f5c;transition:.25s}
+  .loss{font-family:var(--mono);font-weight:800}
+  .robo-output{margin-top:14px;background:#090a18;border-radius:14px;padding:16px;min-height:80px;
+    font-size:clamp(15px,3.6vw,18px);font-weight:600;transition:.2s;border:1px solid var(--line)}
+  .datacount{font-size:clamp(24px,7vw,38px);font-weight:900;color:var(--accent2)}
+
+  /* drag sort (3 buckets) */
+  .pool{display:flex;flex-wrap:wrap;gap:9px;margin:14px 0;justify-content:center;min-height:54px}
+  .dragitem{background:var(--card2);border:2px solid var(--line);border-radius:12px;padding:11px 13px;font-weight:800;
+    font-size:15px;cursor:grab;user-select:none;transition:.15s;touch-action:none;display:inline-flex;align-items:center;gap:7px}
   .dragitem.dragging{opacity:.5;transform:scale(1.05)}
   .dragitem.placed{cursor:default}
-  .buckets{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  .bucket{border-radius:18px;padding:14px 12px;min-height:130px;border:3px dashed rgba(255,255,255,.18);
+  .buckets3{display:grid;grid-template-columns:1fr;gap:11px}
+  @media(min-width:640px){.buckets3{grid-template-columns:repeat(3,1fr)}}
+  .bucket{border-radius:16px;padding:13px 11px;min-height:118px;border:3px dashed rgba(255,255,255,.16);
     background:rgba(255,255,255,.03);transition:.15s}
-  .bucket.yes{border-color:rgba(56,224,139,.5)}
-  .bucket.no{border-color:rgba(255,122,122,.5)}
-  .bucket.over{background:rgba(255,210,63,.12);transform:scale(1.02)}
-  .bucket h3{margin:0 0 8px;text-align:center;font-size:16px}
-  .bucket .items{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+  .bucket.over{background:rgba(255,207,77,.12);transform:scale(1.02)}
+  .bucket h3{margin:0 0 4px;text-align:center;font-size:15px}
+  .bucket .cap{text-align:center;font-size:11px;color:var(--muted);margin-bottom:8px}
+  .bucket .items{display:flex;flex-wrap:wrap;gap:7px;justify-content:center}
   .bucket .items .dragitem{font-size:13px;padding:8px 10px}
-  .dragitem.right{border-color:var(--good);background:rgba(56,224,139,.16)}
+  .dragitem.right{border-color:var(--good);background:rgba(55,224,139,.16)}
   .dragitem.wrongp{border-color:var(--bad);background:rgba(255,122,122,.16)}
 
-  /* ---------- Myth flip cards ---------- */
-  .flipgrid{display:grid;grid-template-columns:1fr;gap:14px;margin-top:16px}
-  @media(min-width:560px){.flipgrid{grid-template-columns:1fr 1fr}}
-  .flip{background:transparent;perspective:1200px;height:170px;cursor:pointer}
+  /* build-a-prompt */
+  .pbuild{display:grid;grid-template-columns:1fr;gap:11px;margin-top:14px}
+  @media(min-width:600px){.pbuild{grid-template-columns:1fr 1fr}}
+  .ptok{background:var(--card2);border:2px solid var(--line);border-radius:13px;padding:13px 15px;cursor:pointer;transition:.15s}
+  .ptok:hover{transform:translateY(-2px);border-color:var(--teal)}
+  .ptok.on{border-color:var(--good);background:rgba(55,224,139,.12)}
+  .ptok .t{font-weight:800;font-size:15px;display:flex;align-items:center;gap:8px}
+  .ptok .d{font-size:13px;color:var(--muted);margin-top:3px}
+  .ptok .chk{margin-left:auto}
+  .promptlive{margin-top:14px;background:#090a18;border:1px solid var(--line);border-radius:13px;padding:14px;
+    font-family:var(--mono);font-size:14px;color:#d5d8ff;min-height:70px;white-space:pre-wrap}
+  .qualitybar{margin-top:12px}
+  .qualitybar .track{height:16px;border-radius:10px;background:#090a18;overflow:hidden;border:1px solid var(--line)}
+  .qualitybar .track > i{display:block;height:100%;width:8%;transition:.5s cubic-bezier(.2,.9,.3,1);
+    background:linear-gradient(90deg,var(--bad),var(--accent2),var(--good))}
+  .qualitybar .lbl{display:flex;justify-content:space-between;font-weight:800;font-size:13px;margin-top:6px}
+
+  /* match limitation -> workaround */
+  .match{display:grid;grid-template-columns:1fr;gap:11px;margin-top:14px}
+  .matchrow{display:grid;grid-template-columns:1fr;gap:8px;background:var(--card2);border:1px solid var(--line);
+    border-radius:14px;padding:13px}
+  .matchrow .lim{font-weight:800;font-size:15px;display:flex;align-items:center;gap:8px}
+  .matchopts{display:flex;flex-wrap:wrap;gap:7px}
+  .mopt{border:2px solid var(--line);background:#090a18;border-radius:10px;padding:8px 11px;font-size:13px;
+    font-weight:700;cursor:pointer;transition:.15s}
+  .mopt:hover{border-color:var(--teal)}
+  .mopt.right{border-color:var(--good);background:rgba(55,224,139,.16)}
+  .mopt.wrong{border-color:var(--bad);background:rgba(255,122,122,.16);opacity:.7}
+  .mopt.locked{pointer-events:none}
+
+  /* myth flip */
+  .flipgrid{display:grid;grid-template-columns:1fr;gap:13px;margin-top:16px}
+  @media(min-width:600px){.flipgrid{grid-template-columns:1fr 1fr}}
+  .flip{background:transparent;perspective:1300px;height:210px;cursor:pointer}
   .flip-inner{position:relative;width:100%;height:100%;transition:transform .6s;transform-style:preserve-3d}
   .flip.flipped .flip-inner{transform:rotateY(180deg)}
-  .flip-face{position:absolute;inset:0;backface-visibility:hidden;border-radius:18px;padding:16px;
-    display:flex;flex-direction:column;justify-content:center;text-align:center}
-  .flip-front{background:linear-gradient(180deg,#3a2050,#2a1740);border:2px solid rgba(255,93,162,.4)}
-  .flip-back{background:linear-gradient(180deg,var(--good2),#0a8f52);transform:rotateY(180deg);border:2px solid var(--good)}
+  .flip-face{position:absolute;inset:0;backface-visibility:hidden;border-radius:16px;padding:16px;
+    display:flex;flex-direction:column;justify-content:center;text-align:left}
+  .flip-front{background:linear-gradient(180deg,#33214f,#241640);border:2px solid rgba(255,92,138,.38)}
+  .flip-back{background:linear-gradient(180deg,var(--good2),#0a7f4d);transform:rotateY(180deg);border:2px solid var(--good)}
   .flip .myth{font-weight:800;font-size:16px}
-  .flip .tag{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;font-weight:800;opacity:.85;margin-bottom:8px}
-  .flip .truth{font-weight:700;font-size:15px}
-  .flip .hint{font-size:12px;color:var(--muted);margin-top:10px}
+  .flip .tag{font-size:11px;letter-spacing:1.4px;text-transform:uppercase;font-weight:800;opacity:.85;margin-bottom:7px}
+  .flip .truth{font-weight:600;font-size:14px;line-height:1.4}
+  .flip .hint{font-size:12px;color:var(--muted);margin-top:auto;padding-top:8px}
 
-  /* ---------- Prompt lab ---------- */
-  .prompt-toggle{display:flex;gap:10px;margin-top:14px;background:#0c0d1e;padding:6px;border-radius:16px}
-  .prompt-toggle button{flex:1;border:none;cursor:pointer;font-weight:800;font-size:15px;padding:12px;
-    border-radius:12px;background:transparent;color:var(--muted);transition:.15s}
-  .prompt-toggle button.on{background:linear-gradient(180deg,var(--accent),#e23b83);color:#fff}
-  .promptbox{margin-top:8px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:15px;
-    background:#0c0d1e;border-radius:12px;padding:14px;border:1px solid rgba(255,255,255,.1);color:#cfd2ff}
-  .answerbox{margin-top:12px;background:linear-gradient(180deg,#20224a,#181a3a);border-radius:14px;
-    padding:16px;min-height:80px;font-size:16px;transition:.2s;border:1px solid rgba(255,255,255,.08)}
-
-  /* ---------- Boss quiz ---------- */
-  .scorebar{display:flex;align-items:center;gap:14px;margin-top:8px}
-  .hearts{font-size:22px;letter-spacing:2px}
-  .qcount{font-weight:800;color:var(--muted)}
-  .scoreNum{font-size:clamp(48px,14vw,84px);font-weight:900;color:var(--accent2);line-height:1}
+  /* boss */
+  .scorebar{display:flex;align-items:center;gap:12px;margin-top:6px}
+  .qcount{font-weight:800;color:var(--muted);font-size:14px}
+  .hearts{font-size:18px;letter-spacing:1px;margin-left:auto}
+  .meter{height:10px;border-radius:8px;background:#090a18;overflow:hidden;margin-top:8px;border:1px solid var(--line)}
+  .meter > span{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));width:0;transition:.5s}
+  .scoreNum{font-size:clamp(44px,13vw,78px);font-weight:900;color:var(--accent2);line-height:1}
   .badge{display:inline-flex;flex-direction:column;align-items:center;gap:6px;margin:14px auto;
-    background:linear-gradient(180deg,#2a2d5e,#20224a);border:2px solid var(--accent2);
-    border-radius:24px;padding:22px 28px;box-shadow:var(--shadow)}
-  .badge .trophy{font-size:56px}
-  .badge .title{font-size:22px;font-weight:900}
-
-  /* ---------- Confetti ---------- */
-  #confetti{position:fixed;inset:0;pointer-events:none;z-index:60;overflow:hidden}
-  .confo{position:absolute;width:10px;height:16px;top:-20px;will-change:transform,opacity;border-radius:2px}
-
-  /* toast pop */
-  .toast{position:fixed;left:50%;top:22%;transform:translateX(-50%) scale(.5);
-    background:var(--good2);color:#fff;font-weight:900;font-size:20px;padding:14px 24px;border-radius:16px;
-    box-shadow:var(--shadow);z-index:70;opacity:0;pointer-events:none;transition:.25s}
-  .toast.show{opacity:1;transform:translateX(-50%) scale(1)}
-
-  .footer-note{text-align:center;color:var(--muted);font-size:13px;margin-top:24px}
-  .pill{display:inline-block;background:rgba(255,255,255,.08);padding:4px 12px;border-radius:999px;
+    background:linear-gradient(180deg,#252a58,#1c2047);border:2px solid var(--accent2);border-radius:22px;padding:22px 30px;box-shadow:var(--shadow)}
+  .badge .trophy{font-size:50px}
+  .badge .title{font-size:21px;font-weight:900}
+  .pill{display:inline-block;background:rgba(255,255,255,.07);border:1px solid var(--line);padding:5px 12px;border-radius:999px;
     font-size:12px;font-weight:700;margin:4px 4px 0}
+
+  /* glossary */
+  .terms{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+  .term{background:var(--card2);border:1px solid var(--line);border-radius:11px;padding:9px 13px;cursor:pointer;
+    font-weight:800;font-size:14px;transition:.15s}
+  .term:hover{border-color:var(--teal);transform:translateY(-2px)}
+  .term .def{display:none}
+  .termout{margin-top:12px;background:#090a18;border:1px solid var(--line);border-radius:13px;padding:14px;min-height:64px;font-size:15px}
+
+  /* confetti + toast */
+  #confetti{position:fixed;inset:0;pointer-events:none;z-index:60;overflow:hidden}
+  .confo{position:absolute;width:9px;height:15px;top:-20px;border-radius:2px}
+  .toast{position:fixed;left:50%;top:20%;transform:translateX(-50%) scale(.5);background:var(--good2);color:#fff;
+    font-weight:900;font-size:19px;padding:13px 22px;border-radius:15px;box-shadow:var(--shadow);z-index:70;opacity:0;
+    pointer-events:none;transition:.25s}
+  .toast.show{opacity:1;transform:translateX(-50%) scale(1)}
+  .footer-note{text-align:center;color:var(--muted);font-size:13px;margin-top:26px}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
@@ -236,10 +274,8 @@
 <div class="topbar">
   <div class="topbar-inner">
     <div class="brand">
-      <span class="logo">🤖✨</span>
-      <div>
-        AI, Un-Scary <small>&nbsp;· WrenTech AI Cohort</small>
-      </div>
+      <span class="logo">🧠</span>
+      <div>AI, Actually Explained <small>&nbsp;· WrenTech AI Cohort</small></div>
     </div>
     <div class="progress-track"><div class="progress-fill" id="pfill"></div></div>
     <div class="dots" id="dots"></div>
@@ -248,210 +284,278 @@
 
 <div class="wrap">
 
-  <!-- ================= STEP 0 : HOOK ================= -->
+  <!-- ============ STEP 0 : HOOK ============ -->
   <section class="step active" data-step="0">
-    <div class="card center">
-      <span class="kicker">The big promise</span>
-      <h1>By the end of this,<br>you'll explain AI to a friend<br>— and stop being scared of it. 🫶</h1>
-      <p class="sub big">First, a spicy little truth:</p>
-      <h2 class="hl2">You already used AI today.</h2>
-      <p class="sub">Probably before coffee. Tap the boxes to bust the ones that are secretly AI. 👇</p>
+    <div class="card">
+      <span class="kicker pink">The promise</span>
+      <h1>By the end, you'll understand<br>how AI actually works —<br>well enough to explain it, and to <span class="hl2">use it well.</span></h1>
+      <p class="lead sub">No code. No hype. Just the real mental model the confident people have — built one playable idea at a time. Takes about 45 minutes.</p>
 
+      <div class="note">🎯 <b>The one sentence everything hangs on:</b> AI doesn't <i>know</i> things and it doesn't <i>look them up</i> — it <b>predicts</b> the most likely next piece of text, one chunk at a time. Weird? Keep that in your pocket. It explains almost everything AI does — the brilliance <i>and</i> the mistakes.</p>
+
+      <h2>First — spot the AI you already trust.</h2>
+      <p class="sub">Tap each tile. Some are AI, some are ordinary software. Reveal what's really running underneath.</p>
       <div class="grid-reveal" id="hookGrid"></div>
 
-      <p class="big center" style="margin-top:18px">You found <span class="counter-big" id="hookCount">0</span> <span class="hl">everyday AIs</span> hiding in plain sight.</p>
-      <p class="tiny" id="hookHint">Tap all 6 to keep going…</p>
-      <div class="navbtns">
-        <span></span>
-        <button class="btn" id="hookNext" disabled>Let's gooo →</button>
-      </div>
+      <p class="lead center" style="margin-top:18px">You revealed <span class="counter-big" id="hookCount">0</span><span class="hl"> / 6</span></p>
+      <p class="tiny center" id="hookHint">Tap all six to continue.</p>
+      <div class="navbtns"><span></span><button class="btn" id="hookNext" disabled>Start the real thing →</button></div>
     </div>
   </section>
 
-  <!-- ================= STEP 1 : PREDICTOR ================= -->
+  <!-- ============ STEP 1 : PREDICTION + TOKENS ============ -->
   <section class="step" data-step="1">
     <div class="card">
-      <span class="kicker">Idea #1</span>
-      <h2>AI is just a <span class="hl">really good guesser.</span></h2>
-      <p class="sub">Not a magic brain. Not a person in a box. It <b>predicts the next thing</b>, like your phone's autocomplete on protein powder.</p>
-      <p class="big" style="margin-top:10px">Let's prove <b>you</b> already think like one. Fill the blank:</p>
+      <span class="kicker">Idea 1 · The engine</span>
+      <h2>It's a <span class="hl">next-word prediction machine.</span></h2>
+      <p class="lead sub">Here's the whole trick, no exaggeration. Given some text, the model calculates a <b>probability for every possible next word</b>, then picks one. Then it does it again. And again. That stream of good guesses is the "intelligence."</p>
 
-      <div class="sentence center">"I'm so hungry, I could eat a <span class="blank" id="blankSlot">____</span>"</div>
-      <p class="tiny center">Pick the word you think comes next. There's no wrong answer — that's the point.</p>
-
-      <div class="wordbank" id="wordBank"></div>
-
+      <p class="lead"><b>You do this too.</b> Finish the sentence — but notice: your brain didn't pick <i>one</i> answer, it ranked several. So does the model. Tap the word you'd bet on:</p>
+      <div class="sentence center">"The doctor picked up the <span class="blank" id="blankSlot">____</span>"</div>
+      <div class="probrow" id="probRow"></div>
       <div class="feedback" id="predFb"></div>
+
+      <div class="tempwrap">
+        <h3>🎛️ The "creativity" dial (the pros call it <span class="hlt">temperature</span>)</h3>
+        <p class="tiny">The model doesn't always grab the #1 word — a setting controls how often it takes a riskier, lower-ranked pick. Drag it and watch the same prompt change character.</p>
+        <input type="range" id="tempSlider" min="0" max="3" value="1" step="1" />
+        <div class="tempout" id="tempOut"></div>
+      </div>
+
+      <details class="deeper">
+        <summary>🔬 Go deeper: what's a "<span class="hlt">token</span>"? <span class="chev">▸</span></summary>
+        <div class="body">
+          <p>Small catch: the model doesn't actually work in whole words — it works in <b>tokens</b>, which are chunks of text roughly ¾ of a word. "Cat" is one token; "unbelievable" might be three (<code>un</code> · <code>believ</code> · <code>able</code>).</p>
+          <p>Everything you type is chopped into tokens, and the model predicts the next <b>token</b>, not the next word. This is also why AI is sometimes <b>bad at spelling-style tasks</b> ("how many R's in strawberry?") — it never sees individual letters, only these chunks.</p>
+          <p><b>Why you should care:</b> tokens are how AI usage is measured and billed, and why very long documents get "forgotten" — there's a limit on how many tokens it can hold at once (its <b>context window</b>, aka working memory).</p>
+        </div>
+      </details>
+
       <div class="navbtns">
         <button class="btn ghost" data-back>← Back</button>
-        <button class="btn" id="predNext" disabled>Whoa, next →</button>
+        <button class="btn" id="predNext" disabled>Got it — how'd it learn? →</button>
       </div>
     </div>
   </section>
 
-  <!-- ================= STEP 2 : SLIDER ================= -->
+  <!-- ============ STEP 2 : TRAINING ============ -->
   <section class="step" data-step="2">
     <div class="card">
-      <span class="kicker">Idea #2</span>
-      <h2>It learned by <span class="hl">watching a MOUNTAIN of examples.</span></h2>
-      <p class="sub">Like a toddler learning "dog" after seeing 500 dogs. More examples = better guesses. <b>Drag the slider</b> and watch the robot wake up.</p>
+      <span class="kicker">Idea 2 · How it learned</span>
+      <h2>Nobody programmed the answers.<br>It <span class="hl">tuned itself</span> on a mountain of text.</h2>
+      <p class="lead sub">Inside the model are billions of numbers called <b>weights</b> (think: tiny dials). Training is brutally simple in concept, done at insane scale:</p>
 
-      <div class="slabel">
-        <span>🍼 Barely any examples</span>
-        <span>🏔️ A whole mountain</span>
+      <div class="note">1) Show it real text with the last word hidden. 2) Let it guess. 3) Measure how wrong it was (the <b>"loss"</b>). 4) Nudge the dials to be a little less wrong. 5) Repeat <b>trillions</b> of times. No rules about grammar or facts were ever written — the patterns <i>emerged</i> from the nudging.</p>
+
+      <div class="netwrap">
+        <h3>Watch it train 👇</h3>
+        <p class="tiny">Each square is a "dial." Every round, they adjust and the error drops. Hit the button and watch it learn to predict.</p>
+        <div class="weights" id="weights"></div>
+        <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+          <button class="btn small" id="trainBtn">▶ Run a training round</button>
+          <span class="loss">Round: <b id="epoch">0</b> &nbsp;·&nbsp; Error: <b id="lossVal" style="color:var(--bad)">92%</b></span>
+        </div>
+        <div class="robo-output" id="trainOut">🤖 "Untrained. My guesses are basically random noise. Teach me."</div>
       </div>
-      <input type="range" id="dataSlider" min="0" max="4" value="0" step="1" />
-      <p class="center">Trained on <span class="datacount" id="dataNum">3</span> examples</p>
 
-      <div class="robo-output" id="roboOut"></div>
-      <p class="tiny center" id="sliderHint">Slide it all the way up to unlock the next step →</p>
+      <div class="stats">
+        <div class="stat"><b>~1.8T</b><span>words a big model trains on</span></div>
+        <div class="stat"><b>Billions</b><span>of weights (dials) inside</span></div>
+        <div class="stat"><b>0</b><span>facts hand-typed by humans</span></div>
+      </div>
+
+      <details class="deeper">
+        <summary>🔬 Go deeper: so is it "copying" its training data? <span class="chev">▸</span></summary>
+        <div class="body">
+          <p>Mostly no. It doesn't store the text — it stores the <b>patterns</b> in the text as those billions of dial-settings. It's closer to a chef who tasted a million dishes and absorbed the <i>technique</i> than to a cookbook you look recipes up in.</p>
+          <p>That's exactly why it can write a sentence <b>no human ever wrote</b> — and also why it can <b>blur or mangle</b> facts it "half-remembers." It's reconstructing from patterns, not retrieving from a database.</p>
+        </div>
+      </details>
 
       <div class="navbtns">
         <button class="btn ghost" data-back>← Back</button>
-        <button class="btn" id="sliderNext" disabled>Makes sense, next →</button>
+        <button class="btn" id="trainNext" disabled>So why does it lie? →</button>
       </div>
     </div>
   </section>
 
-  <!-- ================= STEP 3 : CONFIDENTLY WRONG ================= -->
+  <!-- ============ STEP 3 : HALLUCINATIONS ============ -->
   <section class="step" data-step="3">
     <div class="card">
-      <span class="kicker">Idea #3</span>
-      <h2>It doesn't <span class="hl2">KNOW</span> things.<br>It <span class="hl">guesses</span> — sometimes <b>confidently wrong.</b></h2>
-      <p class="sub">Meet <b>Chad</b>, the world's most confident intern. He never says "I don't know." He just… makes it up. (Nerds call this a <b>"hallucination"</b> — aka <i>a very sure fib</i>.)</p>
-      <p class="big">Ask Chad a question. Guess if he's <b>right or bluffing</b>, then reveal the truth.</p>
+      <span class="kicker pink">Idea 3 · The catch</span>
+      <h2>It's built to sound <span class="hl2">right</span>,<br>not to <i>be</i> right.</h2>
+      <p class="lead sub">This is the single most important thing to internalize. The model optimizes for <b>plausible-sounding text</b>. It has no built-in fact-checker, no "am I sure?" meter, and no little database of truth to consult. When it doesn't know, it doesn't stop — it generates the most likely-looking answer anyway. The pros call this a <b>hallucination</b>. Plain English: <i>a confident, fluent guess that happens to be false.</i></p>
 
+      <p class="lead">Play prosecutor. Each question below — is the AI <b>right</b>, or <b>confidently making it up</b>? Tap to reveal, and see <i>why</i> it happened.</p>
       <div class="choices" id="chadQs"></div>
-      <div class="answerbox" id="chadAns" style="display:none"></div>
-
+      <div class="robo-output" id="chadAns" style="display:none"></div>
       <div class="feedback" id="chadFb"></div>
+
+      <details class="deeper">
+        <summary>🔬 Go deeper: why confidence ≠ correctness <span class="chev">▸</span></summary>
+        <div class="body">
+          <p>The tone of an answer is generated the <i>same way</i> as its content — by predicting fluent text. So "I'm certain, the answer is X" and "the answer is X" cost the model nothing extra. <b>Confidence is a writing style it learned, not a signal of accuracy.</b></p>
+          <p>Newer systems reduce this by giving the model <b>tools</b> — a real search engine, a calculator, a database — so it can look things up instead of guessing. When accuracy matters, prefer AI that <b>cites sources you can click</b>, and verify anything with a name, number, date, or quote.</p>
+        </div>
+      </details>
+
       <div class="navbtns">
         <button class="btn ghost" data-back>← Back</button>
-        <button class="btn" id="chadNext" disabled>Got it, Chad. Next →</button>
+        <button class="btn" id="chadNext" disabled>Noted. What counts as AI? →</button>
       </div>
     </div>
   </section>
 
-  <!-- ================= STEP 4 : DRAG TO SORT ================= -->
+  <!-- ============ STEP 4 : TAXONOMY (3-bucket sort) ============ -->
   <section class="step" data-step="4">
     <div class="card">
-      <span class="kicker">Idea #4</span>
-      <h2>You use AI <span class="hl">literally everywhere.</span></h2>
-      <p class="sub">Drag each thing into the right bucket. <b>Is it AI, or is it just… a computer doing computer stuff?</b></p>
+      <span class="kicker teal">Idea 4 · The family tree</span>
+      <h2>"AI" isn't one thing.<br>It's a <span class="hlt">family</span> of techniques.</h2>
+      <p class="lead sub">Not everything smart is AI, and AI isn't only chatbots. Sort each example into what's really running it. Drag into the right bucket:</p>
+
+      <div style="display:grid;gap:8px;margin:14px 0">
+        <div class="note" style="margin:0"><b>📏 Rule-based:</b> humans wrote every if/then. No learning. (A thermostat, a tax form.)</div>
+        <div class="note" style="margin:0;border-color:var(--pop);background:rgba(139,108,255,.09)"><b>📊 Machine learning:</b> learned patterns from data to do <i>one narrow job</i> well. (Spam filters, recommendations.)</div>
+        <div class="note" style="margin:0;border-color:var(--accent);background:rgba(255,92,138,.09)"><b>✍️ Generative AI:</b> learned to <i>produce new content</i> — text, images, code. (ChatGPT, image generators.)</div>
+      </div>
 
       <div class="pool" id="dragPool"></div>
-
-      <div class="buckets">
-        <div class="bucket yes" data-bucket="yes">
-          <h3>🤖 This IS AI</h3>
-          <div class="items" id="bucketYes"></div>
-        </div>
-        <div class="bucket no" data-bucket="no">
-          <h3>🧮 NOT AI</h3>
-          <div class="items" id="bucketNo"></div>
-        </div>
+      <div class="buckets3">
+        <div class="bucket" data-bucket="rule"><h3>📏 Rule-based</h3><div class="cap">humans coded it</div><div class="items" id="bkRule"></div></div>
+        <div class="bucket" data-bucket="ml"><h3>📊 Machine learning</h3><div class="cap">learned, narrow</div><div class="items" id="bkMl"></div></div>
+        <div class="bucket" data-bucket="gen"><h3>✍️ Generative</h3><div class="cap">creates new stuff</div><div class="items" id="bkGen"></div></div>
       </div>
-
       <div class="feedback" id="dragFb"></div>
+
       <div class="navbtns">
         <button class="btn ghost" data-back>← Back</button>
-        <button class="btn" id="dragNext" disabled>Sorted! Next →</button>
+        <button class="btn" id="dragNext" disabled>Now let's drive it →</button>
       </div>
     </div>
   </section>
 
-  <!-- ================= STEP 5 : PROMPT LAB ================= -->
+  <!-- ============ STEP 5 : PROMPTING (build-a-prompt) ============ -->
   <section class="step" data-step="5">
     <div class="card">
-      <span class="kicker">Idea #5</span>
-      <h2>You <span class="hl">steer</span> it by how you <span class="hl2">ASK.</span></h2>
-      <p class="sub">Same robot, same question — but <b>how</b> you ask changes everything. This is the whole secret to "prompting" (aka <i>talking to AI on purpose</i>).</p>
+      <span class="kicker">Idea 5 · Driving it</span>
+      <h2>You don't ask AI. You <span class="hl">brief</span> it.</h2>
+      <p class="lead sub">Same model, wildly different results — the variable is you. A good prompt is like briefing a sharp new assistant who's never met you: the more <b>context, role, and specifics</b> you give, the better the work. Build a prompt by adding pieces. Watch the quality climb.</p>
 
-      <p class="big">Flip between a lazy ask and a clear ask 👇</p>
-      <div class="prompt-toggle">
-        <button id="pVague" class="on">😴 Lazy ask</button>
-        <button id="pClear">🎯 Clear ask</button>
+      <div class="promptlive" id="promptLive">write something about our coffee shop</div>
+      <div class="qualitybar">
+        <div class="track"><i id="qFill"></i></div>
+        <div class="lbl"><span id="qLabel" style="color:var(--bad)">Vague · generic mush</span><span id="qPct">8%</span></div>
       </div>
-      <div class="promptbox" id="promptText"></div>
-      <div class="answerbox" id="promptAns"></div>
 
-      <p class="tiny center" id="promptHint">Try both, then grab the takeaway →</p>
+      <div class="pbuild" id="pbuild"></div>
       <div class="feedback" id="promptFb"></div>
+
+      <details class="deeper">
+        <summary>🔬 Go deeper: the "show, don't tell" power move (<span class="hlt">few-shot</span>) <span class="chev">▸</span></summary>
+        <div class="body">
+          <p>The strongest trick isn't describing what you want — it's <b>giving 1–3 examples</b> of it. "Write it like these:" beats "write it professionally." The model is a pattern-matcher, so hand it the pattern.</p>
+          <p>And treat it as a <b>conversation, not a vending machine.</b> Your first prompt is a draft. "Shorter, warmer, cut the last line" — steering across a few turns is how the good stuff actually gets made.</p>
+        </div>
+      </details>
+
       <div class="navbtns">
         <button class="btn ghost" data-back>← Back</button>
-        <button class="btn" id="promptNext" disabled>I'm the boss now →</button>
+        <button class="btn" id="promptNext" disabled>What can't it do? →</button>
       </div>
     </div>
   </section>
 
-  <!-- ================= STEP 6 : MYTH BUSTERS ================= -->
+  <!-- ============ STEP 6 : LIMITATIONS (match) ============ -->
   <section class="step" data-step="6">
     <div class="card">
-      <span class="kicker">Idea #6</span>
-      <h2>It's a <span class="hl">tool</span>, not a wizard.<br>You're the boss. 💪</h2>
-      <p class="sub">Time to squash the scary myths. <b>Tap each card</b> to flip the fear into the truth.</p>
+      <span class="kicker warn" style="background:var(--accent2)">Idea 6 · Knowing the edges</span>
+      <h2>Trust it like a <span class="hl">brilliant, overconfident intern.</span></h2>
+      <p class="sub lead">Fast, widely-read, tireless — and will hand you a wrong answer with a straight face. Knowing its real limits is what separates people who get burned from people who get value. Match each limitation to the smart workaround:</p>
+      <div class="match" id="matchWrap"></div>
+      <div class="feedback" id="matchFb"></div>
 
-      <div class="flipgrid" id="flipGrid"></div>
+      <details class="deeper">
+        <summary>🔬 Go deeper: bias in, bias out <span class="chev">▸</span></summary>
+        <div class="body">
+          <p>The model learned from human text, so it absorbed human <b>biases</b> too — stereotypes, blind spots, whatever was over- or under-represented online. It's not "opinionated"; it's <b>reflecting its training data</b>. That's why high-stakes calls (hiring, lending, medical, legal) need a human in the loop, not an AI verdict.</p>
+        </div>
+      </details>
 
-      <p class="tiny center" id="flipHint">Flip all 4 to finish the myth-busting →</p>
       <div class="navbtns">
         <button class="btn ghost" data-back>← Back</button>
-        <button class="btn" id="flipNext" disabled>Bring on the boss level →</button>
+        <button class="btn" id="matchNext" disabled>Kill the last myths →</button>
       </div>
     </div>
   </section>
 
-  <!-- ================= STEP 7 : BOSS LEVEL ================= -->
+  <!-- ============ STEP 7 : MYTHS ============ -->
   <section class="step" data-step="7">
     <div class="card">
-      <span class="kicker">Boss level 🔥</span>
-      <h2 id="bossTitle">The "I Actually Get AI Now" Gauntlet</h2>
-      <p class="sub" id="bossIntro">4 rapid-fire questions. Everything you just learned. Miss one? No shame — I'll explain and you keep going. Ready?</p>
-
-      <div id="bossStart">
-        <div class="btnrow center" style="justify-content:center">
-          <button class="btn pink" id="bossGo">START THE GAUNTLET →</button>
-        </div>
+      <span class="kicker teal">Idea 7 · Clearing the fog</span>
+      <h2>The scary myths — and what's <span class="hlt">actually</span> true.</h2>
+      <p class="lead sub">You now know enough to see through these. Tap each card to flip fear into fact.</p>
+      <div class="flipgrid" id="flipGrid"></div>
+      <p class="tiny center" id="flipHint">Flip all four to finish.</p>
+      <div class="navbtns">
+        <button class="btn ghost" data-back>← Back</button>
+        <button class="btn pink" id="flipNext" disabled>I'm ready. Boss level →</button>
       </div>
+    </div>
+  </section>
+
+  <!-- ============ STEP 8 : BOSS ============ -->
+  <section class="step" data-step="8">
+    <div class="card">
+      <span class="kicker pink">Boss level</span>
+      <h2 id="bossTitle">The "I Actually Get It" Gauntlet</h2>
+      <p class="sub lead" id="bossIntro">Six scenario questions that combine everything. Miss one? No penalty — you'll get the reasoning and keep moving. This is where it locks in.</p>
+
+      <div id="bossStart"><div class="navbtns" style="justify-content:center"><button class="btn pink" id="bossGo">Begin →</button></div></div>
 
       <div id="bossGame" style="display:none">
         <div class="scorebar">
-          <span class="qcount" id="bossCount">Question 1 / 4</span>
-          <span class="spacer"></span>
-          <span class="hearts" id="bossHearts">💛💛💛💛</span>
+          <span class="qcount" id="bossCount">Question 1 / 6</span>
+          <span class="hearts" id="bossHearts"></span>
         </div>
         <div class="meter"><span id="bossBar"></span></div>
-        <h2 id="bossQ" style="margin-top:16px"></h2>
+        <h2 id="bossQ" style="margin-top:16px;font-size:clamp(19px,4.4vw,26px)"></h2>
         <div class="choices" id="bossChoices"></div>
         <div class="feedback" id="bossFb"></div>
       </div>
 
       <div id="bossEnd" style="display:none" class="center">
-        <p class="big">You scored</p>
-        <div class="scoreNum"><span id="bossScore">0</span>/4</div>
+        <p class="lead">You scored</p>
+        <div class="scoreNum"><span id="bossScore">0</span>/6</div>
         <div class="badge" id="bossBadge">
           <div class="trophy">🏆</div>
-          <div class="title" id="bossBadgeTitle">You get AI now.</div>
+          <div class="title" id="bossBadgeTitle"></div>
           <div class="tiny" id="bossBadgeSub"></div>
         </div>
         <p class="sub" id="bossRecap"></p>
         <div>
-          <span class="pill">✅ AI = pattern guesser</span>
-          <span class="pill">✅ Learns from examples</span>
-          <span class="pill">✅ Guesses, can be wrong</span>
-          <span class="pill">✅ It's everywhere</span>
-          <span class="pill">✅ Ask clearly</span>
-          <span class="pill">✅ You're the boss</span>
+          <span class="pill">Predicts the next token</span>
+          <span class="pill">Tuned billions of weights</span>
+          <span class="pill">Sounds right ≠ is right</span>
+          <span class="pill">A family of techniques</span>
+          <span class="pill">Brief it, don't ask it</span>
+          <span class="pill">Knows its edges</span>
         </div>
-        <div class="btnrow" style="justify-content:center">
-          <button class="btn pink" id="shareBtn">📣 I get AI now — copy my badge</button>
-          <button class="btn ghost small" id="bossReplay">Replay gauntlet ↺</button>
+        <div class="navbtns" style="justify-content:center">
+          <button class="btn pink" id="shareBtn">📣 Copy my "I get AI" summary</button>
+          <button class="btn ghost small" id="bossReplay">Replay ↺</button>
         </div>
         <p class="feedback" id="shareFb" style="display:none"></p>
       </div>
     </div>
 
-    <p class="footer-note">Made for humans who were told AI is scary. It's not. You just proved it. 🫶</p>
+    <!-- glossary -->
+    <div class="card">
+      <h3>🗂️ Your cheat sheet — tap any term</h3>
+      <div class="terms" id="terms"></div>
+      <div class="termout" id="termOut">Tap a term to see the plain-English definition.</div>
+    </div>
+
+    <p class="footer-note">You came in nervous. You're leaving with the actual mental model. Go explain it to someone. 🧠</p>
   </section>
 
 </div>
@@ -462,519 +566,329 @@
 <script>
 (function(){
   "use strict";
-  var TOTAL_STEPS = 8; // 0..7
-  var current = 0;
-  var doneSteps = {};
-
-  var steps = Array.prototype.slice.call(document.querySelectorAll('.step'));
-  var dotsWrap = document.getElementById('dots');
-  var pfill = document.getElementById('pfill');
-
-  // build dots
-  for(var i=0;i<TOTAL_STEPS;i++){
-    var d=document.createElement('div'); d.className='dot'; d.dataset.i=i; dotsWrap.appendChild(d);
+  var TOTAL=9, current=0, done={};
+  var steps=[].slice.call(document.querySelectorAll('.step'));
+  var dotsWrap=document.getElementById('dots'), pfill=document.getElementById('pfill');
+  for(var i=0;i<TOTAL;i++){var d=document.createElement('div');d.className='dot';d.dataset.i=i;
+    d.addEventListener('click',function(){var n=+this.dataset.i; if(done[n]||n<=maxReached) goTo(n);}); dotsWrap.appendChild(d);}
+  var dots=[].slice.call(dotsWrap.children), maxReached=0;
+  function chrome(){
+    pfill.style.width=((current/(TOTAL-1))*100)+'%';
+    dots.forEach(function(d,idx){d.className='dot';if(done[idx])d.classList.add('done');if(idx===current)d.classList.add('current');});
   }
-  var dots = Array.prototype.slice.call(dotsWrap.children);
+  function goTo(n){if(n<0||n>TOTAL-1)return;steps[current].classList.remove('active');current=n;maxReached=Math.max(maxReached,n);
+    steps[current].classList.add('active');chrome();window.scrollTo({top:0,behavior:'smooth'});}
+  function complete(n){done[n]=true;chrome();}
+  document.querySelectorAll('[data-back]').forEach(function(b){b.addEventListener('click',function(){goTo(current-1);});});
 
-  function updateChrome(){
-    pfill.style.width = (((current) / (TOTAL_STEPS-1)) * 100) + '%';
-    dots.forEach(function(d,idx){
-      d.className='dot';
-      if(doneSteps[idx]) d.classList.add('done');
-      if(idx===current) d.classList.add('current');
-    });
-  }
+  // confetti + toast
+  var confHost=document.getElementById('confetti');
+  var colors=['#ff5c8a','#ffcf4d','#37e08b','#8b6cff','#37e0c8','#ff9f43'];
+  function confetti(n){n=n||50;for(var i=0;i<n;i++){(function(){var c=document.createElement('div');c.className='confo';
+    c.style.left=(Math.random()*100)+'vw';c.style.background=colors[(Math.random()*colors.length)|0];
+    var dur=1500+Math.random()*1400,rot=Math.random()*720-360,xEnd=Math.random()*160-80,start=null;confHost.appendChild(c);
+    function fr(t){if(!start)start=t;var p=(t-start)/dur;if(p>=1){c.remove();return;}
+      c.style.transform='translate('+(xEnd*p)+'px,'+(p*window.innerHeight*1.05)+'px) rotate('+(rot*p)+'deg)';c.style.opacity=1-p;requestAnimationFrame(fr);}
+    requestAnimationFrame(fr);})();}}
+  var toastEl=document.getElementById('toast'),toastT;
+  function toast(m){toastEl.textContent=m;toastEl.classList.add('show');clearTimeout(toastT);toastT=setTimeout(function(){toastEl.classList.remove('show');},1100);}
+  function win(m,h){toast(m||'Nice');confetti(h?90:36);}
 
-  function goTo(n){
-    if(n<0||n>TOTAL_STEPS-1) return;
-    steps[current].classList.remove('active');
-    current=n;
-    steps[current].classList.add('active');
-    updateChrome();
-    window.scrollTo({top:0,behavior:'smooth'});
-  }
-  function complete(n){ doneSteps[n]=true; updateChrome(); }
-
-  // generic back buttons
-  document.querySelectorAll('[data-back]').forEach(function(b){
-    b.addEventListener('click',function(){ goTo(current-1); });
-  });
-
-  // ---------- confetti + toast ----------
-  var confHost = document.getElementById('confetti');
-  var colors = ['#ff5da2','#ffd23f','#38e08b','#7b5cff','#4fc3ff','#ff9f43'];
-  function confetti(n){
-    n = n||60;
-    for(var i=0;i<n;i++){
-      (function(){
-        var c=document.createElement('div');
-        c.className='confo';
-        var x=Math.random()*100;
-        c.style.left=x+'vw';
-        c.style.background=colors[(Math.random()*colors.length)|0];
-        var dur=1600+Math.random()*1400;
-        var rot=(Math.random()*720-360);
-        var xEnd=(Math.random()*160-80);
-        c.style.transform='translateY(0) rotate(0deg)';
-        confHost.appendChild(c);
-        var start=null;
-        function frame(t){
-          if(!start) start=t;
-          var p=(t-start)/dur;
-          if(p>=1){ c.remove(); return; }
-          c.style.transform='translate('+(xEnd*p)+'px,'+(p*window.innerHeight*1.05)+'px) rotate('+(rot*p)+'deg)';
-          c.style.opacity = (1-p);
-          requestAnimationFrame(frame);
-        }
-        requestAnimationFrame(frame);
-      })();
-    }
-  }
-  var toastEl=document.getElementById('toast'), toastT;
-  function toast(msg){
-    toastEl.textContent=msg; toastEl.classList.add('show');
-    clearTimeout(toastT);
-    toastT=setTimeout(function(){toastEl.classList.remove('show');},1100);
-  }
-  function win(msg,heavy){ toast(msg||'YES 🎉'); confetti(heavy?90:40); }
-
-  /* ================= STEP 0 : HOOK ================= */
+  /* ---------- STEP 0 ---------- */
   var hookItems=[
-    {q:'📸',label:'Photo app that finds your dog',ai:true,back:'Face & object recognition = AI! It learned from millions of photos.'},
-    {q:'🗺️',label:'Maps picking the fast route',ai:true,back:'AI predicts traffic from tons of driving data. Sneaky!'},
-    {q:'🎬',label:'"Because you watched…" picks',ai:true,back:'Recommendations = AI spotting patterns in what you love.'},
-    {q:'⌨️',label:'Keyboard autocomplete',ai:true,back:'The OG everyday AI. It guesses your next word. Sound familiar?'},
-    {q:'🧹',label:'Spam filter in your email',ai:true,back:'AI learned what "junk" looks like from billions of emails.'},
-    {q:'📷',label:'Face unlock on your phone',ai:true,back:'It recognizes YOUR face out of everyone. Pure AI.'}
+    {q:'📸',label:'Photos finding a face',ai:true,kind:'AI · vision',back:'A neural network trained on millions of labeled faces. Real machine learning.'},
+    {q:'🗺️',label:'Maps predicting traffic',ai:true,kind:'AI · prediction',back:'Learns from live + historical movement data to forecast your ETA.'},
+    {q:'🧮',label:'A spreadsheet SUM()',ai:false,kind:'Not AI · rules',back:'Fixed arithmetic a human coded. It never learned anything.'},
+    {q:'🎬',label:'"Recommended for you"',ai:true,kind:'AI · patterns',back:'A model matching your behavior against millions of others. Classic ML.'},
+    {q:'⏰',label:'A phone alarm',ai:false,kind:'Not AI · rules',back:'"At 7:00, ring." Pure if/then. No learning, no prediction.'},
+    {q:'🧹',label:'Email spam filter',ai:true,kind:'AI · classifier',back:'Trained on billions of emails to learn what "junk" looks like.'}
   ];
-  var hookGrid=document.getElementById('hookGrid');
-  var hookCountEl=document.getElementById('hookCount');
-  var hookFound=0;
-  hookItems.forEach(function(it){
-    var el=document.createElement('div');
-    el.className='mystery';
-    el.innerHTML='<div class="front"><div class="q">'+it.q+'</div><div class="label">'+it.label+'</div></div>'+
-                 '<div class="back">✅ '+it.back+'</div>';
-    el.addEventListener('click',function(){
-      if(el.classList.contains('revealed')) return;
-      el.classList.add('revealed');
-      hookFound++;
-      hookCountEl.textContent=hookFound;
-      toast('AI spotted! 🔍');
-      confetti(14);
-      if(hookFound===hookItems.length){
-        document.getElementById('hookNext').disabled=false;
-        document.getElementById('hookHint').innerHTML='<b class="hl">6 for 6.</b> You use AI more than you use forks. Onward →';
-        win('You already knew AI! 🎉',true);
-      }
-    });
-    hookGrid.appendChild(el);
+  var hg=document.getElementById('hookGrid'),hc=document.getElementById('hookCount'),hf=0;
+  hookItems.forEach(function(it){var el=document.createElement('div');el.className='mystery';
+    el.innerHTML='<div class="front"><div class="q">'+it.q+'</div><div class="label">'+it.label+'</div><div class="kind">tap to reveal</div></div>'+
+      '<div class="back">'+(it.ai?'✅ ':'⚙️ ')+it.back+'<div class="kind">'+it.kind+'</div></div>';
+    el.addEventListener('click',function(){if(el.classList.contains('revealed'))return;el.classList.add('revealed');
+      if(!it.ai)el.style.background='linear-gradient(180deg,#3a3f6e,#2a2f56)';
+      hf++;hc.textContent=hf;toast(it.ai?'AI ✔':'Not AI ⚙️');confetti(10);
+      if(hf===hookItems.length){document.getElementById('hookNext').disabled=false;
+        document.getElementById('hookHint').innerHTML='<b class="hl">See the pattern?</b> AI = <i>learned from data</i>. Not-AI = <i>rules a human wrote</i>. That line is the whole game.';win('You can already tell them apart!',true);}
+    });hg.appendChild(el);});
+  document.getElementById('hookNext').addEventListener('click',function(){complete(0);goTo(1);});
+
+  /* ---------- STEP 1: predictor + temperature ---------- */
+  var words=[
+    {w:'chart',p:34,good:true},{w:'scalpel',p:28,good:true},{w:'phone',p:19,good:true},
+    {w:'stethoscope',p:12,good:true},{w:'trombone',p:2,good:false},{w:'asteroid',p:1,good:false}
+  ];
+  var pr=document.getElementById('probRow'),blank=document.getElementById('blankSlot'),predFb=document.getElementById('predFb'),predPicked=false;
+  words.forEach(function(o){var el=document.createElement('div');el.className='prob';
+    el.innerHTML='<span class="w">'+o.w+'</span><span class="bar"><i></i></span><span class="pct">'+o.p+'%</span>';
+    setTimeout(function(){el.querySelector('i').style.width=(o.p*2.6)+'%';},120);
+    el.addEventListener('click',function(){[].forEach.call(pr.children,function(c){c.classList.remove('picked');});el.classList.add('picked');
+      blank.textContent=o.w;predFb.className='feedback show '+(o.good?'win':'nope');
+      predFb.innerHTML=o.good
+        ? '🎯 <b>Exactly how the model "thinks."</b> It didn\'t <i>know</i> the doctor\'s tool — it ranked every option by probability from everything it\'s read, and the medical words rose to the top. You just ran the same computation.'
+        : '😄 A <b>'+o.w+'</b>? The model <i>could</i> pick that — with a ~'+o.p+'% chance, basically never. That low-but-nonzero tail is exactly what the creativity dial below plays with.';
+      if(!predPicked){predPicked=true;document.getElementById('predNext').disabled=false;win('You think in probabilities!');}
+    });pr.appendChild(el);});
+  var tempStates=[
+    {t:'0.0 — Deterministic',d:'Always grabs the #1 word. Same answer every time. Great for facts & code; can feel robotic.',c:'var(--teal)'},
+    {t:'0.7 — Balanced (default)',d:'Usually top words, occasional surprise. The sweet spot for most real writing.',c:'var(--good)'},
+    {t:'1.2 — Creative',d:'Reaches for lower-ranked words more often. More original — and more likely to wander off.',c:'var(--accent2)'},
+    {t:'2.0 — Chaos',d:'Rolls the dice hard. "The doctor picked up the ukulele of destiny." Fun; rarely useful.',c:'var(--accent)'}
+  ];
+  var ts=document.getElementById('tempSlider'),to=document.getElementById('tempOut');
+  function renderTemp(){var s=tempStates[+ts.value];to.innerHTML='<b style="color:'+s.c+'">'+s.t+'</b><br>'+s.d;}
+  ts.addEventListener('input',renderTemp);renderTemp();
+  document.getElementById('predNext').addEventListener('click',function(){complete(1);goTo(2);});
+
+  /* ---------- STEP 2: training ---------- */
+  var wgrid=document.getElementById('weights'),cells=[];
+  for(var w=0;w<32;w++){var c=document.createElement('div');c.className='cell';wgrid.appendChild(c);cells.push(c);}
+  var seedA=7; function rnd(){seedA=(seedA*1103515245+12345)&0x7fffffff;return (seedA%1000)/1000;}
+  function paint(intensity){cells.forEach(function(c){var v=rnd();
+    var on=v<intensity;c.style.background=on?'linear-gradient(180deg,var(--accent),var(--accent2))':'#2a2f5c';
+    c.style.transform=on?'scale(1.04)':'scale(1)';});}
+  paint(0.05);
+  var epoch=0,loss=92;var lossEl=document.getElementById('lossVal'),epEl=document.getElementById('epoch'),trainOut=document.getElementById('trainOut');
+  var trainMsgs=['🤖 "…is a a a the the?" (word salad)','🤖 "The cat sat on the… roof? floor?" (getting grammar)',
+    '🤖 "The cat sat on the mat." (nailing common patterns)','🤖 "The Fed raised rates to curb inflation." (real fluency emerging)',
+    '🐈 "Trained. Ask me anything — I\'ll predict a fluent answer. (Whether it\'s <i>true</i> is the next lesson…)"'];
+  var stage=0;
+  document.getElementById('trainBtn').addEventListener('click',function(){
+    if(loss<=6){win('Fully trained!',true);return;}
+    epoch++;loss=Math.max(6,Math.round(loss*0.62-2));epEl.textContent=epoch;lossEl.textContent=loss+'%';
+    lossEl.style.color=loss>50?'var(--bad)':loss>20?'var(--accent2)':'var(--good)';
+    paint(0.05+(92-loss)/92*0.85);
+    stage=Math.min(trainMsgs.length-1,Math.floor((92-loss)/92*trainMsgs.length));
+    trainOut.innerHTML=trainMsgs[stage];
+    if(loss<=6){document.getElementById('trainNext').disabled=false;trainOut.style.background='linear-gradient(180deg,var(--good2),#0a7f4d)';
+      document.getElementById('trainNext').disabled=false;win('It learned — no rules written!',true);
+      document.getElementById('trainBtn').textContent='✓ Trained (error bottomed out)';}
+    else toast('Error dropping ↓');
   });
-  document.getElementById('hookNext').addEventListener('click',function(){ complete(0); goTo(1); });
+  document.getElementById('trainNext').addEventListener('click',function(){complete(2);goTo(3);});
 
-  /* ================= STEP 1 : PREDICTOR ================= */
-  var predWords=[
-    {w:'horse',pct:'super likely',good:true},
-    {w:'pizza',pct:'very likely',good:true},
-    {w:'burrito',pct:'likely',good:true},
-    {w:'cloud',pct:'…rare',good:false},
-    {w:'stapler',pct:'basically never',good:false}
+  /* ---------- STEP 3: hallucinations ---------- */
+  var chad=[
+    {q:'"What\'s the capital of Australia?"',bluff:false,
+      a:'✅ <b>"Canberra."</b> Correct — and notice why: this fact appears <i>constantly</i> in its training text, so the highest-probability answer also happens to be the true one. When common knowledge and probability line up, it\'s reliable.'},
+    {q:'"Summarize the 2024 Henderson v. Bell Supreme Court ruling."',bluff:true,
+      a:'🚩 <b>It invents a detailed, official-sounding summary — of a case that doesn\'t exist.</b> Asked about something not in its data, it doesn\'t say "no such case." It generates the <i>shape</i> of a plausible answer. This is a hallucination in its purest form.'},
+    {q:'"Cite 3 studies proving houseplants cure insomnia."',bluff:true,
+      a:'🚩 <b>"Green et al. (2019), J. of Sleep Health…"</b> — realistic authors, journals, years, all fabricated. Fake citations are the classic tell. Always click through to the actual source; if it can\'t be found, it probably isn\'t real.'}
   ];
-  var wordBank=document.getElementById('wordBank');
-  var blankSlot=document.getElementById('blankSlot');
-  var predFb=document.getElementById('predFb');
-  var predPicked=false;
-  predWords.forEach(function(o){
-    var b=document.createElement('button');
-    b.className='word';
-    b.innerHTML=o.w+'<span class="pct">'+o.pct+'</span>';
-    b.addEventListener('click',function(){
-      Array.prototype.forEach.call(wordBank.children,function(c){c.classList.remove('picked')});
-      b.classList.add('picked');
-      blankSlot.textContent=o.w;
-      predFb.className='feedback show '+(o.good?'win':'nope');
-      if(o.good){
-        predFb.innerHTML='🤯 <b>That\'s exactly what an AI does.</b> It ranks every word by "how likely" and grabs a top one. You just ran the same math in your head — for free.';
-        win('You think like an AI! 🎉');
-      }else{
-        predFb.innerHTML='😂 A "<b>'+o.w+'</b>"? Bold. An AI <i>could</i> pick that too — just way less often. That\'s the whole trick: <b>likely words win, weird ones rarely do.</b> Try a tastier one!';
-      }
-      if(!predPicked){ predPicked=true; document.getElementById('predNext').disabled=false; }
-    });
-    wordBank.appendChild(b);
-  });
-  document.getElementById('predNext').addEventListener('click',function(){ complete(1); goTo(2); });
+  var cw=document.getElementById('chadQs'),ca=document.getElementById('chadAns'),cf=document.getElementById('chadFb'),cOpen=0;
+  chad.forEach(function(o){var el=document.createElement('div');el.className='choice';
+    el.innerHTML='<span class="em">❓</span><span>'+o.q+'</span>';
+    el.addEventListener('click',function(){if(el.classList.contains('locked'))return;el.classList.add('locked',o.bluff?'wrong':'correct');
+      el.querySelector('.em').textContent=o.bluff?'🚩':'✅';ca.style.display='block';ca.innerHTML=o.a;cOpen++;
+      if(o.bluff){toast('Caught a fabrication');confetti(14);}else win('Right — and you know why');
+      if(cOpen===1){cf.className='feedback show nope';
+        cf.innerHTML='💡 <b>The rule of thumb:</b> AI is strongest on <i>common, well-documented</i> things and weakest on <i>specific, obscure, or recent</i> ones — names, numbers, citations, breaking news. That\'s exactly where to verify.';}
+      if(cOpen===chad.length)document.getElementById('chadNext').disabled=false;
+    });cw.appendChild(el);});
+  document.getElementById('chadNext').addEventListener('click',function(){complete(3);goTo(4);});
 
-  /* ================= STEP 2 : SLIDER ================= */
-  var dataStages=[
-    {n:'3',text:'🤖 "A dog is… a chair? A loud potato? I have seen only 3 things. I am but a baby."',cls:''},
-    {n:'50',text:'🤖 "A dog has four legs. So does a table. So… is table a dog? Unsure."',cls:''},
-    {n:'5,000',text:'🤖 "A dog barks, has fur, wags tail. Getting warmer! Cats are… tricky though."',cls:''},
-    {n:'2 million',text:'🤖 "Dog: 98% sure. That\'s a golden retriever, mid-zoomies, very good boy."',cls:''},
-    {n:'a MOUNTAIN',text:'🐕 "Dog. Breed, mood, and it wants the ball. Told you — more examples, better guesses."',cls:'good'}
+  /* ---------- STEP 4: 3-bucket sort ---------- */
+  var items=[
+    {t:'🌡️ Thermostat',b:'rule'},{t:'🧾 Tax software',b:'rule'},
+    {t:'🧹 Spam filter',b:'ml'},{t:'🎬 Netflix picks',b:'ml'},{t:'🚗 Self-driving vision',b:'ml'},
+    {t:'💬 ChatGPT',b:'gen'},{t:'🎨 Image generator',b:'gen'},{t:'👨‍💻 AI code assistant',b:'gen'}
   ];
-  var slider=document.getElementById('dataSlider');
-  var dataNum=document.getElementById('dataNum');
-  var roboOut=document.getElementById('roboOut');
-  var sliderMaxHit=false;
-  function renderSlider(){
-    var s=dataStages[+slider.value];
-    dataNum.textContent=s.n;
-    roboOut.textContent=s.text;
-    roboOut.style.background = (s.cls==='good')
-      ? 'linear-gradient(180deg,#0fb968,#0a8f52)' : '#0c0d1e';
-    if(+slider.value===4 && !sliderMaxHit){
-      sliderMaxHit=true;
-      document.getElementById('sliderNext').disabled=false;
-      document.getElementById('sliderHint').innerHTML='<b class="hl">Boom.</b> That\'s "training." No magic — just a LOT of examples.';
-      win('Robot: fully awake! 🎉');
-    }
-  }
-  slider.addEventListener('input',renderSlider);
-  renderSlider();
-  document.getElementById('sliderNext').addEventListener('click',function(){ complete(2); goTo(3); });
-
-  /* ================= STEP 3 : CONFIDENTLY WRONG ================= */
-  var chadQs=[
-    {q:'"What\'s 2 + 2?"',bluff:false,
-      ans:'😎 Chad: "Four. Obviously." — <b>He\'s right!</b> Easy pattern, seen it a zillion times.'},
-    {q:'"How many R\'s in \'strawberry\'?"',bluff:true,
-      ans:'😅 Chad: "Two R\'s, easy." — <b>WRONG (it\'s three).</b> He didn\'t count — he <i>guessed</i> what sounded right. Confident. Incorrect. Classic hallucination.'},
-    {q:'"Cite a study proving cats fear cucumbers."',bluff:true,
-      ans:'🤥 Chad: "Sure — Whiskers et al., 2019, Journal of Cat Science." — <b>He made that up.</b> Real-sounding, totally invented. Always double-check names, dates & sources!'}
-  ];
-  var chadWrap=document.getElementById('chadQs');
-  var chadAns=document.getElementById('chadAns');
-  var chadFb=document.getElementById('chadFb');
-  var chadOpened=0;
-  chadQs.forEach(function(o){
-    var c=document.createElement('div');
-    c.className='choice';
-    c.innerHTML='<span class="em">❓</span><span>'+o.q+'</span>';
-    c.addEventListener('click',function(){
-      if(c.classList.contains('locked')) return;
-      c.classList.add('locked');
-      c.classList.add(o.bluff?'wrong':'correct');
-      c.querySelector('.em').textContent=o.bluff?'🤥':'✅';
-      chadAns.style.display='block';
-      chadAns.innerHTML=o.ans;
-      chadOpened++;
-      if(o.bluff){ toast('Caught a fib! 🕵️'); confetti(16); }
-      else { win('Right this time! 🎉'); }
-      if(chadOpened===1){
-        chadFb.className='feedback show nope';
-        chadFb.innerHTML='💡 <b>The lesson:</b> AI never says "I dunno." It always produces <i>something</i> — so <b>you</b> stay the fact-checker. That\'s your job as the boss.';
-      }
-      if(chadOpened===chadQs.length){
-        document.getElementById('chadNext').disabled=false;
-      }
-    });
-    chadWrap.appendChild(c);
-  });
-  document.getElementById('chadNext').addEventListener('click',function(){ complete(3); goTo(4); });
-
-  /* ================= STEP 4 : DRAG TO SORT ================= */
-  var dragData=[
-    {t:'🎬 Netflix picks',ai:true},
-    {t:'🧮 A calculator',ai:false},
-    {t:'🗣️ Voice assistant',ai:true},
-    {t:'⏰ A regular alarm clock',ai:false},
-    {t:'📧 Spam filter',ai:true},
-    {t:'💡 A light switch',ai:false}
-  ];
-  var dragPool=document.getElementById('dragPool');
-  var bYes=document.getElementById('bucketYes');
-  var bNo=document.getElementById('bucketNo');
-  var dragFb=document.getElementById('dragFb');
-  var placedCount=0;
-  var dragEls=[];
-
-  function makeDrag(o,idx){
-    var el=document.createElement('div');
-    el.className='dragitem';
-    el.textContent=o.t;
-    el.dataset.ai=o.ai?'yes':'no';
+  var pool=document.getElementById('dragPool'),dfb=document.getElementById('dragFb');
+  var bkts={rule:document.getElementById('bkRule'),ml:document.getElementById('bkMl'),gen:document.getElementById('bkGen')};
+  var placed=0,els=[];
+  function mk(o,i){var el=document.createElement('div');el.className='dragitem';el.textContent=o.t;el.dataset.b=o.b;el.dataset.i=i;
     el.setAttribute('draggable','true');
-    el.dataset.idx=idx;
-    // desktop drag
-    el.addEventListener('dragstart',function(e){
-      el.classList.add('dragging');
-      e.dataTransfer.setData('text/plain',idx);
-    });
-    el.addEventListener('dragend',function(){el.classList.remove('dragging')});
-    // touch drag
-    addTouchDrag(el);
-    dragEls.push(el);
-    dragPool.appendChild(el);
-  }
-  dragData.forEach(makeDrag);
-
-  function placeItem(el,bucketName){
-    if(el.classList.contains('placed')) return;
-    var correct = (el.dataset.ai===bucketName);
-    el.classList.add('placed');
-    el.setAttribute('draggable','false');
-    el.classList.add(correct?'right':'wrongp');
-    (bucketName==='yes'?bYes:bNo).appendChild(el);
-    placedCount++;
-    if(correct){ toast('Nailed it! ✅'); confetti(12); }
-    else{ toast('Hmm, not quite 🤔'); }
-    if(placedCount===dragData.length){
-      var allRight = dragEls.every(function(e){return e.classList.contains('right')});
-      dragFb.className='feedback show '+(allRight?'win':'nope');
-      dragFb.innerHTML = allRight
-        ? '🏆 <b>PERFECT SORT!</b> The rule: if it <i>learns & guesses from examples</i>, it\'s AI. If it just follows fixed rules (switch, calculator), it\'s plain ol\' computer.'
-        : '👀 Close! Anything that <b>learns patterns & predicts</b> = AI. A calculator, alarm & switch just do the <i>same fixed thing</i> forever — no learning, no AI. Tap Back to retry any!';
-      document.getElementById('dragNext').disabled=false;
-      if(allRight) confetti(80);
-    }
-  }
-
-  // bucket drop targets (desktop)
+    el.addEventListener('dragstart',function(e){el.classList.add('dragging');e.dataTransfer.setData('text/plain',i);});
+    el.addEventListener('dragend',function(){el.classList.remove('dragging');});
+    touch(el);els.push(el);pool.appendChild(el);}
+  items.forEach(mk);
+  function place(el,b){if(el.classList.contains('placed'))return;var ok=el.dataset.b===b;el.classList.add('placed');
+    el.setAttribute('draggable','false');el.classList.add(ok?'right':'wrongp');bkts[b].appendChild(el);placed++;
+    if(ok){toast('Correct ✔');confetti(10);}else toast('Not quite 🤔');
+    if(placed===items.length){var all=els.every(function(e){return e.classList.contains('right');});
+      dfb.className='feedback show '+(all?'win':'nope');
+      dfb.innerHTML=all?'🏆 <b>Perfect taxonomy.</b> The big unlock: the chatbots in the news are <i>generative AI</i> — one branch. Most AI quietly running your life is the <i>machine-learning</i> branch doing narrow jobs. And a ton of "smart" tech is just well-written rules.'
+        :'👀 Close. Rule = <i>a human coded every step</i>. ML = <i>learned patterns for one narrow task</i>. Generative = <i>creates brand-new content</i>. Tap Back to re-sort any you want.';
+      document.getElementById('dragNext').disabled=false;if(all)confetti(80);}}
   document.querySelectorAll('.bucket').forEach(function(bk){
-    bk.addEventListener('dragover',function(e){e.preventDefault();bk.classList.add('over')});
-    bk.addEventListener('dragleave',function(){bk.classList.remove('over')});
-    bk.addEventListener('drop',function(e){
-      e.preventDefault();bk.classList.remove('over');
-      var idx=e.dataTransfer.getData('text/plain');
-      var el=dragEls[+idx];
-      if(el) placeItem(el,bk.dataset.bucket);
-    });
+    bk.addEventListener('dragover',function(e){e.preventDefault();bk.classList.add('over');});
+    bk.addEventListener('dragleave',function(){bk.classList.remove('over');});
+    bk.addEventListener('drop',function(e){e.preventDefault();bk.classList.remove('over');var el=els[+e.dataTransfer.getData('text/plain')];if(el)place(el,bk.dataset.bucket);});
   });
+  function touch(el){var ghost=null;
+    el.addEventListener('touchstart',function(e){if(el.classList.contains('placed'))return;var t=e.touches[0];
+      ghost=el.cloneNode(true);ghost.style.position='fixed';ghost.style.zIndex='999';ghost.style.pointerEvents='none';ghost.style.opacity='.9';
+      ghost.style.left=(t.clientX-40)+'px';ghost.style.top=(t.clientY-18)+'px';document.body.appendChild(ghost);el.classList.add('dragging');},{passive:true});
+    el.addEventListener('touchmove',function(e){if(!ghost)return;var t=e.touches[0];ghost.style.left=(t.clientX-40)+'px';ghost.style.top=(t.clientY-18)+'px';
+      document.querySelectorAll('.bucket').forEach(function(bk){var r=bk.getBoundingClientRect();
+        bk.classList.toggle('over',t.clientX>=r.left&&t.clientX<=r.right&&t.clientY>=r.top&&t.clientY<=r.bottom);});e.preventDefault();},{passive:false});
+    el.addEventListener('touchend',function(e){el.classList.remove('dragging');if(ghost){ghost.remove();ghost=null;}var t=e.changedTouches[0];
+      document.querySelectorAll('.bucket').forEach(function(bk){bk.classList.remove('over');var r=bk.getBoundingClientRect();
+        if(t.clientX>=r.left&&t.clientX<=r.right&&t.clientY>=r.top&&t.clientY<=r.bottom)place(el,bk.dataset.bucket);});});}
+  document.getElementById('dragNext').addEventListener('click',function(){complete(4);goTo(5);});
 
-  // touch drag support
-  function addTouchDrag(el){
-    var ghost=null, startX, startY;
-    el.addEventListener('touchstart',function(e){
-      if(el.classList.contains('placed')) return;
-      var t=e.touches[0]; startX=t.clientX; startY=t.clientY;
-      ghost=el.cloneNode(true);
-      ghost.style.position='fixed';ghost.style.zIndex='999';ghost.style.pointerEvents='none';
-      ghost.style.opacity='.9';ghost.style.left=(t.clientX-40)+'px';ghost.style.top=(t.clientY-20)+'px';
-      document.body.appendChild(ghost);
-      el.classList.add('dragging');
-    },{passive:true});
-    el.addEventListener('touchmove',function(e){
-      if(!ghost) return;
-      var t=e.touches[0];
-      ghost.style.left=(t.clientX-40)+'px';ghost.style.top=(t.clientY-20)+'px';
-      document.querySelectorAll('.bucket').forEach(function(bk){
-        var r=bk.getBoundingClientRect();
-        var over = t.clientX>=r.left&&t.clientX<=r.right&&t.clientY>=r.top&&t.clientY<=r.bottom;
-        bk.classList.toggle('over',over);
-      });
-      e.preventDefault();
-    },{passive:false});
-    el.addEventListener('touchend',function(e){
-      el.classList.remove('dragging');
-      if(ghost){ghost.remove();ghost=null;}
-      var t=e.changedTouches[0];
-      var dropped=false;
-      document.querySelectorAll('.bucket').forEach(function(bk){
-        bk.classList.remove('over');
-        var r=bk.getBoundingClientRect();
-        if(t.clientX>=r.left&&t.clientX<=r.right&&t.clientY>=r.top&&t.clientY<=r.bottom){
-          placeItem(el,bk.dataset.bucket); dropped=true;
-        }
-      });
-    });
+  /* ---------- STEP 5: build-a-prompt ---------- */
+  var base='write something about our coffee shop';
+  var parts=[
+    {id:'role',t:'🎭 Give it a role',d:'"You\'re a warm local copywriter…"',w:18,frag:'You\'re a warm local copywriter.'},
+    {id:'ctx',t:'📍 Add context',d:'Who/what it\'s for, the real details',w:26,frag:'We\'re Fox & Fern, a tiny family café known for cardamom lattes and grumpy-but-lovable regulars.'},
+    {id:'task',t:'🎯 Be specific about the task',d:'Exact deliverable, not "something"',w:22,frag:'Write a 2-sentence Instagram caption announcing our new winter menu.'},
+    {id:'tone',t:'🎨 Set the tone',d:'How it should feel',w:16,frag:'Cozy, a little funny, no corporate buzzwords.'},
+    {id:'fmt',t:'📐 Define the format',d:'Length, structure, constraints',w:18,frag:'Under 30 words. End with one emoji.'}
+  ];
+  var pb=document.getElementById('pbuild'),live=document.getElementById('promptLive'),qf=document.getElementById('qFill'),
+      ql=document.getElementById('qLabel'),qp=document.getElementById('qPct'),pFb=document.getElementById('promptFb');
+  var on={};
+  function renderPrompt(){
+    var q=8,frags=[];
+    parts.forEach(function(p){if(on[p.id]){q+=p.w;frags.push(p.frag);}});
+    q=Math.min(100,q);
+    live.textContent=frags.length?frags.join(' '):base;
+    qf.style.width=q+'%';qp.textContent=q+'%';
+    var lbl,col;
+    if(q<25){lbl='Vague · generic mush';col='var(--bad)';}
+    else if(q<55){lbl='Getting usable';col='var(--accent2)';}
+    else if(q<85){lbl='Genuinely good';col='var(--good)';}
+    else {lbl='Chef\'s kiss — this is a brief';col='var(--good)';}
+    ql.textContent=lbl;ql.style.color=col;
+    if(q>=85){document.getElementById('promptNext').disabled=false;pFb.className='feedback show win';
+      pFb.innerHTML='🎯 <b>That\'s the entire skill of prompting.</b> Role + context + specific task + tone + format. You didn\'t write better English — you <i>removed the guesswork</i>. Same model, night-and-day output.';win('You can brief AI now!',true);}
   }
-  document.getElementById('dragNext').addEventListener('click',function(){ complete(4); goTo(5); });
+  parts.forEach(function(p){var el=document.createElement('div');el.className='ptok';
+    el.innerHTML='<div class="t">'+p.t+'<span class="chk">➕</span></div><div class="d">'+p.d+'</div>';
+    el.addEventListener('click',function(){on[p.id]=!on[p.id];el.classList.toggle('on',on[p.id]);
+      el.querySelector('.chk').textContent=on[p.id]?'✅':'➕';if(on[p.id])confetti(8);renderPrompt();});
+    pb.appendChild(el);});
+  renderPrompt();
+  document.getElementById('promptNext').addEventListener('click',function(){complete(5);goTo(6);});
 
-  /* ================= STEP 5 : PROMPT LAB ================= */
-  var promptModes={
-    vague:{
-      prompt:'you › write something about dogs',
-      ans:'🤖 "Dogs are animals. Many people have dogs. Dogs are good." … <i>(technically correct, deeply boring — you gave it nothing to work with.)</i>'
-    },
-    clear:{
-      prompt:'you › write a funny 2-line birthday message for my mom, who loves her grumpy old pug named Sir Reginald',
-      ans:'🤖 "Happy birthday, Mom! May your year be as full of naps, snacks, and dramatic sighs as Sir Reginald himself. 🐾🎂" … <b>Whoa. Same robot — you just aimed it.</b>'
-    }
-  };
-  var pVague=document.getElementById('pVague');
-  var pClear=document.getElementById('pClear');
-  var promptText=document.getElementById('promptText');
-  var promptAns=document.getElementById('promptAns');
-  var promptFb=document.getElementById('promptFb');
-  var seen={vague:false,clear:false};
-  function renderPrompt(mode){
-    pVague.classList.toggle('on',mode==='vague');
-    pClear.classList.toggle('on',mode==='clear');
-    promptText.textContent=promptModes[mode].prompt;
-    promptAns.innerHTML=promptModes[mode].ans;
-    promptAns.style.background = mode==='clear'
-      ? 'linear-gradient(180deg,#0fb968,#0a8f52)' : 'linear-gradient(180deg,#20224a,#181a3a)';
-    seen[mode]=true;
-    if(mode==='clear'){ win('Nice aim! 🎯'); }
-    if(seen.vague && seen.clear){
-      document.getElementById('promptNext').disabled=false;
-      promptFb.className='feedback show win';
-      promptFb.innerHTML='🎯 <b>That\'s prompting.</b> Give it <i>who, what, tone & details</i> and the answer levels up. You\'re not begging a genie — you\'re briefing an assistant.';
-      document.getElementById('promptHint').style.display='none';
-    }
-  }
-  pVague.addEventListener('click',function(){renderPrompt('vague')});
-  pClear.addEventListener('click',function(){renderPrompt('clear')});
-  renderPrompt('vague');
-  document.getElementById('promptNext').addEventListener('click',function(){ complete(5); goTo(6); });
+  /* ---------- STEP 6: match limitation -> workaround ---------- */
+  var lims=[
+    {lim:'⏳ Knowledge cutoff — it\'s frozen at its training date',right:'Give it current info, or use a tool with live search',
+      opts:['Give it current info, or use a tool with live search','Ask the same question louder','Assume it\'s always up to date']},
+    {lim:'🔢 Shaky at exact math & counting',right:'Have it use a calculator/code, and double-check',
+      opts:['Trust the number, it\'s a computer','Have it use a calculator/code, and double-check','Never use it for anything']},
+    {lim:'🧠 Limited memory (context window)',right:'Keep prompts focused; paste in the key info it needs',
+      opts:['Paste your whole life story every time','Keep prompts focused; paste in the key info it needs','Assume it remembers last week']},
+    {lim:'🎭 Confidently wrong on obscure facts',right:'Verify names, numbers & sources before trusting',
+      opts:['Verify names, numbers & sources before trusting','Believe it if it sounds confident','Only ask it opinions']}
+  ];
+  var mw=document.getElementById('matchWrap'),mFb=document.getElementById('matchFb'),solved=0;
+  lims.forEach(function(L){var row=document.createElement('div');row.className='matchrow';
+    var opts=L.opts.slice();
+    var html='<div class="lim">'+L.lim+'</div><div class="matchopts">';
+    opts.forEach(function(o){html+='<button class="mopt" data-o="'+o.replace(/"/g,'&quot;')+'">'+o+'</button>';});
+    html+='</div>';row.innerHTML=html;
+    row.querySelectorAll('.mopt').forEach(function(btn){btn.addEventListener('click',function(){
+      if(row.dataset.solved)return;
+      if(btn.dataset.o===L.right){btn.classList.add('right');row.dataset.solved='1';solved++;win('Smart move ✔');
+        row.querySelectorAll('.mopt').forEach(function(b){b.classList.add('locked');});
+        if(solved===lims.length){document.getElementById('matchNext').disabled=false;mFb.className='feedback show win';
+          mFb.innerHTML='🧭 <b>This is the pro mindset:</b> not "AI is magic" and not "AI is useless" — but "AI is a powerful tool with <i>known edges</i>." Work with the edges and it\'s incredible. Ignore them and it\'ll burn you.';confetti(70);}
+      }else{btn.classList.add('wrong');toast('Not the best fix');setTimeout(function(){btn.classList.remove('wrong');},700);}
+    });});
+    mw.appendChild(row);});
+  document.getElementById('matchNext').addEventListener('click',function(){complete(6);goTo(7);});
 
-  /* ================= STEP 6 : MYTH BUSTERS ================= */
+  /* ---------- STEP 7: myths ---------- */
   var myths=[
-    {tag:'Myth',myth:'"AI is a conscious brain that thinks like a person."',truth:'Nope. It\'s math predicting patterns. No feelings, no plans, no secret opinions about you.'},
-    {tag:'Myth',myth:'"AI is always right — it\'s a computer!"',truth:'It guesses, remember Chad? It can be confidently wrong. You\'re the fact-checker.'},
-    {tag:'Myth',myth:'"AI is going to take over / read my mind."',truth:'It can\'t want anything. It waits for a prompt and predicts text. You press the button.'},
-    {tag:'Myth',myth:'"I\'m too non-techy to use AI."',truth:'You literally just did — 7 games in. If you can text a friend, you can use AI.'}
+    {myth:'"It\'s conscious / it thinks and feels like a person."',truth:'It\'s math predicting text. No inner experience, no goals, no feelings — it\'s idle until you prompt it, then it computes probabilities. "Sounding human" is a trained style, not a mind.'},
+    {myth:'"It\'s basically a search engine that knows facts."',truth:'Opposite mechanism. Search retrieves real documents; AI generates plausible new text from patterns and can be wrong. Some tools now bolt search on — but the base model is a guesser, not a database.'},
+    {myth:'"It\'ll take everyone\'s job / take over."',truth:'It can\'t want or plan anything. Realistically it changes <i>tasks</i> — automating the tedious parts — while judgment, taste, and accountability stay human. Tool, not successor.'},
+    {myth:'"I\'m not technical enough to use it."',truth:'The interface is a conversation in plain language — you already have the only skill required. You just did seven lessons of it. Being clear about what you want <i>is</i> the expertise.'}
   ];
-  var flipGrid=document.getElementById('flipGrid');
-  var flipped=0;
-  myths.forEach(function(m){
-    var f=document.createElement('div');
-    f.className='flip';
-    f.innerHTML='<div class="flip-inner">'+
-      '<div class="flip-face flip-front"><div class="tag">'+m.tag+' 👻</div><div class="myth">'+m.myth+'</div><div class="hint">tap to bust it →</div></div>'+
-      '<div class="flip-face flip-back"><div class="tag">Truth ✅</div><div class="truth">'+m.truth+'</div></div>'+
-      '</div>';
-    f.addEventListener('click',function(){
-      if(f.classList.contains('flipped')) return;
-      f.classList.add('flipped');
-      flipped++;
-      toast('Myth busted! 💥'); confetti(14);
-      if(flipped===myths.length){
-        document.getElementById('flipNext').disabled=false;
-        document.getElementById('flipHint').innerHTML='<b class="hl">All myths: busted.</b> Nothing left to be scared of. Boss level time →';
-        win('Fearless. 🎉',true);
-      }
-    });
-    flipGrid.appendChild(f);
-  });
-  document.getElementById('flipNext').addEventListener('click',function(){ complete(6); goTo(7); });
+  var fg=document.getElementById('flipGrid'),flipped=0;
+  myths.forEach(function(m){var f=document.createElement('div');f.className='flip';
+    f.innerHTML='<div class="flip-inner"><div class="flip-face flip-front"><div class="tag">Myth 👻</div><div class="myth">'+m.myth+'</div><div class="hint">tap to bust →</div></div>'+
+      '<div class="flip-face flip-back"><div class="tag">What\'s true ✅</div><div class="truth">'+m.truth+'</div></div></div>';
+    f.addEventListener('click',function(){if(f.classList.contains('flipped'))return;f.classList.add('flipped');flipped++;
+      toast('Busted 💥');confetti(12);
+      if(flipped===myths.length){document.getElementById('flipNext').disabled=false;
+        document.getElementById('flipHint').innerHTML='<b class="hl">All four, gone.</b> You\'re not reacting to headlines anymore — you understand the machine. Boss level.';win('Fear: deleted.',true);}
+    });fg.appendChild(f);});
+  document.getElementById('flipNext').addEventListener('click',function(){complete(7);goTo(8);});
 
-  /* ================= STEP 7 : BOSS LEVEL ================= */
-  var bossQuestions=[
-    {q:'At its core, what is AI mostly doing?',
-     opts:[
-       {t:'Thinking & feeling like a human',ok:false},
-       {t:'Guessing the most likely next thing from patterns',ok:true},
-       {t:'Looking up exact answers in a big filing cabinet',ok:false}
-     ],
-     why:'It\'s a pattern-guesser, not a brain and not a search of "true facts." It predicts.'},
-    {q:'AI gives you a confident answer with a real-sounding source. You should…',
-     opts:[
-       {t:'Trust it — computers don\'t lie',ok:false},
-       {t:'Double-check it — it might be confidently wrong',ok:true},
-       {t:'Assume it\'s always making things up',ok:false}
-     ],
-     why:'Remember Chad. It can hallucinate — great starting point, you verify the facts.'},
-    {q:'Which one is NOT really AI?',
-     opts:[
-       {t:'A basic calculator',ok:true},
-       {t:'Your photo app finding faces',ok:false},
-       {t:'Netflix recommendations',ok:false}
-     ],
-     why:'A calculator follows fixed rules — no learning from examples, so it\'s not AI.'},
-    {q:'Your AI answer is boring & generic. Best fix?',
-     opts:[
-       {t:'Give up, AI just stinks',ok:false},
-       {t:'Ask again but louder',ok:false},
-       {t:'Add details: who it\'s for, the tone, and what you want',ok:true}
-     ],
-     why:'Clear ask = better answer. You steer it. You\'re the boss. 💪'}
+  /* ---------- STEP 8: boss ---------- */
+  var Q=[
+    {q:'An AI writes you a beautifully worded paragraph citing a 2021 study by "Dr. Elena Marsh." What\'s your move?',
+     opts:[{t:'Trust it — it\'s specific and well-written',ok:false},{t:'Search for the study before using it; it may be invented',ok:true},{t:'Assume all AI output is fake',ok:false}],
+     why:'Specific + fluent is exactly the profile of a hallucination. Names/dates/citations are the #1 thing to verify.'},
+    {q:'Why does the same AI give a "safe, boring" answer one day and a "wild, creative" one another?',
+     opts:[{t:'It\'s in a different mood',ok:false},{t:'A randomness setting (temperature) controls how often it picks lower-probability words',ok:true},{t:'It got retrained overnight',ok:false}],
+     why:'Temperature is the creativity dial. Low = predictable, high = surprising. Nothing about moods or memory.'},
+    {q:'Your AI-written summary is generic and flat. Best fix?',
+     opts:[{t:'Give up — AI can\'t do nuance',ok:false},{t:'Add a role, real context, tone, and format — then iterate',ok:true},{t:'Ask it to "try harder"',ok:false}],
+     why:'Generic output almost always means a thin prompt. Brief it properly and steer across a couple of turns.'},
+    {q:'Which is NOT generative AI?',
+     opts:[{t:'A spam filter sorting your inbox',ok:true},{t:'A chatbot drafting an email',ok:false},{t:'A tool making images from text',ok:false}],
+     why:'A spam filter is machine learning doing a narrow classify-this job — it doesn\'t create new content. Still AI, different branch.'},
+    {q:'A friend says "AI knows everything on the internet, live." The accurate correction?',
+     opts:[{t:'"Right, it\'s always current"',ok:false},{t:'"It learned patterns up to a cutoff date and predicts text — it doesn\'t browse live unless given a tool"',ok:true},{t:'"It only knows what its company tells it daily"',ok:false}],
+     why:'Base models are frozen at a training cutoff and generate from patterns. Live info requires a connected search tool.'},
+    {q:'The single best one-sentence definition of a language model?',
+     opts:[{t:'A database of facts you query',ok:false},{t:'A very sophisticated next-token predictor trained on huge amounts of text',ok:true},{t:'A conscious program that reasons like a human',ok:false}],
+     why:'That\'s the whole thing. Everything else — the brilliance and the flaws — falls out of "predict the next token."'}
   ];
-  var bIdx=0, bScore=0;
-  var bossStart=document.getElementById('bossStart');
-  var bossGame=document.getElementById('bossGame');
-  var bossEnd=document.getElementById('bossEnd');
-  var bossQ=document.getElementById('bossQ');
-  var bossChoices=document.getElementById('bossChoices');
-  var bossFb=document.getElementById('bossFb');
-  var bossCount=document.getElementById('bossCount');
-  var bossHearts=document.getElementById('bossHearts');
-  var bossBar=document.getElementById('bossBar');
-
-  function startBoss(){
-    bIdx=0;bScore=0;
-    bossStart.style.display='none';
-    bossEnd.style.display='none';
-    bossGame.style.display='block';
-    renderBoss();
-  }
-  function renderBoss(){
-    var Q=bossQuestions[bIdx];
-    bossCount.textContent='Question '+(bIdx+1)+' / '+bossQuestions.length;
-    bossBar.style.width=((bIdx)/bossQuestions.length*100)+'%';
-    bossHearts.textContent = '💛'.repeat(bScore) + '🖤'.repeat(bIdx-bScore) + '⬜'.repeat(bossQuestions.length-bIdx);
-    bossQ.textContent=Q.q;
-    bossFb.className='feedback';
-    bossChoices.innerHTML='';
-    Q.opts.forEach(function(o){
-      var c=document.createElement('div');
-      c.className='choice';
+  var bIdx=0,bScore=0;
+  var bStart=document.getElementById('bossStart'),bGame=document.getElementById('bossGame'),bEnd=document.getElementById('bossEnd');
+  var bQ=document.getElementById('bossQ'),bCh=document.getElementById('bossChoices'),bFb=document.getElementById('bossFb'),
+      bCount=document.getElementById('bossCount'),bHearts=document.getElementById('bossHearts'),bBar=document.getElementById('bossBar');
+  function startBoss(){bIdx=0;bScore=0;bStart.style.display='none';bEnd.style.display='none';bGame.style.display='block';renderBoss();}
+  function renderBoss(){var q=Q[bIdx];bCount.textContent='Question '+(bIdx+1)+' / '+Q.length;bBar.style.width=(bIdx/Q.length*100)+'%';
+    bHearts.textContent='●'.repeat(bScore)+'○'.repeat(bIdx-bScore)+'·'.repeat(Q.length-bIdx);
+    bQ.textContent=q.q;bFb.className='feedback';bCh.innerHTML='';
+    q.opts.forEach(function(o){var c=document.createElement('div');c.className='choice';
       c.innerHTML='<span class="em">'+(o.ok?'⭐':'▫️')+'</span><span>'+o.t+'</span>';
-      c.addEventListener('click',function(){ answerBoss(c,o,Q); });
-      bossChoices.appendChild(c);
-    });
-  }
-  function answerBoss(el,o,Q){
-    Array.prototype.forEach.call(bossChoices.children,function(c){c.classList.add('locked')});
-    if(o.ok){
-      el.classList.add('correct');
-      el.querySelector('.em').textContent='✅';
-      bScore++;
-      bossFb.className='feedback show win';
-      bossFb.innerHTML='🎉 <b>YES!</b> '+Q.why;
-      win('Correct! 🎉');
-    }else{
-      el.classList.add('wrong');
-      // highlight the right one gently
-      Array.prototype.forEach.call(bossChoices.children,function(c){
-        if(c.querySelector('.em').textContent==='⭐'){c.classList.add('correct');c.querySelector('.em').textContent='✅';}
-      });
-      bossFb.className='feedback show nope';
-      bossFb.innerHTML='😅 Not quite — but now you\'ve <b>got</b> it: '+Q.why;
-      toast('No shame — keep going 💛');
-    }
-    var nb=document.createElement('button');
-    nb.className='btn small';
-    nb.style.marginTop='14px';
-    nb.textContent = (bIdx===bossQuestions.length-1)?'See my score →':'Next question →';
-    nb.addEventListener('click',function(){
-      bIdx++;
-      if(bIdx>=bossQuestions.length){ endBoss(); }
-      else renderBoss();
-    });
-    bossFb.appendChild(document.createElement('br'));
-    bossFb.appendChild(nb);
-  }
-  function endBoss(){
-    bossGame.style.display='none';
-    bossEnd.style.display='block';
-    document.getElementById('bossScore').textContent=bScore;
+      c.addEventListener('click',function(){answerBoss(c,o,q);});bCh.appendChild(c);});}
+  function answerBoss(el,o,q){[].forEach.call(bCh.children,function(c){c.classList.add('locked');});
+    if(o.ok){el.classList.add('correct');el.querySelector('.em').textContent='✅';bScore++;bFb.className='feedback show win';
+      bFb.innerHTML='🎉 <b>Correct.</b> '+q.why;win('Yes!');}
+    else{el.classList.add('wrong');[].forEach.call(bCh.children,function(c){if(c.querySelector('.em').textContent==='⭐'){c.classList.add('correct');c.querySelector('.em').textContent='✅';}});
+      bFb.className='feedback show nope';bFb.innerHTML='Not quite — here\'s the reasoning: '+q.why;toast('No penalty — keep going');}
+    var nb=document.createElement('button');nb.className='btn small';nb.style.marginTop='14px';
+    nb.textContent=(bIdx===Q.length-1)?'See my result →':'Next →';
+    nb.addEventListener('click',function(){bIdx++;if(bIdx>=Q.length)endBoss();else renderBoss();});
+    bFb.appendChild(document.createElement('br'));bFb.appendChild(nb);}
+  function endBoss(){bGame.style.display='none';bEnd.style.display='block';document.getElementById('bossScore').textContent=bScore;
     var title,sub,recap;
-    if(bScore===4){ title='AI Whisperer 🏆'; sub='4/4 — flawless. Go explain it to someone today.'; recap='You didn\'t just survive AI — you <b>get</b> it. Pattern-guesser, learns from examples, sometimes wrong, everywhere, steered by how you ask, and YOU\'re the boss.'; confetti(140); }
-    else if(bScore===3){ title='You Get AI Now 🥳'; sub='3/4 — that\'s a solid understanding. Nice.'; recap='You\'ve got the big picture: AI guesses from patterns, and you steer it. Skim back over any step that felt fuzzy — you\'re basically there.'; confetti(90); }
-    else if(bScore===2){ title='Officially Un-Scared 😎'; sub='2/4 — the fear is gone, the details will stick fast.'; recap='The scary myth is dead and that\'s the whole win. Replay the gauntlet once and watch your score jump.'; confetti(50); }
-    else { title='Brave Beginner 🌱'; sub='You showed up and played — that\'s the hard part.'; recap='Every expert started here. Tap "Replay gauntlet" — with what you just learned, you\'ll crush it.'; confetti(30); }
-    document.getElementById('bossBadgeTitle').textContent=title;
-    document.getElementById('bossBadgeSub').textContent=sub;
-    document.getElementById('bossRecap').innerHTML=recap;
-    complete(7);
-  }
+    if(bScore===6){title='AI Literate 🏆';sub='6/6 — flawless. You genuinely get it.';recap='You can now explain, from the mechanism up, what AI is and isn\'t. That\'s more than most people who use it daily.';confetti(150);}
+    else if(bScore>=4){title='You Get AI 🥳';sub=bScore+'/6 — solid, real understanding.';recap='The core model is locked in: it predicts, it learned from data, it can be confidently wrong, and you steer it. Skim any step that felt shaky.';confetti(90);}
+    else if(bScore>=2){title='Officially Un-Spooked 😎';sub=bScore+'/6 — the fear is gone; details will stick fast.';recap='You\'ve got the big picture and that\'s the real win. One replay and the specifics will click.';confetti(50);}
+    else{title='Brave Starter 🌱';sub='You engaged with all of it — that\'s the hard part.';recap='Everyone starts here. Replay the gauntlet with what you just learned and watch the score jump.';confetti(30);}
+    document.getElementById('bossBadgeTitle').textContent=title;document.getElementById('bossBadgeSub').textContent=sub;
+    document.getElementById('bossRecap').innerHTML=recap;complete(8);}
   document.getElementById('bossGo').addEventListener('click',startBoss);
   document.getElementById('bossReplay').addEventListener('click',startBoss);
-
   document.getElementById('shareBtn').addEventListener('click',function(){
-    var txt='🏆 I just learned what AI actually is — it\'s a really good pattern-guesser, not a scary magic brain. I scored '+bScore+'/4 on the "I Get AI Now" gauntlet. Ask me anything! 🤖✨';
-    var fb=document.getElementById('shareFb');
-    fb.style.display='block';
-    fb.className='feedback show win';
-    function done(){ fb.innerHTML='✅ <b>Copied!</b> Paste it in a group chat and go teach your cool aunt. You earned it. 🫶'; win('Badge copied! 🎉',true); }
-    if(navigator.clipboard && navigator.clipboard.writeText){
-      navigator.clipboard.writeText(txt).then(done,function(){ fb.innerHTML='📋 Copy this: <br><br>'+txt; });
-    }else{ fb.innerHTML='📋 Copy this:<br><br>'+txt; win('You get AI now! 🎉',true); }
+    var txt='I finally understand how AI actually works: it\'s a next-token predictor trained on a mountain of text — it doesn\'t "know" facts, it predicts likely text, which is why it\'s brilliant AND sometimes confidently wrong. Scored '+bScore+'/6. Ask me anything. 🧠';
+    var fb=document.getElementById('shareFb');fb.style.display='block';fb.className='feedback show win';
+    function done(){fb.innerHTML='✅ <b>Copied.</b> Paste it anywhere and go be the person who explains AI clearly.';win('Copied!',true);}
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(done,function(){fb.innerHTML='📋 Copy this:<br><br>'+txt;});}
+    else{fb.innerHTML='📋 Copy this:<br><br>'+txt;win('You get AI now!',true);}
   });
 
-  updateChrome();
+  /* ---------- glossary ---------- */
+  var terms=[
+    {t:'Token',d:'A chunk of text (~¾ of a word) — the unit AI actually reads and writes in. Usage is measured in tokens.'},
+    {t:'Weights / parameters',d:'The billions of internal "dials" tuned during training. They hold everything the model learned.'},
+    {t:'Training',d:'Repeatedly guessing the next token, measuring the error, and nudging the weights — trillions of times.'},
+    {t:'Temperature',d:'The randomness dial. Low = safe & predictable; high = creative & risky.'},
+    {t:'Hallucination',d:'A confident, fluent answer that\'s false — the model generating plausible text where it has no real knowledge.'},
+    {t:'Context window',d:'How much text (in tokens) the model can "hold" at once. Beyond it, earlier stuff gets forgotten.'},
+    {t:'Prompt',d:'Your instructions to the AI. A good one = role + context + specific task + tone + format.'},
+    {t:'LLM',d:'Large Language Model — the next-token predictor behind chatbots like this lesson keeps describing.'},
+    {t:'Generative AI',d:'AI that creates new content (text, images, code), as opposed to just classifying or predicting a number.'},
+    {t:'Machine learning',d:'The broad approach where software learns patterns from data instead of being explicitly programmed.'}
+  ];
+  var tw=document.getElementById('terms'),tout=document.getElementById('termOut');
+  terms.forEach(function(o){var el=document.createElement('div');el.className='term';el.textContent=o.t;
+    el.addEventListener('click',function(){tout.innerHTML='<b class="hl">'+o.t+'</b> — '+o.d;[].forEach.call(tw.children,function(c){c.style.borderColor='';});el.style.borderColor='var(--teal)';});
+    tw.appendChild(el);});
+
+  chrome();
 })();
 </script>
 </body>
