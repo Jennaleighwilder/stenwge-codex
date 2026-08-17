@@ -85,6 +85,31 @@
   .why{border-left:4px solid var(--good);background:rgba(75,224,139,.09);border-radius:0 12px 12px 0;padding:12px 16px;margin-top:14px;font-size:15px;display:none}
   .why.show{display:block;animation:pop .35s}
 
+  /* go deeper */
+  .deeper{margin-top:16px;border:1px solid var(--edge);border-radius:13px;overflow:hidden;background:linear-gradient(180deg,rgba(160,107,255,.1),rgba(51,224,200,.04))}
+  .deeper>summary{cursor:pointer;list-style:none;padding:13px 16px;font-weight:800;font-size:15px;display:flex;align-items:center;gap:10px;color:var(--ink)}
+  .deeper>summary::-webkit-details-marker{display:none}
+  .deeper>summary .chev{margin-left:auto;transition:.25s;color:var(--purple)}
+  .deeper[open]>summary .chev{transform:rotate(90deg)}
+  .deeper .body{padding:0 16px 15px;font-size:14.5px;color:#e7dcff}
+  .deeper .body p{margin:8px 0}
+  .deeper .body b{color:#fff}
+  .deeper .body .k{color:var(--gold);font-weight:800}
+
+  /* quick check */
+  .check{margin-top:16px;border:2px dashed var(--teal);border-radius:14px;padding:15px 16px;background:rgba(51,224,200,.06)}
+  .check .qh{display:inline-block;background:var(--teal);color:#04241f;font-weight:800;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;padding:3px 10px;border-radius:7px;margin-bottom:8px}
+  .check .q{font-weight:800;font-size:16px;margin-bottom:10px}
+  .check .opts{display:grid;gap:8px}
+  .check .opt{text-align:left;background:var(--panel2);border:2px solid var(--edge);border-radius:11px;padding:11px 14px;font-size:14.5px;font-weight:700;color:var(--ink);cursor:pointer;transition:.15s}
+  .check .opt:hover{border-color:var(--teal);transform:translateY(-1px)}
+  .check .opt.correct{border-color:var(--good);background:rgba(75,224,139,.15)}
+  .check .opt.wrong{border-color:var(--bad);background:rgba(255,122,122,.12)}
+  .check .opt.locked{pointer-events:none}
+  .check .expert{margin-top:12px;border-left:4px solid var(--purple);background:rgba(160,107,255,.1);border-radius:0 10px 10px 0;padding:11px 14px;font-size:14px;display:none}
+  .check .expert.show{display:block;animation:pop .35s}
+  .check .expert b{color:#fff}
+
   /* buttons */
   .btn{appearance:none;border:none;cursor:pointer;font-family:var(--sans);font-weight:800;font-size:17px;padding:14px 24px;
     border-radius:14px;color:#2a1a05;background:linear-gradient(180deg,#ffd66b,var(--gold));
@@ -298,7 +323,8 @@
       <h2>AI guesses <span class="gold">the next word.</span> That's the whole trick.</h2>
       <div class="idea">
         <span class="tag">🎯 The idea</span>
-        <p><b>When AI writes, it's predicting the most likely next word</b> — over and over — based on all the text it read. Like your phone's autocomplete, but supercharged. It doesn't look anything up. It just guesses what usually comes next.</p>
+        <p><b>When AI writes, it predicts the most likely next word</b> — then does it again, and again, building the answer one word at a time. It's your phone's autocomplete, but trained on basically all the text ever written.</p>
+        <p>Here's the key part: it doesn't pick <i>one</i> right answer. For every step it calculates a <b>probability for every possible next word</b> and picks from the top. "Fell asleep" scores high; "fell pineapple" scores almost zero. That ranking — learned from how often words actually follow each other — is the entire engine.</p>
       </div>
       <span class="yourturn">▶ Your turn: think like the AI</span>
       <p class="sub">Finish the sentence. Notice your brain ranks a few options — that's <i>exactly</i> what AI does. Tap the word you'd bet on:</p>
@@ -314,6 +340,18 @@
       </div>
 
       <div class="why" id="predWhy"></div>
+
+      <details class="deeper">
+        <summary>🔍 Go deeper: it doesn't even read words <span class="chev">▸</span></summary>
+        <div class="body">
+          <p>AI actually breaks text into <span class="k">tokens</span> — chunks about ¾ of a word. "cat" is one token; "unbelievable" might be three (<code>un·believ·able</code>). It predicts the next <i>token</i>, not the next word.</p>
+          <p>This explains a famous quirk: ask "how many R's in <b>strawberry</b>?" and it often flubs it — it never sees individual letters, only chunks. <b>It's a language machine, not a spelling or math machine.</b></p>
+          <p>Tokens are also how AI is measured and billed, and why a super-long document gets partly "forgotten" — there's a limit to how many tokens it can hold at once (its <span class="k">context window</span>, aka short-term memory).</p>
+        </div>
+      </details>
+
+      <div class="check" data-check="1"></div>
+
       <div class="navbtns"><button class="btn ghost" data-back>← Back</button><button class="btn" id="predNext" disabled>Level 2 →</button></div>
     </div>
   </section>
@@ -325,7 +363,8 @@
       <h2>Nobody typed in the answers.<br>It <span class="gold">learned from examples.</span></h2>
       <div class="idea">
         <span class="tag">🎯 The idea</span>
-        <p><b>AI learned by reading a mountain of text and practicing.</b> This is called <b>training</b>: it guesses the next word, checks how wrong it was, adjusts a little, and repeats — billions of times. The more it practices, the better it guesses. No rules were written by hand; the patterns just stuck.</p>
+        <p><b>AI learned by reading a mountain of text and practicing — nobody typed in the answers.</b> Inside it are billions of tiny numbers called <b>weights</b> (think: little dials). Training tunes them.</p>
+        <p>The loop is dead simple, run at insane scale: show it real text with the last word hidden → let it guess → measure how wrong it was → nudge the dials to be slightly less wrong → repeat <b>trillions</b> of times. Nobody wrote rules for grammar or facts — the patterns <i>emerged</i> from all that nudging.</p>
       </div>
       <span class="yourturn">▶ Your turn: train the AI yourself</span>
       <p class="sub">Each square is a tiny setting inside the AI. Every round it adjusts and gets less wrong. Keep clicking until it learns.</p>
@@ -343,6 +382,17 @@
         <div class="stat"><b>0</b><span>facts typed in by hand</span></div>
       </div>
       <div class="why" id="trainWhy"></div>
+
+      <details class="deeper">
+        <summary>🔍 Go deeper: two more things happen after the reading <span class="chev">▸</span></summary>
+        <div class="body">
+          <p><b>1. It stores patterns, not copies.</b> It doesn't keep the text — it keeps the <i>patterns</i> as those billions of dial-settings. Like a chef who tasted a million dishes and absorbed the technique, not a cookbook you look recipes up in. That's why it can write a sentence no human ever wrote — and why it can blur a fact it only half-holds.</p>
+          <p><b>2. Then humans coach it.</b> Raw training makes it fluent but wild. So people rate thousands of answers — "this one's helpful, that one's rude" — and it's tuned toward the good ones. That polish step is called <span class="k">fine-tuning / RLHF</span>, and it's why a chatbot feels helpful and polite instead of like a random internet comment.</p>
+        </div>
+      </details>
+
+      <div class="check" data-check="2"></div>
+
       <div class="navbtns"><button class="btn ghost" data-back>← Back</button><button class="btn" id="trainNext" disabled>Level 3 →</button></div>
     </div>
   </section>
@@ -354,7 +404,8 @@
       <h2>AI can be <span class="pinktx">confidently wrong.</span></h2>
       <div class="idea">
         <span class="tag">🎯 The idea</span>
-        <p><b>AI is built to sound right, not to BE right.</b> It has no fact-checker inside and never says "I don't know." So when it doesn't know, it makes something up that <i>sounds</i> perfect. This is called a <b>hallucination</b> — a confident answer that's just… false. She read the whole internet and will still make up a fake source with a straight face.</p>
+        <p><b>AI is built to sound right, not to BE right.</b> Remember Level 1 — it's always just predicting believable-sounding text. It has no fact-checker inside, no database of truth, and no honest way to say "I don't know."</p>
+        <p>So when it doesn't know, it doesn't stop — it generates the most plausible-looking answer anyway. That's a <b>hallucination</b>: a confident, fluent answer that's simply false. It read the whole internet and will still invent a fake court case or a fake study, with perfect grammar and zero hesitation.</p>
       </div>
       <span class="yourturn">▶ Your turn: spot the lie</span>
       <p class="sub">For each answer, decide: is the AI <span class="tealtx">telling the truth</span> or <span class="pinktx">making it up</span>? Tap to reveal — and see why.</p>
@@ -362,6 +413,17 @@
       <div class="robo" id="chadAns" style="display:none;font-weight:600"></div>
       <div class="fb" id="chadFb"></div>
       <div class="why" id="chadWhy"></div>
+
+      <details class="deeper">
+        <summary>🔍 Go deeper: why "confident" tells you nothing <span class="chev">▸</span></summary>
+        <div class="body">
+          <p>The <i>certainty</i> in an answer is generated the exact same way as the content — by predicting fluent text. "I'm 100% sure, it's X" costs the model nothing more than "it's X." <b>Confidence is a writing style it learned, not evidence it's right.</b></p>
+          <p><b>How the pros reduce it:</b> give the AI real <span class="k">tools</span> — a live search, a calculator, a trusted database — so it can look things up instead of guessing (you'll hear this called <span class="k">RAG</span> — retrieval). When accuracy matters, prefer AI that <b>cites sources you can click</b>, and always verify anything with a name, number, date, or quote.</p>
+        </div>
+      </details>
+
+      <div class="check" data-check="3"></div>
+
       <div class="navbtns"><button class="btn ghost" data-back>← Back</button><button class="btn" id="chadNext" disabled>Level 4 →</button></div>
     </div>
   </section>
@@ -373,7 +435,8 @@
       <h2>Not everything smart<br>is <span class="gold">actually AI.</span></h2>
       <div class="idea">
         <span class="tag">🎯 The idea</span>
-        <p><b>The test for "is it AI?": did it LEARN from examples, or is it just following rules a human wrote?</b> A calculator follows fixed rules — not AI. A spam filter <i>learned</i> what junk looks like — that's AI. Sort each one into the right bucket.</p>
+        <p><b>The test for "is it AI?": did it LEARN from examples, or is it just following rules a human wrote?</b> A calculator follows fixed rules — not AI. A spam filter <i>learned</i> what junk looks like from millions of emails — that's AI.</p>
+        <p>And "AI" is a big umbrella. The chatbots everyone's talking about are <b>generative AI</b> (they create new text/images). But most AI in your life is quieter <b>machine learning</b> doing one narrow job — filtering spam, picking your next show, reading a check. Same family, different jobs.</p>
       </div>
       <span class="yourturn">▶ Your turn: sort them</span>
       <div class="pool" id="dragPool"></div>
@@ -383,6 +446,19 @@
       </div>
       <div class="fb" id="dragFb"></div>
       <div class="why" id="dragWhy"></div>
+
+      <details class="deeper">
+        <summary>🔍 Go deeper: the words people throw around <span class="chev">▸</span></summary>
+        <div class="body">
+          <p><span class="k">Machine learning</span> — the big idea: software learns patterns from data instead of being handed rules. Spam filters, recommendations, fraud detection.</p>
+          <p><span class="k">Generative AI</span> — a newer branch that <i>creates</i>: text, images, code, voice. ChatGPT, image generators.</p>
+          <p><span class="k">LLM (Large Language Model)</span> — the specific kind of generative AI behind chatbots. It's the giant next-word predictor from Level 1. "GPT" is one family of LLMs.</p>
+          <p><b>Bottom line:</b> all chatbots are generative AI, all generative AI is machine learning, all machine learning is AI — but not the reverse. A calculator is none of them.</p>
+        </div>
+      </details>
+
+      <div class="check" data-check="4"></div>
+
       <div class="navbtns"><button class="btn ghost" data-back>← Back</button><button class="btn" id="dragNext" disabled>Level 5 →</button></div>
     </div>
   </section>
@@ -394,7 +470,8 @@
       <h2>You get better answers<br>by <span class="gold">asking better.</span></h2>
       <div class="idea">
         <span class="tag">🎯 The idea</span>
-        <p><b>What you type is called a "prompt." A vague prompt gets vague junk. A clear one gets gold.</b> The recipe: tell it <b>who to be</b>, give it <b>context</b>, say <b>exactly what you want</b>, set the <b>tone</b>, and name the <b>format</b>. Same AI — you just aim it.</p>
+        <p><b>What you type is called a "prompt." A vague prompt gets vague junk; a clear one gets gold.</b> Think of it as briefing a sharp new assistant who's never met you — the more you spell out, the better the work.</p>
+        <p>The recipe: tell it <b>who to be</b> (a role), give it <b>context</b> (the real details), say <b>exactly what you want</b>, set the <b>tone</b>, and name the <b>format</b> (length, shape). You're not writing fancier English — you're removing the guesswork so it can't wander.</p>
       </div>
       <span class="yourturn">▶ Your turn: build a great prompt</span>
       <p class="sub">Start with a lazy ask. Add each ingredient and watch the quality shoot up.</p>
@@ -403,6 +480,18 @@
       <div class="pbuild" id="pbuild"></div>
       <div class="fb" id="promptFb"></div>
       <div class="why" id="promptWhy"></div>
+
+      <details class="deeper">
+        <summary>🔍 Go deeper: two pro moves that feel like cheating <span class="chev">▸</span></summary>
+        <div class="body">
+          <p><b>Show, don't tell (<span class="k">few-shot</span>).</b> Instead of describing the style you want, paste 1–3 examples: "Write it like these →". The AI is a pattern-matcher (Level 1), so handing it the pattern beats describing it every time.</p>
+          <p><b>Ask it to think out loud (<span class="k">chain-of-thought</span>).</b> For anything with steps or logic, add "think it through step by step." It reasons more carefully when it writes the steps out — because each word it generates guides the next.</p>
+          <p><b>And iterate.</b> Your first prompt is a draft. "Shorter. Warmer. Cut the last line." Steering across a few turns is where the real quality comes from — treat it like a conversation, not a vending machine.</p>
+        </div>
+      </details>
+
+      <div class="check" data-check="5"></div>
+
       <div class="navbtns"><button class="btn ghost" data-back>← Back</button><button class="btn" id="promptNext" disabled>Level 6 →</button></div>
     </div>
   </section>
@@ -414,12 +503,24 @@
       <h2>Treat AI like a <span class="gold">brilliant, overconfident intern.</span></h2>
       <div class="idea">
         <span class="tag">🎯 The idea</span>
-        <p><b>AI is amazing AND has real limits.</b> Knowing them is the difference between getting value and getting burned. Match each weak spot to the smart move that handles it.</p>
+        <p><b>AI is amazing AND has real limits.</b> Knowing them is the whole difference between getting value and getting burned. The big four: it's <b>frozen</b> at its training date (no live news unless given a tool), it's <b>shaky at exact math/counting</b>, it has <b>limited memory</b> (long chats drift), and it's <b>confidently wrong</b> on obscure stuff.</p>
+        <p>None of these make it useless — they just tell you <i>when</i> to double-check and <i>where</i> to keep a human in charge. Match each weak spot to the smart move.</p>
       </div>
       <span class="yourturn">▶ Your turn: match the fix</span>
       <div class="match" id="matchWrap"></div>
       <div class="fb" id="matchFb"></div>
       <div class="why" id="matchWhy"></div>
+
+      <details class="deeper">
+        <summary>🔍 Go deeper: the limit nobody warns you about — bias <span class="chev">▸</span></summary>
+        <div class="body">
+          <p>AI learned from human writing, so it absorbed human <span class="k">bias</span> too — stereotypes, blind spots, whatever was over- or under-represented online. It's not "opinionated"; it's <b>reflecting its training data</b>.</p>
+          <p>That's why high-stakes decisions — hiring, lending, medical, legal — need a <b>human in the loop</b>, not an AI verdict. Use it to draft, summarize, and brainstorm; keep the judgment, the accountability, and the final call human.</p>
+        </div>
+      </details>
+
+      <div class="check" data-check="6"></div>
+
       <div class="navbtns"><button class="btn ghost" data-back>← Back</button><button class="btn" id="matchNext" disabled>Level 7 →</button></div>
     </div>
   </section>
@@ -473,6 +574,17 @@
         </div>
         <p class="fb" id="shareFb" style="display:none"></p>
       </div>
+    </div>
+
+    <div class="panel">
+      <h3>🎓 What you now actually know</h3>
+      <p class="tiny">The six things you can explain to anyone after this. This is the real takeaway — screenshot it.</p>
+      <div class="idea" style="margin-top:12px"><p><b>1. AI predicts the next word.</b> It builds answers one word at a time by guessing what's most likely — no thinking, no looking up. That one fact explains everything else.</p></div>
+      <div class="idea" style="margin-top:10px"><p><b>2. It learned from examples, not rules.</b> Billions of tiny dials tuned by reading a mountain of text, then coached by humans to be helpful. Nobody typed in the facts.</p></div>
+      <div class="idea" style="margin-top:10px"><p><b>3. It can be confidently wrong.</b> It's built to sound right, not be right. "Hallucinations" are believable made-up answers. You verify names, numbers, and sources.</p></div>
+      <div class="idea" style="margin-top:10px"><p><b>4. "AI" is a family.</b> Chatbots are generative AI; spam filters and recs are quieter machine learning; calculators and alarms are just rules. Learned-from-data = AI.</p></div>
+      <div class="idea" style="margin-top:10px"><p><b>5. You steer it with the prompt.</b> Who to be + context + exact task + tone + format. Vague in, junk out. Specific in, gold out. Iterate like a conversation.</p></div>
+      <div class="idea" style="margin-top:10px"><p><b>6. It has known limits.</b> Frozen knowledge, shaky math, short memory, bias. Amazing tool — with a human keeping the final say on anything that matters.</p></div>
     </div>
 
     <div class="panel">
@@ -735,6 +847,39 @@
   var tw=document.getElementById('terms'),tOut=document.getElementById('termOut');
   terms.forEach(function(o){var el=document.createElement('div');el.className='term';el.textContent=o.t;
     el.addEventListener('click',function(){tOut.innerHTML='<b class="gold">'+o.t+'</b> — '+o.d;[].forEach.call(tw.children,function(c){c.style.borderColor='';});el.style.borderColor='var(--teal)';});tw.appendChild(el);});
+
+  /* ===== quick checks (retrieval + expert depth) ===== */
+  var checks={
+    1:{q:'Why can AI give two different answers to the exact same question?',
+       opts:[{t:'It has moods',ok:false},{t:'A randomness setting (temperature) makes it sometimes pick lower-ranked words',ok:true},{t:'It secretly remembers you',ok:false}],
+       ex:'Temperature is the creativity dial from this level. At 0 it’s identical every time; turned up it samples less-likely words, so you get variety. Nothing to do with mood or memory.'},
+    2:{q:'Who wrote AI’s rules for grammar and facts?',
+       opts:[{t:'Engineers typed them all in by hand',ok:false},{t:'Nobody — the patterns emerged from training on tons of text',ok:true},{t:'It reads from a giant rulebook',ok:false}],
+       ex:'The mind-bender: no human wrote "a sentence needs a verb." Billions of dials self-adjusted until good patterns stuck. That’s why it writes brand-new sentences — and why it can blur facts it only half-learned.'},
+    3:{q:'AI hands you a quote from "Dr. Lena Marsh, 2021." Smartest move?',
+       opts:[{t:'Use it — it’s specific and detailed',ok:false},{t:'Search for it first; specific + confident is exactly how hallucinations look',ok:true},{t:'Assume everything it says is fake',ok:false}],
+       ex:'Specific, fluent, and confident is the profile of a made-up answer — not proof it’s real. Tools that cite clickable sources (RAG) help; until you verify, treat it as an unconfirmed lead.'},
+    4:{q:'Is a chatbot the same kind of AI as a spam filter?',
+       opts:[{t:'Yes, identical',ok:false},{t:'Both are AI, different types: a chatbot creates (generative), a filter sorts (machine learning)',ok:true},{t:'Neither is really AI',ok:false}],
+       ex:'All chatbots are generative AI; generative AI is a branch of machine learning; machine learning is a branch of AI. A spam filter is ML doing a narrow sorting job — same family, different work.'},
+    5:{q:'You want AI to nail a very specific writing style. Strongest move?',
+       opts:[{t:'Tell it to "write it well"',ok:false},{t:'Paste 1–3 examples of the exact style you want (few-shot)',ok:true},{t:'Type in ALL CAPS',ok:false}],
+       ex:'AI is a pattern-matcher, so showing beats telling. Examples hand it the pattern directly. Pair with "think step by step" for logic, and iterate across turns.'},
+    6:{q:'AI suggests who to hire from a stack of résumés. Who decides?',
+       opts:[{t:'The AI — it’s neutral and data-driven',ok:false},{t:'A human — AI reflects the biases in its training data',ok:true},{t:'Whoever the AI ranks #1',ok:false}],
+       ex:'AI learned from human text, so it inherited human bias. Great for drafting and summarizing; high-stakes calls (hiring, lending, medical, legal) need a human with the final say.'}
+  };
+  [].forEach.call(document.querySelectorAll('.check'),function(box){
+    var id=+box.dataset.check,C=checks[id];if(!C)return;var answered=false;
+    box.innerHTML='<span class="qh">🧠 Quick check</span><div class="q">'+C.q+'</div><div class="opts"></div><div class="expert"></div>';
+    var opts=box.querySelector('.opts'),exp=box.querySelector('.expert');
+    C.opts.forEach(function(o){var b=document.createElement('button');b.className='opt';b.textContent=o.t;b.dataset.ok=o.ok?'1':'';
+      b.addEventListener('click',function(){if(answered)return;answered=true;
+        [].forEach.call(opts.children,function(x){x.classList.add('locked');if(x.dataset.ok)x.classList.add('correct');});
+        if(o.ok){addXP(15);toast('Nailed it! +15 XP');confetti(12);}else{b.classList.add('wrong');toast('Good try — here’s why');}
+        exp.className='expert show';exp.innerHTML='💡 <b>Expert insight:</b> '+C.ex;});
+      opts.appendChild(b);});
+  });
 
   renderXP();chrome();
 })();
