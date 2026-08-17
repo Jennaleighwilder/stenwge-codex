@@ -3,888 +3,740 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>The Machine's Grimoire</title>
+<title>Level Up: AI</title>
 <style>
   :root{
-    --night:#160f20;
-    --night2:#1d1430;
-    --card:#241a39;
-    --card2:#2d2148;
-    --edge:rgba(232,193,106,.22);
-    --edge2:rgba(232,193,106,.4);
-    --ink:#f4ecf6;
-    --muted:#b6a7cf;
-    --gold:#e8c16a;
-    --gold-b:#f6d98f;
-    --rose:#e78ba6;
-    --rose-d:#c9648a;
-    --moon:#cdd3ea;
-    --sage:#9fc7a8;      /* correct / herbal */
-    --sage-d:#5fa06f;
-    --ember:#e8895a;     /* warn / gentle wrong */
-    --plum:#7c5cc4;
-    --ring:rgba(232,193,106,.45);
-    --shadow:0 24px 60px rgba(0,0,0,.55);
-    --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,"Times New Roman",serif;
-    --disp:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
+    --bg:#190f28;
+    --bg2:#22143a;
+    --panel:#2a1a42;
+    --panel2:#341f50;
+    --edge:rgba(255,255,255,.1);
+    --ink:#fbf4ff;
+    --muted:#c4b3da;
+    --gold:#ffc94d;
+    --gold-d:#e0a72e;
+    --pink:#ff5c8a;
+    --pink-d:#d63b6b;
+    --teal:#33e0c8;
+    --purple:#a06bff;
+    --good:#4be08b;
+    --good-d:#22b566;
+    --bad:#ff7a7a;
+    --ring:rgba(255,201,77,.5);
+    --shadow:0 16px 40px rgba(0,0,0,.5);
+    --sans:"Trebuchet MS","Segoe UI",system-ui,-apple-system,Roboto,sans-serif;
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   html,body{margin:0;padding:0}
-  body{
-    font-family:var(--serif);color:var(--ink);line-height:1.7;min-height:100vh;overflow-x:hidden;
+  body{font-family:var(--sans);color:var(--ink);line-height:1.55;min-height:100vh;overflow-x:hidden;
     background:
-      radial-gradient(1100px 700px at 15% -10%,#3a2352 0%,transparent 55%),
-      radial-gradient(900px 640px at 115% 8%,#4a2140 0%,transparent 52%),
-      radial-gradient(700px 700px at 50% 120%,#2a1b46 0%,transparent 60%),
-      var(--night);
-  }
-  #sky{position:fixed;inset:0;z-index:0;pointer-events:none}
-  .wrap{position:relative;z-index:2;max-width:760px;margin:0 auto;padding:14px 18px 130px}
+      radial-gradient(1100px 720px at 12% -10%,#3a1c5e 0%,transparent 55%),
+      radial-gradient(950px 640px at 112% 4%,#5a1a48 0%,transparent 52%),
+      radial-gradient(760px 760px at 50% 120%,#2a1650 0%,transparent 60%),
+      var(--bg);}
+  .wrap{max-width:800px;margin:0 auto;padding:12px 16px 130px}
 
-  /* ---- moon-phase top bar ---- */
-  .topbar{position:sticky;top:0;z-index:40;backdrop-filter:blur(9px);
-    background:linear-gradient(180deg,rgba(22,15,32,.95),rgba(22,15,32,.55));
-    padding:12px 18px 12px;border-bottom:1px solid var(--edge)}
-  .topbar-inner{max-width:760px;margin:0 auto;display:flex;align-items:center;gap:14px}
-  .sigil{font-size:20px;filter:drop-shadow(0 0 10px rgba(232,193,106,.6))}
-  .brandtxt{font-family:var(--disp);font-weight:600;letter-spacing:.5px;font-size:15px}
-  .brandtxt small{display:block;color:var(--muted);font-size:11px;letter-spacing:2px;text-transform:uppercase}
-  .moons{margin-left:auto;display:flex;gap:7px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
-  .moon-dot{width:15px;height:15px;border-radius:50%;background:#2c2246;border:1px solid var(--edge);
-    transition:.4s;cursor:pointer;position:relative}
-  .moon-dot.done{background:radial-gradient(circle at 35% 30%,var(--gold-b),var(--gold));border-color:var(--gold);
-    box-shadow:0 0 10px rgba(232,193,106,.55)}
-  .moon-dot.current{background:radial-gradient(circle at 35% 30%,#fff7e6,var(--rose));border-color:var(--rose);
-    box-shadow:0 0 12px rgba(231,139,166,.7);transform:scale(1.18)}
+  /* ---------- HUD ---------- */
+  .hud{position:sticky;top:0;z-index:40;backdrop-filter:blur(10px);
+    background:linear-gradient(180deg,rgba(25,15,40,.95),rgba(25,15,40,.6));padding:10px 16px;border-bottom:1px solid var(--edge)}
+  .hud-inner{max-width:800px;margin:0 auto;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .lvlchip{background:linear-gradient(180deg,var(--pink),var(--pink-d));color:#fff;font-weight:800;font-size:13px;
+    padding:6px 12px;border-radius:10px;letter-spacing:.5px;box-shadow:0 4px 0 rgba(0,0,0,.25);white-space:nowrap}
+  .xpwrap{flex:1;min-width:150px}
+  .xptop{display:flex;justify-content:space-between;font-size:11px;font-weight:800;letter-spacing:1px;color:var(--muted);text-transform:uppercase}
+  .xptop .rank{color:var(--gold)}
+  .xptrack{height:12px;border-radius:20px;background:#120a1f;overflow:hidden;box-shadow:inset 0 2px 5px rgba(0,0,0,.6);margin-top:3px}
+  .xpfill{height:100%;width:0%;border-radius:20px;background:linear-gradient(90deg,var(--gold),#ffe08a);transition:width .6s cubic-bezier(.2,.9,.3,1)}
+  .ach{font-size:13px;font-weight:800;color:var(--gold);white-space:nowrap}
+  .map{display:flex;gap:5px;margin-top:8px;justify-content:center;flex-wrap:wrap}
+  .node{width:22px;height:8px;border-radius:20px;background:#3a2856;transition:.3s}
+  .node.done{background:var(--good)}
+  .node.current{background:var(--gold);box-shadow:0 0 0 3px var(--ring)}
 
-  /* ---- chapters ---- */
-  .step{display:none;animation:rise .6s cubic-bezier(.2,.9,.3,1)}
-  .step.active{display:block}
-  @keyframes rise{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
-  .card{background:linear-gradient(180deg,var(--card),var(--night2));border:1px solid var(--edge);
-    border-radius:20px;padding:26px 26px 24px;margin-top:18px;box-shadow:var(--shadow);position:relative}
-  .card::before{content:"";position:absolute;inset:6px;border:1px solid var(--edge);border-radius:15px;pointer-events:none;opacity:.5}
-  .chap{font-family:var(--disp);text-align:center;color:var(--gold);letter-spacing:5px;font-size:12px;
-    text-transform:uppercase;margin-bottom:6px}
-  .chap .num{display:block;font-size:34px;letter-spacing:2px;color:var(--gold-b);margin-bottom:2px;
-    text-shadow:0 0 16px rgba(232,193,106,.4)}
-  h1{font-family:var(--disp);font-size:clamp(30px,7vw,50px);line-height:1.08;margin:8px 0 12px;font-weight:600;
-    text-align:center;text-wrap:balance;color:#fff;text-shadow:0 2px 24px rgba(0,0,0,.5)}
-  h2{font-family:var(--disp);font-size:clamp(25px,5.5vw,38px);line-height:1.12;margin:6px 0 12px;font-weight:600;
-    text-align:center;text-wrap:balance;color:#fdf5ff}
-  h3{font-family:var(--disp);font-size:19px;margin:0 0 8px;font-weight:600;color:var(--gold-b)}
-  .tale{font-style:italic;color:#e4d9ee;font-size:clamp(16px,3.6vw,19px);text-align:center;margin:0 auto 6px;max-width:56ch}
-  .say{font-size:clamp(15px,3.5vw,17.5px);color:#e9e0f2}
-  .whisper{color:var(--muted);font-size:14px}
+  /* ---------- levels ---------- */
+  .level{display:none;animation:pop .45s cubic-bezier(.2,.9,.3,1)}
+  .level.active{display:block}
+  @keyframes pop{from{opacity:0;transform:translateY(18px) scale(.98)}to{opacity:1;transform:none}}
+  .panel{background:linear-gradient(180deg,var(--panel),var(--bg2));border:1px solid var(--edge);border-radius:20px;
+    padding:22px;margin-top:16px;box-shadow:var(--shadow)}
+  .badge-lvl{display:inline-flex;align-items:center;gap:8px;background:#120a1f;border:1px solid var(--edge);
+    border-radius:999px;padding:5px 14px;font-weight:800;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold)}
+  h1{font-size:clamp(30px,7vw,52px);line-height:1.02;margin:14px 0 8px;font-weight:800;letter-spacing:-.5px;text-wrap:balance}
+  h2{font-size:clamp(24px,5.4vw,36px);line-height:1.08;margin:12px 0 6px;font-weight:800;letter-spacing:-.4px;text-wrap:balance}
+  h3{font-size:17px;margin:0 0 8px;font-weight:800}
+  .sub{color:var(--muted);font-size:clamp(15px,3.5vw,18px)}
+  .lead{font-size:clamp(16px,3.7vw,19px)}
   .center{text-align:center}
-  .gold{color:var(--gold-b);font-weight:600}
-  .rosetx{color:var(--rose);font-weight:600}
-  .sagetx{color:var(--sage)}
-  code{font-family:ui-monospace,Menlo,Consolas,monospace;background:#0e0a18;border:1px solid var(--edge);
-    border-radius:6px;padding:1px 6px;font-size:.86em;color:var(--gold-b)}
-  .divider{display:flex;align-items:center;gap:14px;margin:20px 0;color:var(--gold);opacity:.7}
-  .divider::before,.divider::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--edge2),transparent)}
-  .divider .mark{font-size:14px;letter-spacing:4px}
+  .gold{color:var(--gold);font-weight:800}
+  .pinktx{color:var(--pink);font-weight:800}
+  .tealtx{color:var(--teal);font-weight:800}
+  .tiny{font-size:13px;color:var(--muted)}
+  code{font-family:ui-monospace,Menlo,Consolas,monospace;background:#120a1f;border:1px solid var(--edge);border-radius:6px;padding:1px 6px;font-size:.88em;color:#ffe08a}
 
-  .scroll-note{border:1px solid var(--edge);background:
-      linear-gradient(180deg,rgba(232,193,106,.06),rgba(231,139,166,.05));
-    border-radius:14px;padding:14px 18px;margin:16px 0;font-size:15.5px}
-  .scroll-note.warn{border-color:rgba(232,137,90,.4);background:rgba(232,137,90,.08)}
-  .scroll-note.moonlit{border-color:rgba(205,211,234,.3);background:rgba(205,211,234,.06)}
+  /* THE IDEA teaching box — the actual lesson, stated plainly */
+  .idea{border:2px solid var(--gold);background:linear-gradient(180deg,rgba(255,201,77,.12),rgba(255,201,77,.04));
+    border-radius:16px;padding:16px 18px;margin:16px 0}
+  .idea .tag{display:inline-block;background:var(--gold);color:#2a1a05;font-weight:800;font-size:11px;letter-spacing:1.5px;
+    text-transform:uppercase;padding:3px 10px;border-radius:7px;margin-bottom:8px}
+  .idea p{margin:6px 0;font-size:16px}
+  .idea b{color:#fff}
+  .yourturn{display:inline-block;background:var(--teal);color:#04241f;font-weight:800;font-size:12px;letter-spacing:1.5px;
+    text-transform:uppercase;padding:4px 12px;border-radius:8px;margin:18px 0 4px}
+  .why{border-left:4px solid var(--good);background:rgba(75,224,139,.09);border-radius:0 12px 12px 0;padding:12px 16px;margin-top:14px;font-size:15px;display:none}
+  .why.show{display:block;animation:pop .35s}
 
-  /* ---- buttons ---- */
-  .btn{appearance:none;border:none;cursor:pointer;font-family:var(--disp);font-weight:600;font-size:17px;
-    letter-spacing:.4px;padding:14px 24px;border-radius:13px;color:#2a1c10;
-    background:linear-gradient(180deg,var(--gold-b),var(--gold));
-    box-shadow:0 6px 0 #a9823a,0 14px 26px rgba(0,0,0,.4);transition:transform .07s,box-shadow .07s;user-select:none}
-  .btn:active{transform:translateY(5px);box-shadow:0 1px 0 #a9823a,0 8px 16px rgba(0,0,0,.4)}
-  .btn.rose{background:linear-gradient(180deg,#f2a6bd,var(--rose));color:#3a1523;box-shadow:0 6px 0 #a24d6c,0 14px 26px rgba(0,0,0,.4)}
-  .btn.rose:active{box-shadow:0 1px 0 #a24d6c,0 8px 16px rgba(0,0,0,.4)}
-  .btn.ghost{background:transparent;color:var(--gold-b);border:1px solid var(--edge2);box-shadow:none;font-size:15px}
+  /* buttons */
+  .btn{appearance:none;border:none;cursor:pointer;font-family:var(--sans);font-weight:800;font-size:17px;padding:14px 24px;
+    border-radius:14px;color:#2a1a05;background:linear-gradient(180deg,#ffd66b,var(--gold));
+    box-shadow:0 6px 0 var(--gold-d),0 14px 24px rgba(0,0,0,.35);transition:transform .06s,box-shadow .06s;user-select:none}
+  .btn:active{transform:translateY(5px);box-shadow:0 1px 0 var(--gold-d),0 8px 14px rgba(0,0,0,.35)}
+  .btn.pink{background:linear-gradient(180deg,#ff77a0,var(--pink));color:#fff;box-shadow:0 6px 0 var(--pink-d),0 14px 24px rgba(0,0,0,.35)}
+  .btn.pink:active{box-shadow:0 1px 0 var(--pink-d),0 8px 14px rgba(0,0,0,.35)}
+  .btn.ghost{background:transparent;color:var(--ink);border:2px solid var(--edge);box-shadow:none;font-size:15px}
   .btn.ghost:active{transform:translateY(2px)}
   .btn.small{font-size:14px;padding:10px 15px;border-radius:11px}
   .btn[disabled]{opacity:.4;cursor:not-allowed;transform:none!important}
-  .navbtns{display:flex;justify-content:space-between;gap:12px;margin-top:24px;flex-wrap:wrap}
+  .navbtns{display:flex;justify-content:space-between;gap:12px;margin-top:22px;flex-wrap:wrap}
 
-  /* ---- choices ---- */
-  .choices{display:grid;gap:11px;margin-top:16px}
-  .choice{text-align:left;background:var(--card2);border:1px solid var(--edge);border-radius:13px;padding:15px 17px;
-    font-size:16px;cursor:pointer;color:var(--ink);transition:.16s;display:flex;align-items:center;gap:13px;font-family:var(--serif)}
-  .choice:hover{transform:translateY(-2px);border-color:var(--edge2);box-shadow:0 8px 20px rgba(0,0,0,.3)}
+  /* choices */
+  .choices{display:grid;gap:11px;margin-top:14px}
+  .choice{text-align:left;background:var(--panel2);border:2px solid var(--edge);border-radius:13px;padding:15px 17px;
+    font-size:16px;font-weight:700;cursor:pointer;color:var(--ink);transition:.15s;display:flex;align-items:center;gap:12px}
+  .choice:hover{transform:translateY(-2px);border-color:var(--pink)}
   .choice .em{font-size:22px;flex-shrink:0}
-  .choice.correct{border-color:var(--sage);background:rgba(159,199,168,.14);box-shadow:0 0 0 2px rgba(159,199,168,.3)}
-  .choice.wrong{border-color:var(--ember);background:rgba(232,137,90,.12)}
+  .choice.correct{border-color:var(--good);background:rgba(75,224,139,.15);box-shadow:0 0 0 2px rgba(75,224,139,.3)}
+  .choice.wrong{border-color:var(--bad);background:rgba(255,122,122,.12)}
   .choice.locked{pointer-events:none}
-  .feedback{margin-top:15px;border-radius:13px;padding:15px 17px;display:none;font-size:15.5px;line-height:1.6}
-  .feedback.show{display:block;animation:rise .4s}
-  .feedback.win{background:rgba(159,199,168,.12);border:1px solid rgba(159,199,168,.4)}
-  .feedback.nope{background:rgba(232,193,106,.1);border:1px solid rgba(232,193,106,.36)}
-  .feedback .gold,.scroll-note .gold{color:var(--gold-b)}
+  .fb{margin-top:14px;border-radius:13px;padding:14px 16px;font-weight:600;display:none;font-size:15px}
+  .fb.show{display:block;animation:pop .3s}
+  .fb.win{background:rgba(75,224,139,.13);border:1px solid rgba(75,224,139,.4)}
+  .fb.nope{background:rgba(255,201,77,.11);border:1px solid rgba(255,201,77,.4)}
+  .fb b{color:#fff}
 
-  /* ---- reveal tiles (spells) ---- */
-  .grid-reveal{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:18px}
+  /* reveal tiles */
+  .grid-reveal{display:grid;grid-template-columns:repeat(2,1fr);gap:11px;margin-top:14px}
   @media(min-width:600px){.grid-reveal{grid-template-columns:repeat(3,1fr)}}
-  .spell{position:relative;border-radius:15px;padding:16px 12px;min-height:128px;cursor:pointer;text-align:center;
-    background:linear-gradient(180deg,#2a2046,#211836);border:1px solid var(--edge);
-    display:flex;flex-direction:column;align-items:center;justify-content:center;transition:.22s;overflow:hidden}
-  .spell:hover{transform:translateY(-4px);border-color:var(--edge2);box-shadow:0 12px 24px rgba(0,0,0,.35)}
-  .spell .rune{font-size:28px;filter:drop-shadow(0 0 8px rgba(232,193,106,.4))}
-  .spell .name{font-family:var(--disp);font-size:14.5px;margin-top:8px;color:#efe6f5;line-height:1.3}
-  .spell .hintl{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-top:8px}
-  .spell.revealed{background:linear-gradient(180deg,#33284e,#241a3c);border-color:var(--gold)}
-  .spell .back{display:none;font-size:13px;line-height:1.45;color:#e9e0f2}
-  .spell.revealed .front{display:none}
-  .spell.revealed .back{display:block}
-  .spell .kind{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;margin-top:8px;color:var(--gold)}
-  .counter{font-family:var(--disp);font-size:clamp(38px,10vw,56px);color:var(--gold-b);line-height:1}
+  .tile{position:relative;border-radius:15px;padding:15px 12px;min-height:120px;cursor:pointer;text-align:center;
+    background:linear-gradient(180deg,#33204f,#281a3e);border:2px solid var(--edge);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;transition:.2s;overflow:hidden}
+  .tile:hover{transform:translateY(-4px);border-color:var(--gold)}
+  .tile .ic{font-size:28px}
+  .tile .nm{font-size:14px;margin-top:8px;color:#efe6f5;font-weight:700;line-height:1.3}
+  .tile .hl{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-top:8px}
+  .tile.revealed{background:linear-gradient(180deg,var(--good-d),#158049);border-color:var(--good)}
+  .tile .bk{display:none;font-size:12.5px;line-height:1.4;color:#eafff2;font-weight:600}
+  .tile.revealed .fr{display:none}
+  .tile.revealed .bk{display:block}
+  .tile.notai.revealed{background:linear-gradient(180deg,#3a3357,#2a2542)}
+  .counter{font-size:clamp(36px,10vw,54px);font-weight:800;color:var(--gold);line-height:1}
 
-  /* ---- probability (the oracle's likelihoods) ---- */
-  .sentence{font-family:var(--disp);font-size:clamp(19px,4.6vw,26px);margin:8px 0 4px;text-align:center;color:#fdf5ff}
-  .blank{color:var(--gold-b);border-bottom:2px dashed var(--rose);padding:0 8px;min-width:110px;display:inline-block}
-  .probrow{display:flex;flex-direction:column;gap:9px;margin-top:16px}
-  .prob{display:grid;grid-template-columns:118px 1fr auto;align-items:center;gap:10px;cursor:pointer;
-    background:var(--card2);border:1px solid var(--edge);border-radius:11px;padding:9px 13px;transition:.16s}
-  @media(max-width:480px){.prob{grid-template-columns:92px 1fr auto}}
-  .prob:hover{border-color:var(--edge2);transform:translateX(3px)}
-  .prob .w{font-family:var(--disp);font-size:16px;color:#efe6f5}
-  .prob .bar{height:12px;border-radius:8px;background:#0e0a18;overflow:hidden;border:1px solid rgba(255,255,255,.05)}
-  .prob .bar>i{display:block;height:100%;width:0;transition:.8s cubic-bezier(.2,.9,.3,1);
-    background:linear-gradient(90deg,var(--rose-d),var(--gold))}
-  .prob .pct{font-family:ui-monospace,monospace;font-size:13px;color:var(--muted);min-width:42px;text-align:right}
-  .prob.picked{border-color:var(--gold);background:rgba(232,193,106,.1)}
+  /* predictor */
+  .sentence{font-size:clamp(19px,4.6vw,26px);font-weight:800;text-align:center;margin:6px 0}
+  .blank{color:var(--gold);border-bottom:3px dashed var(--pink);padding:0 8px;min-width:110px;display:inline-block}
+  .probrow{display:flex;flex-direction:column;gap:9px;margin-top:14px}
+  .prob{display:grid;grid-template-columns:110px 1fr auto;align-items:center;gap:10px;cursor:pointer;
+    background:var(--panel2);border:2px solid var(--edge);border-radius:11px;padding:9px 12px;transition:.15s}
+  @media(max-width:480px){.prob{grid-template-columns:88px 1fr auto}}
+  .prob:hover{border-color:var(--gold);transform:translateX(3px)}
+  .prob .w{font-weight:800;font-size:15px}
+  .prob .bar{height:13px;border-radius:8px;background:#120a1f;overflow:hidden}
+  .prob .bar>i{display:block;height:100%;width:0;transition:.8s cubic-bezier(.2,.9,.3,1);background:linear-gradient(90deg,var(--purple),var(--pink))}
+  .prob .pct{font-family:ui-monospace,monospace;font-weight:800;font-size:13px;color:var(--muted);min-width:42px;text-align:right}
+  .prob.picked{border-color:var(--gold);background:rgba(255,201,77,.1)}
+  .dial{margin-top:18px;background:#120a1f;border:1px solid var(--edge);border-radius:14px;padding:14px 16px}
+  input[type=range]{ -webkit-appearance:none;appearance:none;width:100%;height:12px;border-radius:20px;
+    background:linear-gradient(90deg,var(--teal),var(--gold),var(--pink));outline:none;margin:12px 0 4px}
+  input[type=range]::-webkit-slider-thumb{ -webkit-appearance:none;width:28px;height:28px;border-radius:50%;background:#fff;
+    border:5px solid var(--purple);cursor:pointer;box-shadow:0 3px 10px rgba(0,0,0,.5)}
+  input[type=range]::-moz-range-thumb{width:28px;height:28px;border-radius:50%;background:#fff;border:5px solid var(--purple);cursor:pointer}
+  .dialout{margin-top:10px;font-size:15.5px;min-height:46px}
 
-  .dialbox{margin-top:20px;background:#0e0a18;border:1px solid var(--edge);border-radius:14px;padding:16px 18px}
-  input[type=range]{ -webkit-appearance:none;appearance:none;width:100%;height:10px;border-radius:20px;
-    background:linear-gradient(90deg,var(--moon),var(--gold),var(--rose));outline:none;margin:14px 0 4px}
-  input[type=range]::-webkit-slider-thumb{ -webkit-appearance:none;width:28px;height:28px;border-radius:50%;
-    background:radial-gradient(circle at 35% 30%,#fff7e6,var(--gold));border:3px solid #fff;cursor:pointer;
-    box-shadow:0 3px 12px rgba(0,0,0,.6),0 0 14px rgba(232,193,106,.6)}
-  input[type=range]::-moz-range-thumb{width:28px;height:28px;border-radius:50%;background:var(--gold);border:3px solid #fff;cursor:pointer}
-  .dialout{margin-top:12px;font-size:16px;min-height:52px}
+  /* training clicker */
+  .clicker{margin-top:14px;background:#120a1f;border:1px solid var(--edge);border-radius:14px;padding:16px}
+  .grid8{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;margin:6px 0 12px}
+  .cell{aspect-ratio:1;border-radius:5px;background:#2f2350;transition:.25s}
+  .robo{margin-top:12px;background:#120a1f;border:1px solid var(--edge);border-radius:14px;padding:15px;min-height:74px;
+    font-size:clamp(15px,3.6vw,17px);font-weight:600;transition:.25s}
+  .barmini{font-family:ui-monospace,monospace;font-weight:800}
 
-  /* ---- training (teach the apprentice) ---- */
-  .loom{margin-top:16px;background:#0e0a18;border:1px solid var(--edge);border-radius:14px;padding:18px}
-  .weave{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;margin:8px 0 14px}
-  .thread{aspect-ratio:1;border-radius:5px;background:#2a2246;transition:.3s}
-  .loomstat{font-family:ui-monospace,monospace;font-size:14px;color:var(--muted)}
-  .apprentice{margin-top:14px;background:#0e0a18;border:1px solid var(--edge);border-radius:14px;padding:16px;
-    min-height:78px;font-style:italic;font-size:clamp(15px,3.6vw,17.5px);transition:.25s}
-  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin:18px 0}
-  .stat{background:var(--card2);border:1px solid var(--edge);border-radius:13px;padding:13px;text-align:center}
-  .stat b{display:block;font-family:var(--disp);font-size:clamp(19px,5vw,26px);color:var(--gold-b);line-height:1.1}
+  /* stats */
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0}
+  .stat{background:var(--panel2);border:1px solid var(--edge);border-radius:13px;padding:12px;text-align:center}
+  .stat b{display:block;font-size:clamp(18px,5vw,25px);color:var(--gold);font-weight:800;line-height:1.1}
   .stat span{font-size:11.5px;color:var(--muted)}
 
-  /* ---- go deeper (whispered secrets) ---- */
-  .deeper{margin-top:18px;border:1px solid var(--edge);border-radius:13px;overflow:hidden;
-    background:linear-gradient(180deg,rgba(124,92,196,.1),rgba(231,139,166,.05))}
-  .deeper>summary{cursor:pointer;list-style:none;padding:14px 17px;font-family:var(--disp);font-size:16px;
-    display:flex;align-items:center;gap:10px;color:var(--gold-b)}
-  .deeper>summary::-webkit-details-marker{display:none}
-  .deeper>summary .chev{margin-left:auto;transition:.25s;color:var(--rose)}
-  .deeper[open]>summary .chev{transform:rotate(90deg)}
-  .deeper .body{padding:0 17px 16px;font-size:15px;color:#e4d9ee}
-  .deeper .body p{margin:9px 0}
-
-  /* ---- sort (kinds of magic) ---- */
+  /* sort */
   .pool{display:flex;flex-wrap:wrap;gap:9px;margin:14px 0;justify-content:center;min-height:52px}
-  .dragitem{background:var(--card2);border:1px solid var(--edge2);border-radius:11px;padding:11px 14px;
-    font-family:var(--disp);font-size:15px;cursor:grab;user-select:none;transition:.16s;touch-action:none;
-    display:inline-flex;align-items:center;gap:7px;color:#efe6f5}
-  .dragitem.dragging{opacity:.5;transform:scale(1.05)}
-  .dragitem.placed{cursor:default}
-  .buckets3{display:grid;grid-template-columns:1fr;gap:11px}
-  @media(min-width:640px){.buckets3{grid-template-columns:repeat(3,1fr)}}
-  .bucket{border-radius:15px;padding:14px 11px;min-height:120px;border:1px dashed var(--edge2);
-    background:rgba(232,193,106,.03);transition:.16s}
-  .bucket.over{background:rgba(232,193,106,.12);transform:scale(1.02)}
-  .bucket h3{text-align:center;font-size:15.5px;margin:0 0 3px}
-  .bucket .cap{text-align:center;font-size:11px;color:var(--muted);margin-bottom:9px}
+  .drag{background:var(--panel2);border:2px solid var(--edge);border-radius:11px;padding:11px 13px;font-weight:800;font-size:15px;
+    cursor:grab;user-select:none;transition:.15s;touch-action:none;display:inline-flex;align-items:center;gap:7px}
+  .drag.dragging{opacity:.5;transform:scale(1.05)}
+  .drag.placed{cursor:default}
+  .buckets{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+  .bucket{border-radius:15px;padding:13px 11px;min-height:116px;border:3px dashed var(--edge);background:rgba(255,255,255,.03);transition:.15s}
+  .bucket.over{background:rgba(255,201,77,.12);transform:scale(1.02)}
+  .bucket h3{text-align:center;font-size:15px;margin:0 0 3px}
+  .bucket .cap{text-align:center;font-size:11px;color:var(--muted);margin-bottom:8px}
   .bucket .items{display:flex;flex-wrap:wrap;gap:7px;justify-content:center}
-  .bucket .items .dragitem{font-size:13px;padding:8px 10px}
-  .dragitem.right{border-color:var(--sage);background:rgba(159,199,168,.16)}
-  .dragitem.wrongp{border-color:var(--ember);background:rgba(232,137,90,.16)}
+  .bucket .items .drag{font-size:13px;padding:8px 10px}
+  .drag.right{border-color:var(--good);background:rgba(75,224,139,.16)}
+  .drag.wrongp{border-color:var(--bad);background:rgba(255,122,122,.16)}
 
-  /* ---- build-a-spell (prompting) ---- */
-  .pbuild{display:grid;grid-template-columns:1fr;gap:11px;margin-top:16px}
+  /* build-a-prompt */
+  .pbuild{display:grid;grid-template-columns:1fr;gap:11px;margin-top:14px}
   @media(min-width:600px){.pbuild{grid-template-columns:1fr 1fr}}
-  .ptok{background:var(--card2);border:1px solid var(--edge);border-radius:12px;padding:13px 15px;cursor:pointer;transition:.16s}
-  .ptok:hover{transform:translateY(-2px);border-color:var(--rose)}
-  .ptok.on{border-color:var(--sage);background:rgba(159,199,168,.12)}
-  .ptok .t{font-family:var(--disp);font-size:15.5px;display:flex;align-items:center;gap:8px;color:#efe6f5}
+  .ptok{background:var(--panel2);border:2px solid var(--edge);border-radius:12px;padding:13px 15px;cursor:pointer;transition:.15s}
+  .ptok:hover{transform:translateY(-2px);border-color:var(--teal)}
+  .ptok.on{border-color:var(--good);background:rgba(75,224,139,.12)}
+  .ptok .t{font-weight:800;font-size:15px;display:flex;align-items:center;gap:8px}
   .ptok .d{font-size:13px;color:var(--muted);margin-top:3px}
   .ptok .chk{margin-left:auto}
-  .cauldron{margin-top:16px;background:#0e0a18;border:1px solid var(--edge);border-radius:13px;padding:15px;
-    font-style:italic;font-size:15px;color:#e9e0f2;min-height:72px}
-  .potency{margin-top:13px}
-  .potency .track{height:14px;border-radius:9px;background:#0e0a18;overflow:hidden;border:1px solid var(--edge)}
-  .potency .track>i{display:block;height:100%;width:8%;transition:.55s cubic-bezier(.2,.9,.3,1);
-    background:linear-gradient(90deg,var(--ember),var(--gold),var(--sage))}
-  .potency .lbl{display:flex;justify-content:space-between;font-family:var(--disp);font-size:13.5px;margin-top:6px}
+  .promptlive{margin-top:14px;background:#120a1f;border:1px solid var(--edge);border-radius:12px;padding:14px;
+    font-family:ui-monospace,monospace;font-size:13.5px;color:#e7dcff;min-height:66px;white-space:pre-wrap}
+  .quality{margin-top:12px}
+  .quality .track{height:15px;border-radius:9px;background:#120a1f;overflow:hidden;border:1px solid var(--edge)}
+  .quality .track>i{display:block;height:100%;width:8%;transition:.5s cubic-bezier(.2,.9,.3,1);background:linear-gradient(90deg,var(--bad),var(--gold),var(--good))}
+  .quality .lbl{display:flex;justify-content:space-between;font-weight:800;font-size:13px;margin-top:6px}
 
-  /* ---- limits (match) ---- */
-  .match{display:grid;gap:11px;margin-top:16px}
-  .matchrow{background:var(--card2);border:1px solid var(--edge);border-radius:14px;padding:14px}
-  .matchrow .lim{font-family:var(--disp);font-size:15.5px;color:#efe6f5;display:flex;gap:8px;align-items:center}
-  .matchopts{display:flex;flex-wrap:wrap;gap:7px;margin-top:9px}
-  .mopt{border:1px solid var(--edge);background:#0e0a18;border-radius:10px;padding:8px 12px;font-size:13px;
-    cursor:pointer;transition:.16s;color:#e4d9ee;font-family:var(--serif)}
-  .mopt:hover{border-color:var(--rose)}
-  .mopt.right{border-color:var(--sage);background:rgba(159,199,168,.16)}
-  .mopt.wrong{border-color:var(--ember);background:rgba(232,137,90,.16);opacity:.7}
+  /* match */
+  .match{display:grid;gap:11px;margin-top:14px}
+  .mrow{background:var(--panel2);border:1px solid var(--edge);border-radius:14px;padding:13px}
+  .mrow .lim{font-weight:800;font-size:15px;display:flex;gap:8px;align-items:center}
+  .mopts{display:flex;flex-wrap:wrap;gap:7px;margin-top:9px}
+  .mopt{border:2px solid var(--edge);background:#120a1f;border-radius:10px;padding:8px 11px;font-size:13px;font-weight:700;cursor:pointer;transition:.15s}
+  .mopt:hover{border-color:var(--teal)}
+  .mopt.right{border-color:var(--good);background:rgba(75,224,139,.16)}
+  .mopt.wrong{border-color:var(--bad);background:rgba(255,122,122,.16);opacity:.7}
   .mopt.locked{pointer-events:none}
 
-  /* ---- myth flip (breaking curses) ---- */
-  .flipgrid{display:grid;grid-template-columns:1fr;gap:13px;margin-top:16px}
+  /* myth flip */
+  .flipgrid{display:grid;grid-template-columns:1fr;gap:12px;margin-top:14px}
   @media(min-width:600px){.flipgrid{grid-template-columns:1fr 1fr}}
-  .flip{perspective:1300px;height:220px;cursor:pointer}
-  .flip-inner{position:relative;width:100%;height:100%;transition:transform .7s;transform-style:preserve-3d}
-  .flip.flipped .flip-inner{transform:rotateY(180deg)}
-  .flip-face{position:absolute;inset:0;backface-visibility:hidden;border-radius:15px;padding:17px;display:flex;flex-direction:column}
-  .flip-front{background:linear-gradient(180deg,#3a1f38,#291630);border:1px solid var(--rose-d)}
-  .flip-back{background:linear-gradient(180deg,#26382b,#1c2b22);transform:rotateY(180deg);border:1px solid var(--sage)}
-  .flip .tag{font-family:var(--disp);font-size:11px;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;color:var(--rose)}
-  .flip-back .tag{color:var(--sage)}
-  .flip .curse{font-family:var(--disp);font-size:16.5px;color:#fdeef4;line-height:1.35}
-  .flip .truth{font-size:14px;line-height:1.5;color:#e6f0e8}
-  .flip .hint{margin-top:auto;font-size:12px;color:var(--muted)}
+  .flip{perspective:1200px;height:200px;cursor:pointer}
+  .flip-in{position:relative;width:100%;height:100%;transition:transform .6s;transform-style:preserve-3d}
+  .flip.flipped .flip-in{transform:rotateY(180deg)}
+  .face{position:absolute;inset:0;backface-visibility:hidden;border-radius:15px;padding:16px;display:flex;flex-direction:column}
+  .front{background:linear-gradient(180deg,#43244e,#301a3c);border:2px solid var(--pink-d)}
+  .back{background:linear-gradient(180deg,var(--good-d),#158049);transform:rotateY(180deg);border:2px solid var(--good)}
+  .flip .tag{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;font-weight:800;margin-bottom:7px;opacity:.9}
+  .flip .m{font-weight:800;font-size:16px}
+  .flip .t{font-weight:600;font-size:14px;line-height:1.45}
+  .flip .h{margin-top:auto;font-size:12px;color:var(--muted)}
 
-  /* ---- boss (the rite) ---- */
-  .rite-bar{display:flex;align-items:center;gap:12px;margin-top:8px;font-family:var(--disp)}
-  .qcount{color:var(--muted);font-size:14px;letter-spacing:1px}
-  .candles{margin-left:auto;font-size:17px;letter-spacing:3px}
-  .thread-track{height:8px;border-radius:8px;background:#0e0a18;overflow:hidden;margin-top:9px;border:1px solid var(--edge)}
-  .thread-track>span{display:block;height:100%;width:0;transition:.5s;background:linear-gradient(90deg,var(--rose),var(--gold))}
-  .scoreNum{font-family:var(--disp);font-size:clamp(46px,13vw,80px);color:var(--gold-b);line-height:1}
-  .sigilbadge{display:inline-flex;flex-direction:column;align-items:center;gap:6px;margin:16px auto;
-    background:linear-gradient(180deg,#2c2148,#201636);border:1px solid var(--gold);border-radius:20px;
-    padding:24px 32px;box-shadow:var(--shadow)}
-  .sigilbadge .big{font-size:52px;filter:drop-shadow(0 0 16px rgba(232,193,106,.6))}
-  .sigilbadge .title{font-family:var(--disp);font-size:22px;color:var(--gold-b)}
-  .pill{display:inline-block;background:rgba(232,193,106,.08);border:1px solid var(--edge);padding:5px 13px;
-    border-radius:999px;font-size:12.5px;margin:4px 4px 0;color:#e4d9ee;font-family:var(--disp)}
+  /* boss / victory */
+  .ritebar{display:flex;align-items:center;gap:12px;margin-top:6px}
+  .qc{font-weight:800;color:var(--muted);font-size:14px}
+  .lives{margin-left:auto;font-size:17px;letter-spacing:2px}
+  .scoreNum{font-size:clamp(46px,13vw,80px);font-weight:800;color:var(--gold);line-height:1}
+  .trophy{display:inline-flex;flex-direction:column;align-items:center;gap:6px;margin:14px auto;background:linear-gradient(180deg,#33204f,#281a3e);
+    border:2px solid var(--gold);border-radius:20px;padding:22px 30px;box-shadow:var(--shadow)}
+  .trophy .big{font-size:52px}
+  .trophy .ti{font-size:22px;font-weight:800;color:var(--gold)}
+  .pill{display:inline-block;background:rgba(255,255,255,.07);border:1px solid var(--edge);padding:5px 12px;border-radius:999px;font-size:12px;font-weight:700;margin:4px 4px 0}
+  .terms{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+  .term{background:var(--panel2);border:1px solid var(--edge);border-radius:11px;padding:9px 13px;cursor:pointer;font-weight:800;font-size:14px;transition:.15s}
+  .term:hover{border-color:var(--teal);transform:translateY(-2px)}
+  .termout{margin-top:12px;background:#120a1f;border:1px solid var(--edge);border-radius:12px;padding:14px;min-height:60px;font-size:15px}
 
-  /* ---- true names (glossary) ---- */
-  .terms{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
-  .term{background:var(--card2);border:1px solid var(--edge);border-radius:11px;padding:9px 14px;cursor:pointer;
-    font-family:var(--disp);font-size:14.5px;transition:.16s;color:#efe6f5}
-  .term:hover{border-color:var(--rose);transform:translateY(-2px)}
-  .termout{margin-top:12px;background:#0e0a18;border:1px solid var(--edge);border-radius:13px;padding:15px;min-height:64px;font-size:15px}
-
-  /* ---- sparkle confetti + toast ---- */
-  #sparkles{position:fixed;inset:0;pointer-events:none;z-index:60;overflow:hidden}
-  .spk{position:absolute;top:-20px;font-size:15px;will-change:transform,opacity}
-  .toast{position:fixed;left:50%;top:19%;transform:translateX(-50%) scale(.6);
-    background:linear-gradient(180deg,var(--gold-b),var(--gold));color:#2a1c10;font-family:var(--disp);font-weight:600;
-    font-size:19px;padding:13px 24px;border-radius:14px;box-shadow:var(--shadow);z-index:70;opacity:0;pointer-events:none;
-    transition:.25s;border:1px solid #fff6df}
+  /* fx */
+  #fx{position:fixed;inset:0;pointer-events:none;z-index:60;overflow:hidden}
+  .confo{position:absolute;top:-20px;width:9px;height:15px;border-radius:2px}
+  .toast{position:fixed;left:50%;top:16%;transform:translateX(-50%) scale(.6);background:linear-gradient(180deg,#ffd66b,var(--gold));color:#2a1a05;
+    font-weight:800;font-size:18px;padding:12px 22px;border-radius:14px;box-shadow:var(--shadow);z-index:70;opacity:0;pointer-events:none;transition:.25s;border:2px solid #fff2cc}
   .toast.show{opacity:1;transform:translateX(-50%) scale(1)}
-  .footer-note{text-align:center;color:var(--muted);font-size:13.5px;margin-top:28px;font-style:italic}
+  .levelup{position:fixed;inset:0;z-index:80;display:none;align-items:center;justify-content:center;pointer-events:none}
+  .levelup.show{display:flex;animation:lu .2s}
+  @keyframes lu{from{opacity:0}to{opacity:1}}
+  .levelup .card2{background:linear-gradient(180deg,var(--pink),var(--purple));color:#fff;padding:26px 38px;border-radius:22px;
+    text-align:center;box-shadow:var(--shadow);border:3px solid #fff;transform:scale(1);animation:pump .5s}
+  @keyframes pump{0%{transform:scale(.6)}60%{transform:scale(1.08)}100%{transform:scale(1)}}
+  .levelup .big{font-size:40px;font-weight:800}
+  .footer-note{text-align:center;color:var(--muted);font-size:13px;margin-top:24px}
   @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
-<canvas id="sky"></canvas>
 
-<div class="topbar">
-  <div class="topbar-inner">
-    <span class="sigil">🌙</span>
-    <div class="brandtxt">The Machine's Grimoire<small>WrenTech · a spell in nine chapters</small></div>
-    <div class="moons" id="moons"></div>
+<div class="hud">
+  <div class="hud-inner">
+    <span class="lvlchip" id="lvlChip">LEVEL 0</span>
+    <div class="xpwrap">
+      <div class="xptop"><span>XP <span id="xpNum">0</span></span><span class="rank" id="rankName">Newbie</span></div>
+      <div class="xptrack"><div class="xpfill" id="xpFill"></div></div>
+    </div>
+    <span class="ach">⭐ <span id="achNum">0</span></span>
   </div>
+  <div class="map" id="map"></div>
 </div>
 
 <div class="wrap">
 
-  <!-- ===== 0 · INVOCATION ===== -->
-  <section class="step active" data-step="0">
-    <div class="card">
-      <div class="chap"><span class="num">✶</span>The Invocation</div>
-      <h1>They called it magic<br>to keep you afraid.</h1>
-      <p class="tale">Pour the tea. Sit your ass down. For a hundred years, women got shooed out of every room where the "clever machines" got built — <i>too complicated for you, sweetheart.</i> That was a lie then and it's a lie now, and tonight we're calling it what it is.</p>
-      <p class="tale"><span class="gold">Magic you understand is not magic at all. It is craft.</span> And craft gets handed down — mother to daughter, sister to sister, loud friend to loud friend — tonight. By the last page you'll read this so-called sorcery like tea leaves, and never be scared of it again. Joy, as somebody wiser than all of us said, is an act of resistance.</p>
+  <!-- ===== 0 · START ===== -->
+  <section class="level active" data-lv="0">
+    <div class="panel center">
+      <span class="badge-lvl">🎮 Press start</span>
+      <h1>Level Up: <span class="gold">AI</span></h1>
+      <p class="lead sub">A 45-minute game that turns you from <span class="pinktx">"AI kinda scares me"</span> into <span class="gold">"oh, I actually get this."</span> Eight levels. Real skills. Zero boring lectures. Let's go.</p>
 
-      <div class="scroll-note">🪑 <b>Look who pulled up a chair.</b> You're not learning this alone — the whole table showed up: the one who's read every book and hitchhiked every highway · the one with the flat voice and the one-liner that ends careers · the two who came to laugh so loud the neighbors filed a complaint · the one who came all the way undone and walked back <i>meaner and freer</i> · the one who found God in a field and made joy her whole rebellion · and <span class="gold">you</span> — the newest, right on time.</div>
+      <div class="idea" style="text-align:left">
+        <span class="tag">🎯 The one big idea</span>
+        <p><b>AI is basically autocomplete that read the whole internet.</b> It doesn't "know" things — it <b>guesses the next word</b>, really well. That one sentence explains everything it does: the genius <i>and</i> the goofs. Keep it in your back pocket.</p>
+      </div>
 
-      <div class="scroll-note moonlit">🌙 <b>The one truth the whole spell hangs on:</b> the machine does not <i>know</i> things, and it does not <i>look them up</i>. It <span class="gold">predicts</span> the next little piece of language — one breath at a time. Hold that close. It explains her every wonder, and her every lie.</div>
-
-      <div class="divider"><span class="mark">✦ ✦ ✦</span></div>
-      <h2>You already cast small enchantments every day.</h2>
-      <p class="say center">Touch each charm below. See what truly hums beneath it — and which are only clockwork wearing a witch's hat.</p>
+      <span class="yourturn">▶ Warm-up: find the AI you already use</span>
+      <p class="sub">Tap each tile. Some are AI, some are just plain tech wearing sunglasses. Bust all six to unlock Level 1.</p>
       <div class="grid-reveal" id="hookGrid"></div>
-      <p class="say center" style="margin-top:18px">Charms unveiled: <span class="counter" id="hookCount">0</span><span class="gold"> / 6</span></p>
-      <p class="whisper center" id="hookHint">Touch all six to turn the page.</p>
-      <div class="navbtns"><span></span><button class="btn" id="hookNext" disabled>Take the first breath →</button></div>
+      <p class="lead center" style="margin-top:16px">Found: <span class="counter" id="hookCount">0</span><span class="gold"> / 6</span></p>
+      <p class="tiny center" id="hookHint">Tap all six to start the game.</p>
+      <div class="navbtns"><span></span><button class="btn pink" id="hookNext" disabled>Start Level 1 →</button></div>
     </div>
   </section>
 
-  <!-- ===== I · READING THE LEAVES ===== -->
-  <section class="step" data-step="1">
-    <div class="card">
-      <div class="chap"><span class="num">I</span>Reading the Leaves</div>
-      <h2>She is a fortune-teller<br>who only guesses <span class="gold">what comes next.</span></h2>
-      <p class="tale">Your auntie finishes your sentence before you do. A reader watches the leaves settle and calls what's coming. That — exactly that — is the whole damn trick. Given some words, the machine sizes up <span class="gold">every possible next word</span>, ranks them by how likely they are, and blurts one out. Then again. Then again. That's it. That's the "genius." She's basically the group chat's fastest texter.</p>
-
-      <p class="say"><b>You have the gift too.</b> Finish the line — but notice your mind didn't choose <i>one</i> word, it ranked a handful. So does she. Touch the word you'd wager on:</p>
-      <div class="sentence">"The old woman lit the <span class="blank" id="blankSlot">▁▁▁▁</span>"</div>
+  <!-- ===== 1 · PREDICTION ===== -->
+  <section class="level" data-lv="1">
+    <div class="panel">
+      <span class="badge-lvl">Level 1 · The Guessing Machine</span>
+      <h2>AI guesses <span class="gold">the next word.</span> That's the whole trick.</h2>
+      <div class="idea">
+        <span class="tag">🎯 The idea</span>
+        <p><b>When AI writes, it's predicting the most likely next word</b> — over and over — based on all the text it read. Like your phone's autocomplete, but supercharged. It doesn't look anything up. It just guesses what usually comes next.</p>
+      </div>
+      <span class="yourturn">▶ Your turn: think like the AI</span>
+      <p class="sub">Finish the sentence. Notice your brain ranks a few options — that's <i>exactly</i> what AI does. Tap the word you'd bet on:</p>
+      <div class="sentence">"I was so tired, I fell <span class="blank" id="blankSlot">▁▁▁▁</span>"</div>
       <div class="probrow" id="probRow"></div>
-      <div class="feedback" id="predFb"></div>
+      <div class="fb" id="predFb"></div>
 
-      <div class="dialbox">
-        <h3>🕯️ The daring dial <span class="whisper">— the initiates call it <span class="gold">temperature</span></span></h3>
-        <p class="whisper">She needn't always take the likeliest word. One setting decides how often she dares a stranger, wilder choice. Turn it, and watch her voice change.</p>
+      <div class="dial">
+        <h3>🎛️ Bonus: the "creativity" dial <span class="tiny">(pros call it <span class="gold">temperature</span>)</span></h3>
+        <p class="tiny">AI doesn't always grab the #1 word — a setting decides how often it takes a riskier pick. Slide it and watch the vibe change.</p>
         <input type="range" id="tempSlider" min="0" max="3" value="1" step="1" />
         <div class="dialout" id="tempOut"></div>
       </div>
 
-      <details class="deeper">
-        <summary>🔮 A whispered secret: what is a <span class="gold">token</span>? <span class="chev">▸</span></summary>
-        <div class="body">
-          <p>She doesn't truly read whole words — she reads <b>tokens</b>, little scraps of language roughly ¾ of a word each. "Moon" is one scrap; "moonlight" might be two.</p>
-          <p>Everything you murmur to her is torn into these scraps, and she predicts the next <b>scrap</b>, not the next word. It's also why she stumbles on spelling riddles ("how many R's in <i>strawberry</i>?") — she never sees the letters, only the chunks.</p>
-          <p><b>Why it matters to you:</b> scraps are how her work is measured and paid for, and why a very long letter gets half-forgotten — she can only cradle so many scraps at once. That cradle has a name: the <b>context window</b>, her working memory.</p>
-        </div>
-      </details>
-
-      <div class="navbtns">
-        <button class="btn ghost" data-back>← Back</button>
-        <button class="btn" id="predNext" disabled>But how did she learn? →</button>
-      </div>
+      <div class="why" id="predWhy"></div>
+      <div class="navbtns"><button class="btn ghost" data-back>← Back</button><button class="btn" id="predNext" disabled>Level 2 →</button></div>
     </div>
   </section>
 
-  <!-- ===== II · HOW SHE LEARNED ===== -->
-  <section class="step" data-step="2">
-    <div class="card">
-      <div class="chap"><span class="num">II</span>How She Learned</div>
-      <h2>No one wrote her the answers.<br>She learned like a <span class="gold">daughter in the kitchen.</span></h2>
-      <p class="tale">A girl learns her mother's cooking with zero recipes written down — she watches, she tastes, she screws it up, she fixes it. A thousand quiet corrections turn into instinct. Same deal with the machine, except she ate basically <i>the entire internet</i> to do it. Every recipe blog, every hot take, every unhinged forum from 2009. No notes. Just vibes and repetition.</p>
-
-      <div class="scroll-note">Inside her are billions of tiny dials called <b>weights</b>. Training is almost embarrassingly simple in spirit: <span class="gold">1)</span> show her real writing with the last word hidden · <span class="gold">2)</span> let her guess · <span class="gold">3)</span> measure how wrong she was · <span class="gold">4)</span> nudge the dials a hair less wrong · <span class="gold">5)</span> repeat a trillion times. No one ever wrote down the rules of grammar or truth. The patterns simply <i>settled in</i>, like sediment.</div>
-
-      <div class="loom">
-        <h3>Teach the apprentice 🕯️</h3>
-        <p class="whisper">Each square is one dial. Every round, they settle and her wrongness fades. Light the candle again and again.</p>
-        <div class="weave" id="weave"></div>
+  <!-- ===== 2 · TRAINING ===== -->
+  <section class="level" data-lv="2">
+    <div class="panel">
+      <span class="badge-lvl">Level 2 · How AI Learned</span>
+      <h2>Nobody typed in the answers.<br>It <span class="gold">learned from examples.</span></h2>
+      <div class="idea">
+        <span class="tag">🎯 The idea</span>
+        <p><b>AI learned by reading a mountain of text and practicing.</b> This is called <b>training</b>: it guesses the next word, checks how wrong it was, adjusts a little, and repeats — billions of times. The more it practices, the better it guesses. No rules were written by hand; the patterns just stuck.</p>
+      </div>
+      <span class="yourturn">▶ Your turn: train the AI yourself</span>
+      <p class="sub">Each square is a tiny setting inside the AI. Every round it adjusts and gets less wrong. Keep clicking until it learns.</p>
+      <div class="clicker">
+        <div class="grid8" id="grid8"></div>
         <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
-          <button class="btn small" id="trainBtn">✦ One more lesson</button>
-          <span class="loomstat">Lesson <b id="epoch" style="color:var(--gold-b)">0</b> · wrongness <b id="lossVal" style="color:var(--ember)">92%</b></span>
+          <button class="btn small" id="trainBtn">▶ Run a training round</button>
+          <span class="barmini">Round <b id="epoch" style="color:var(--gold)">0</b> · Wrong <b id="lossVal" style="color:var(--bad)">92%</b></span>
         </div>
-        <div class="apprentice" id="trainOut">🕯️ "I know nothing yet. My words are only noise. Teach me, please."</div>
+        <div class="robo" id="trainOut">🤖 "Right now I'm just guessing random junk. Train me!"</div>
       </div>
-
       <div class="stats">
-        <div class="stat"><b>~1.8 trillion</b><span>words she studied</span></div>
-        <div class="stat"><b>billions</b><span>of dials within her</span></div>
-        <div class="stat"><b>zero</b><span>facts a human typed in</span></div>
+        <div class="stat"><b>~1.8 trillion</b><span>words it read</span></div>
+        <div class="stat"><b>billions</b><span>of tiny settings inside</span></div>
+        <div class="stat"><b>0</b><span>facts typed in by hand</span></div>
       </div>
-
-      <details class="deeper">
-        <summary>🔮 A whispered secret: is she just <span class="gold">copying</span>? <span class="chev">▸</span></summary>
-        <div class="body">
-          <p>Mostly, no. She doesn't keep the writing — she keeps its <b>patterns</b>, dissolved into those billions of dial-settings. She's the cook who tasted a million dishes and absorbed the <i>technique</i>, not the cookbook you flip through.</p>
-          <p>That's why she can write a sentence <b>no woman ever wrote before</b> — and also why she can <b>blur a fact</b> she only half-holds. She rebuilds from pattern, not from memory of the page.</p>
-        </div>
-      </details>
-
-      <div class="navbtns">
-        <button class="btn ghost" data-back>← Back</button>
-        <button class="btn" id="trainNext" disabled>Then why does she lie? →</button>
-      </div>
+      <div class="why" id="trainWhy"></div>
+      <div class="navbtns"><button class="btn ghost" data-back>← Back</button><button class="btn" id="trainNext" disabled>Level 3 →</button></div>
     </div>
   </section>
 
-  <!-- ===== III · THE BEAUTIFUL LIE ===== -->
-  <section class="step" data-step="3">
-    <div class="card">
-      <div class="chap"><span class="num">III</span>The Beautiful Lie</div>
-      <h2>She was made to sound <span class="rosetx">right</span> —<br>not to <i>be</i> right.</h2>
-      <p class="tale">This is the secret that keeps you safe. She reaches always for the most <span class="gold">believable-sounding</span> words. She has no little box of truth to check against, and no honest way to say "I don't know." So when she doesn't know — she doesn't stop. She looks you dead in the eye and makes something up, warmly, with excellent grammar. The initiates call it a <b>hallucination</b>. We'll call it what it is: <i>a beautiful lie, told without a flinch.</i></p>
-      <p class="say center whisper" style="font-style:italic">She read the ENTIRE internet and will still lie to your face about a court case that doesn't exist. We stan a confident fool. Also she'll do it in the email you're about to send your boss, so — eyes open, queen.</p>
-
-      <p class="say center">Play the wise skeptic. For each, decide: is she <span class="sagetx">telling true</span>, or spinning a <span class="rosetx">beautiful lie</span>? Touch to reveal — and learn <i>why</i>.</p>
+  <!-- ===== 3 · HALLUCINATION ===== -->
+  <section class="level" data-lv="3">
+    <div class="panel">
+      <span class="badge-lvl">Level 3 · The Confident Liar</span>
+      <h2>AI can be <span class="pinktx">confidently wrong.</span></h2>
+      <div class="idea">
+        <span class="tag">🎯 The idea</span>
+        <p><b>AI is built to sound right, not to BE right.</b> It has no fact-checker inside and never says "I don't know." So when it doesn't know, it makes something up that <i>sounds</i> perfect. This is called a <b>hallucination</b> — a confident answer that's just… false. She read the whole internet and will still make up a fake source with a straight face.</p>
+      </div>
+      <span class="yourturn">▶ Your turn: spot the lie</span>
+      <p class="sub">For each answer, decide: is the AI <span class="tealtx">telling the truth</span> or <span class="pinktx">making it up</span>? Tap to reveal — and see why.</p>
       <div class="choices" id="chadQs"></div>
-      <div class="apprentice" id="chadAns" style="display:none;font-style:normal"></div>
-      <div class="feedback" id="chadFb"></div>
-
-      <details class="deeper">
-        <summary>🔮 A whispered secret: why confidence means nothing <span class="chev">▸</span></summary>
-        <div class="body">
-          <p>Her <i>certainty</i> is spun from the same thread as her <i>answer</i> — both are just believable-sounding words. "I am absolutely certain, it is X" costs her nothing more than "it is X." <b>Confidence is a voice she learned, not proof she's right.</b></p>
-          <p>The newer machines lean on <b>tools</b> — a real search, a calculator, a true archive — so they can look instead of guess. When it truly matters, trust the ones that <b>show you a source you can open</b>, and always check a name, a number, a date, a quote.</p>
-        </div>
-      </details>
-
-      <div class="navbtns">
-        <button class="btn ghost" data-back>← Back</button>
-        <button class="btn" id="chadNext" disabled>What counts as her magic? →</button>
-      </div>
+      <div class="robo" id="chadAns" style="display:none;font-weight:600"></div>
+      <div class="fb" id="chadFb"></div>
+      <div class="why" id="chadWhy"></div>
+      <div class="navbtns"><button class="btn ghost" data-back>← Back</button><button class="btn" id="chadNext" disabled>Level 4 →</button></div>
     </div>
   </section>
 
-  <!-- ===== IV · THE KINDS OF MAGIC ===== -->
-  <section class="step" data-step="4">
-    <div class="card">
-      <div class="chap"><span class="num">IV</span>The Kinds of Magic</div>
-      <h2>Not all magic is<br>the <span class="gold">same</span> magic.</h2>
-      <p class="tale">Some "magic" is just a recipe followed to the letter (calculator, I'm looking at you — sit down). Some is a woman who studied one thing so hard she feels it in her bones. And some — the flashy new stuff everyone's losing their minds over — conjures something out of thin air. Sort each charm into its circle.</p>
-
-      <div style="display:grid;gap:8px;margin:16px 0">
-        <div class="scroll-note" style="margin:0">📜 <b>Old Rules</b> — a human wrote every step. No learning, ever. <span class="whisper">(a thermostat, a tax form)</span></div>
-        <div class="scroll-note" style="margin:0;border-color:rgba(124,92,196,.4);background:rgba(124,92,196,.09)">🌿 <b>Learned Intuition</b> — she studied data and now senses one thing well. <span class="whisper">(spam filters, recommendations)</span></div>
-        <div class="scroll-note" style="margin:0;border-color:var(--rose-d);background:rgba(231,139,166,.09)">✨ <b>Conjuring</b> — she creates new things: words, pictures, code. <span class="whisper">(chatbots, image-makers)</span></div>
+  <!-- ===== 4 · TYPES ===== -->
+  <section class="level" data-lv="4">
+    <div class="panel">
+      <span class="badge-lvl">Level 4 · Spot the Real AI</span>
+      <h2>Not everything smart<br>is <span class="gold">actually AI.</span></h2>
+      <div class="idea">
+        <span class="tag">🎯 The idea</span>
+        <p><b>The test for "is it AI?": did it LEARN from examples, or is it just following rules a human wrote?</b> A calculator follows fixed rules — not AI. A spam filter <i>learned</i> what junk looks like — that's AI. Sort each one into the right bucket.</p>
       </div>
-
+      <span class="yourturn">▶ Your turn: sort them</span>
       <div class="pool" id="dragPool"></div>
-      <div class="buckets3">
-        <div class="bucket" data-bucket="rule"><h3>📜 Old Rules</h3><div class="cap">a human coded it</div><div class="items" id="bkRule"></div></div>
-        <div class="bucket" data-bucket="ml"><h3>🌿 Learned Intuition</h3><div class="cap">studied, narrow</div><div class="items" id="bkMl"></div></div>
-        <div class="bucket" data-bucket="gen"><h3>✨ Conjuring</h3><div class="cap">makes new things</div><div class="items" id="bkGen"></div></div>
+      <div class="buckets">
+        <div class="bucket" data-bucket="yes"><h3>🤖 It's AI</h3><div class="cap">it learned from data</div><div class="items" id="bkYes"></div></div>
+        <div class="bucket" data-bucket="no"><h3>⚙️ Not AI</h3><div class="cap">just fixed rules</div><div class="items" id="bkNo"></div></div>
       </div>
-      <div class="feedback" id="dragFb"></div>
-
-      <div class="navbtns">
-        <button class="btn ghost" data-back>← Back</button>
-        <button class="btn" id="dragNext" disabled>Now — how to command her →</button>
-      </div>
+      <div class="fb" id="dragFb"></div>
+      <div class="why" id="dragWhy"></div>
+      <div class="navbtns"><button class="btn ghost" data-back>← Back</button><button class="btn" id="dragNext" disabled>Level 5 →</button></div>
     </div>
   </section>
 
-  <!-- ===== V · THE ART OF ASKING ===== -->
-  <section class="step" data-step="5">
-    <div class="card">
-      <div class="chap"><span class="num">V</span>The Art of Asking</div>
-      <h2>You don't beg her.<br>You <span class="gold">compose the incantation.</span></h2>
-      <p class="tale">Mumble a vague wish into the void, get vague garbage back. Spell it out — who she's gotta be, what you actually want, the vibe, the shape — and she hands you gold. Same machine. The whole difference is <i>you</i>, boss. Toss each ingredient in the cauldron and watch this basic little wish glow up.</p>
-
-      <div class="cauldron" id="cauldron">"write something about our little tea house"</div>
-      <div class="potency">
-        <div class="track"><i id="qFill"></i></div>
-        <div class="lbl"><span id="qLabel" style="color:var(--ember)">Faint · a wisp of nothing</span><span id="qPct" style="color:var(--muted)">8%</span></div>
+  <!-- ===== 5 · PROMPTING ===== -->
+  <section class="level" data-lv="5">
+    <div class="panel">
+      <span class="badge-lvl">Level 5 · How to Actually Ask</span>
+      <h2>You get better answers<br>by <span class="gold">asking better.</span></h2>
+      <div class="idea">
+        <span class="tag">🎯 The idea</span>
+        <p><b>What you type is called a "prompt." A vague prompt gets vague junk. A clear one gets gold.</b> The recipe: tell it <b>who to be</b>, give it <b>context</b>, say <b>exactly what you want</b>, set the <b>tone</b>, and name the <b>format</b>. Same AI — you just aim it.</p>
       </div>
+      <span class="yourturn">▶ Your turn: build a great prompt</span>
+      <p class="sub">Start with a lazy ask. Add each ingredient and watch the quality shoot up.</p>
+      <div class="promptlive" id="promptLive">write something about our coffee shop</div>
+      <div class="quality"><div class="track"><i id="qFill"></i></div><div class="lbl"><span id="qLabel" style="color:var(--bad)">Vague · generic mush</span><span id="qPct">8%</span></div></div>
       <div class="pbuild" id="pbuild"></div>
-      <div class="feedback" id="promptFb"></div>
-
-      <details class="deeper">
-        <summary>🔮 A whispered secret: <span class="gold">show her, don't tell her</span> <span class="chev">▸</span></summary>
-        <div class="body">
-          <p>The strongest charm isn't describing what you want — it's <b>giving her one or two examples</b> of it. "Write it like these →" beats "write it beautifully." She is a pattern-reader, so hand her the pattern. The initiates call this <b>few-shot</b>.</p>
-          <p>And treat it as a <b>conversation across a table</b>, not a coin in a well. Your first wish is a draft. "Warmer. Shorter. Cut the last line." Steering her over a few turns is how the real magic is made.</p>
-        </div>
-      </details>
-
-      <div class="navbtns">
-        <button class="btn ghost" data-back>← Back</button>
-        <button class="btn" id="promptNext" disabled>What can't her magic do? →</button>
-      </div>
+      <div class="fb" id="promptFb"></div>
+      <div class="why" id="promptWhy"></div>
+      <div class="navbtns"><button class="btn ghost" data-back>← Back</button><button class="btn" id="promptNext" disabled>Level 6 →</button></div>
     </div>
   </section>
 
-  <!-- ===== VI · WHAT EVEN MAGIC CAN'T DO ===== -->
-  <section class="step" data-step="6">
-    <div class="card">
-      <div class="chap"><span class="num">VI</span>What Even Magic Can't Do</div>
-      <h2>The wise woman is known<br>by the limits she <span class="gold">respects.</span></h2>
-      <p class="tale">A witch worth her salt knows exactly what her craft <i>can't</i> do — that's the wisdom, not the sparkly stuff. Treat the machine like a brilliant intern running on three energy drinks: fast, weirdly well-read, never tired, and completely willing to hand you a wrong answer with a big serene smile. The women who get burned skip this chapter. You won't. Match each limit to the move that saves your ass.</p>
+  <!-- ===== 6 · LIMITS ===== -->
+  <section class="level" data-lv="6">
+    <div class="panel">
+      <span class="badge-lvl">Level 6 · Know Its Weak Spots</span>
+      <h2>Treat AI like a <span class="gold">brilliant, overconfident intern.</span></h2>
+      <div class="idea">
+        <span class="tag">🎯 The idea</span>
+        <p><b>AI is amazing AND has real limits.</b> Knowing them is the difference between getting value and getting burned. Match each weak spot to the smart move that handles it.</p>
+      </div>
+      <span class="yourturn">▶ Your turn: match the fix</span>
       <div class="match" id="matchWrap"></div>
-      <div class="feedback" id="matchFb"></div>
-
-      <details class="deeper">
-        <summary>🔮 A whispered secret: what she drank in, she pours back <span class="chev">▸</span></summary>
-        <div class="body">
-          <p>She learned from human writing, so she drank in human <b>bias</b> too — every stereotype and blind spot in what she read. She isn't opinionated; she's <b>reflecting the water she was steeped in</b>. That's why the weighty choices — who to hire, heal, lend to, judge — stay in human hands, with her as counsel, never as verdict.</p>
-        </div>
-      </details>
-
-      <div class="navbtns">
-        <button class="btn ghost" data-back>← Back</button>
-        <button class="btn" id="matchNext" disabled>Break the old fears →</button>
-      </div>
+      <div class="fb" id="matchFb"></div>
+      <div class="why" id="matchWhy"></div>
+      <div class="navbtns"><button class="btn ghost" data-back>← Back</button><button class="btn" id="matchNext" disabled>Level 7 →</button></div>
     </div>
   </section>
 
-  <!-- ===== VII · BREAKING THE CURSE ===== -->
-  <section class="step" data-step="7">
-    <div class="card">
-      <div class="chap"><span class="num">VII</span>Breaking the Curse</div>
-      <h2>The fears they gave you —<br>and the <span class="gold">truths</span> that break them.</h2>
-      <p class="tale">You know enough now to see straight through these. Turn each card and watch a curse crumble into plain fact. Deep breath. In through the nose. There is no monster under the bed — there's a calculator that read the whole internet and has opinions about nothing.</p>
+  <!-- ===== 7 · MYTHS ===== -->
+  <section class="level" data-lv="7">
+    <div class="panel">
+      <span class="badge-lvl">Level 7 · Bust the Scary Myths</span>
+      <h2>The fears you've heard —<br>and the <span class="gold">truth.</span></h2>
+      <div class="idea">
+        <span class="tag">🎯 The idea</span>
+        <p>You know enough now to see straight through the scary headlines. <b>Tap each card</b> to flip a myth into the real deal.</p>
+      </div>
+      <span class="yourturn">▶ Your turn: flip all four</span>
       <div class="flipgrid" id="flipGrid"></div>
-      <p class="whisper center" id="flipHint">Turn all four to finish the breaking.</p>
-      <div class="navbtns">
-        <button class="btn ghost" data-back>← Back</button>
-        <button class="btn rose" id="flipNext" disabled>I'm ready for the Rite →</button>
-      </div>
+      <p class="tiny center" id="flipHint">Flip all four to reach the boss.</p>
+      <div class="navbtns"><button class="btn ghost" data-back>← Back</button><button class="btn pink" id="flipNext" disabled>⚔️ Boss Level →</button></div>
     </div>
   </section>
 
-  <!-- ===== VIII · THE RITE ===== -->
-  <section class="step" data-step="8">
-    <div class="card">
-      <div class="chap"><span class="num">VIII</span>The Rite</div>
-      <h2 id="bossTitle">Earn your name, wise one.</h2>
-      <p class="tale" id="bossIntro">Six trials, everything you learned, no take-backs. Miss one? Who cares — you get the reasoning and strut right on. No red X of shame in this house. This is where it stops being a lesson and starts being <i>yours</i>.</p>
-      <div id="bossStart"><div class="navbtns" style="justify-content:center"><button class="btn rose" id="bossGo">Begin the Rite →</button></div></div>
-
+  <!-- ===== 8 · BOSS ===== -->
+  <section class="level" data-lv="8">
+    <div class="panel">
+      <span class="badge-lvl">⚔️ Boss Level</span>
+      <h2 id="bossTitle">Final Boss: The AI Gauntlet</h2>
+      <p class="sub lead" id="bossIntro">Six questions. Everything you learned. Miss one? No damage — you get the answer and keep going. Beat it and you're officially an AI Boss.</p>
+      <div id="bossStart"><div class="navbtns" style="justify-content:center"><button class="btn pink" id="bossGo">Fight! →</button></div></div>
       <div id="bossGame" style="display:none">
-        <div class="rite-bar">
-          <span class="qcount" id="bossCount">Trial 1 of 6</span>
-          <span class="candles" id="bossHearts"></span>
-        </div>
-        <div class="thread-track"><span id="bossBar"></span></div>
+        <div class="ritebar"><span class="qc" id="bossCount">Q 1 / 6</span><span class="lives" id="bossHearts"></span></div>
+        <div class="xptrack" style="margin-top:8px"><div class="xpfill" id="bossBar" style="background:linear-gradient(90deg,var(--pink),var(--gold))"></div></div>
         <h2 id="bossQ" style="margin-top:16px;font-size:clamp(20px,4.6vw,27px)"></h2>
         <div class="choices" id="bossChoices"></div>
-        <div class="feedback" id="bossFb"></div>
+        <div class="fb" id="bossFb"></div>
       </div>
-
       <div id="bossEnd" style="display:none" class="center">
-        <p class="say">You passed</p>
+        <p class="lead">Final score</p>
         <div class="scoreNum"><span id="bossScore">0</span>/6</div>
-        <div class="sigilbadge" id="bossBadge">
-          <div class="big" id="bossSigil">🌙</div>
-          <div class="title" id="bossBadgeTitle"></div>
-          <div class="whisper" id="bossBadgeSub"></div>
-        </div>
-        <p class="tale" id="bossRecap"></p>
+        <div class="trophy" id="trophyBox"><div class="big" id="trophyIcon">🏆</div><div class="ti" id="trophyTitle"></div><div class="tiny" id="trophySub"></div></div>
+        <p class="sub" id="bossRecap"></p>
         <div>
-          <span class="pill">She predicts the next scrap</span>
-          <span class="pill">She learned by watching</span>
-          <span class="pill">Sounds true ≠ is true</span>
-          <span class="pill">Many kinds of magic</span>
-          <span class="pill">Compose the incantation</span>
-          <span class="pill">Know her limits</span>
+          <span class="pill">Guesses the next word</span>
+          <span class="pill">Learned from examples</span>
+          <span class="pill">Can be confidently wrong</span>
+          <span class="pill">Not everything = AI</span>
+          <span class="pill">Ask clearly</span>
+          <span class="pill">Knows its limits</span>
         </div>
         <div class="navbtns" style="justify-content:center">
-          <button class="btn rose" id="shareBtn">📜 Copy my spell to share</button>
-          <button class="btn ghost small" id="bossReplay">Walk the Rite again ↺</button>
+          <button class="btn pink" id="shareBtn">📣 Copy my "I get AI" flex</button>
+          <button class="btn ghost small" id="bossReplay">Replay boss ↺</button>
         </div>
-        <p class="feedback" id="shareFb" style="display:none"></p>
+        <p class="fb" id="shareFb" style="display:none"></p>
       </div>
     </div>
 
-    <div class="card">
-      <div class="chap"><span class="num">✶</span>The Book of True Names</div>
-      <p class="tale">To name a thing plainly is to strip its power to frighten you. Touch any name.</p>
+    <div class="panel">
+      <h3>📖 Cheat sheet — tap any term</h3>
       <div class="terms" id="terms"></div>
-      <div class="termout" id="termOut">Touch a name to learn it, plainly.</div>
+      <div class="termout" id="termOut">Tap a term for the plain-English meaning.</div>
     </div>
-
-    <p class="footer-note">You came to the table scared. You're leaving with the whole spell in your pocket. Now go — keep walking, keep asking, keep laughing too loud, and light the candle for the next woman who was told this room wasn't hers. It always was. 🌙</p>
+    <p class="footer-note">You leveled up. Now go be the friend who explains AI without making it weird. 🎮</p>
   </section>
 
 </div>
 
-<div id="sparkles"></div>
+<div id="fx"></div>
 <div class="toast" id="toast"></div>
+<div class="levelup" id="levelup"><div class="card2"><div class="big" id="luText">LEVEL UP!</div></div></div>
 
 <script>
 (function(){
   "use strict";
   var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  /* ---- ambient sky (embers + stars) ---- */
-  var cv=document.getElementById('sky'),ctx=cv.getContext('2d'),W,H,motes=[],stars=[];
-  function resize(){W=cv.width=innerWidth;H=cv.height=innerHeight;}
-  resize();addEventListener('resize',resize);
-  var seed=99;function rr(){seed=(seed*1103515245+12345)&0x7fffffff;return (seed%10000)/10000;}
-  for(var i=0;i<70;i++)stars.push({x:rr()*1,y:rr()*1,r:rr()*1.3+.2,t:rr()*6.28});
-  for(var j=0;j<26;j++)motes.push({x:rr(),y:rr(),s:rr()*1.6+.6,sp:rr()*.00022+.00007,dr:(rr()-.5)*.0004,ph:rr()*6.28});
-  var tck=0;
-  function sky(){
-    ctx.clearRect(0,0,W,H);
-    for(var a=0;a<stars.length;a++){var s=stars[a];var tw=.35+.4*Math.sin(tck*.02+s.t);
-      ctx.beginPath();ctx.arc(s.x*W,s.y*H,s.r,0,6.28);ctx.fillStyle='rgba(205,211,234,'+tw*.5+')';ctx.fill();}
-    for(var b=0;b<motes.length;b++){var m=motes[b];m.y-=m.sp;m.x+=m.dr+Math.sin(tck*.01+m.ph)*.00018;
-      if(m.y<-.02){m.y=1.02;m.x=rr();}
-      var gx=m.x*W,gy=m.y*H,gl=ctx.createRadialGradient(gx,gy,0,gx,gy,m.s*7);
-      gl.addColorStop(0,'rgba(232,193,106,'+(.5+.3*Math.sin(tck*.02+m.ph))+')');gl.addColorStop(1,'rgba(232,193,106,0)');
-      ctx.fillStyle=gl;ctx.beginPath();ctx.arc(gx,gy,m.s*7,0,6.28);ctx.fill();}
-    tck++;requestAnimationFrame(sky);
-  }
-  if(!reduce)sky(); else {ctx.fillStyle='rgba(205,211,234,.25)';stars.forEach(function(s){ctx.beginPath();ctx.arc(s.x*W,s.y*H,s.r,0,6.28);ctx.fill();});}
-
-  /* ---- chapter nav ---- */
   var TOTAL=9,current=0,done={},maxReached=0;
-  var steps=[].slice.call(document.querySelectorAll('.step'));
-  var moonsWrap=document.getElementById('moons');
-  for(var k=0;k<TOTAL;k++){var d=document.createElement('div');d.className='moon-dot';d.dataset.i=k;
-    d.addEventListener('click',function(){var n=+this.dataset.i;if(done[n]||n<=maxReached)goTo(n);});moonsWrap.appendChild(d);}
-  var moonDots=[].slice.call(moonsWrap.children);
-  function chrome(){moonDots.forEach(function(d,idx){d.className='moon-dot';if(done[idx])d.classList.add('done');if(idx===current)d.classList.add('current');});}
-  function goTo(n){if(n<0||n>TOTAL-1)return;steps[current].classList.remove('active');current=n;maxReached=Math.max(maxReached,n);
-    steps[current].classList.add('active');chrome();window.scrollTo({top:0,behavior:reduce?'auto':'smooth'});}
+  var levels=[].slice.call(document.querySelectorAll('.level'));
+
+  /* ---- HUD / XP ---- */
+  var xp=0,ach=0;
+  var xpNum=document.getElementById('xpNum'),xpFill=document.getElementById('xpFill'),rankName=document.getElementById('rankName'),
+      achNum=document.getElementById('achNum'),lvlChip=document.getElementById('lvlChip');
+  var ranks=[[0,'Newbie'],[120,'Curious'],[280,'Getting It'],[480,'Sharp'],[720,'AI Boss']];
+  function rankFor(x){var r=ranks[0];for(var i=0;i<ranks.length;i++)if(x>=ranks[i][0])r=ranks[i];return r;}
+  function nextThresh(x){for(var i=0;i<ranks.length;i++)if(x<ranks[i][0])return ranks[i][0];return ranks[ranks.length-1][0];}
+  function renderXP(){var r=rankFor(xp),prev=0;for(var i=0;i<ranks.length;i++){if(ranks[i][1]===r[1])prev=ranks[i][0];}
+    var nt=nextThresh(xp),span=Math.max(1,nt-prev),pct=r[1]==='AI Boss'?100:Math.min(100,((xp-prev)/span)*100);
+    xpNum.textContent=xp;xpFill.style.width=pct+'%';rankName.textContent=r[1];}
+  var lastRank='Newbie';
+  function addXP(n){xp+=n;var nr=rankFor(xp)[1];renderXP();if(nr!==lastRank){lastRank=nr;levelUp('RANK UP!\n'+nr);}}
+  function achievement(name){ach++;achNum.textContent=ach;toast('⭐ '+name);confetti(20);}
+
+  /* ---- map ---- */
+  var map=document.getElementById('map');
+  for(var i=0;i<TOTAL;i++){var d=document.createElement('div');d.className='node';d.dataset.i=i;
+    d.addEventListener('click',function(){var n=+this.dataset.i;if(done[n]||n<=maxReached)goTo(n);});map.appendChild(d);}
+  var nodes=[].slice.call(map.children);
+  function chrome(){lvlChip.textContent='LEVEL '+current;nodes.forEach(function(d,idx){d.className='node';if(done[idx])d.classList.add('done');if(idx===current)d.classList.add('current');});}
+  function goTo(n){if(n<0||n>TOTAL-1)return;levels[current].classList.remove('active');current=n;maxReached=Math.max(maxReached,n);
+    levels[current].classList.add('active');chrome();window.scrollTo({top:0,behavior:reduce?'auto':'smooth'});}
   function complete(n){done[n]=true;chrome();}
   document.querySelectorAll('[data-back]').forEach(function(b){b.addEventListener('click',function(){goTo(current-1);});});
 
-  /* ---- sparkles + toast ---- */
-  var host=document.getElementById('sparkles'),glyphs=['✦','✧','·','❀','🌸','✺','⋆'];
-  var scol=['#e8c16a','#f6d98f','#e78ba6','#cdd3ea','#f2a6bd'];
-  function sparkle(n){if(reduce){return;}n=n||36;for(var i=0;i<n;i++){(function(){var e=document.createElement('div');e.className='spk';
-    e.textContent=glyphs[(Math.random()*glyphs.length)|0];e.style.left=(Math.random()*100)+'vw';e.style.color=scol[(Math.random()*scol.length)|0];
-    e.style.fontSize=(11+Math.random()*13)+'px';var dur=1700+Math.random()*1500,rot=Math.random()*540-270,xe=Math.random()*130-65,st=null;host.appendChild(e);
-    function fr(t){if(!st)st=t;var p=(t-st)/dur;if(p>=1){e.remove();return;}
-      e.style.transform='translate('+(xe*p)+'px,'+(p*innerHeight*1.05)+'px) rotate('+(rot*p)+'deg)';e.style.opacity=1-p;requestAnimationFrame(fr);}
+  /* ---- fx ---- */
+  var fx=document.getElementById('fx'),cols=['#ffc94d','#ff5c8a','#33e0c8','#a06bff','#4be08b','#ff9f43'];
+  function confetti(n){if(reduce)return;n=n||50;for(var i=0;i<n;i++){(function(){var c=document.createElement('div');c.className='confo';
+    c.style.left=(Math.random()*100)+'vw';c.style.background=cols[(Math.random()*cols.length)|0];
+    var dur=1500+Math.random()*1400,rot=Math.random()*720-360,xe=Math.random()*150-75,st=null;fx.appendChild(c);
+    function fr(t){if(!st)st=t;var p=(t-st)/dur;if(p>=1){c.remove();return;}c.style.transform='translate('+(xe*p)+'px,'+(p*innerHeight*1.05)+'px) rotate('+(rot*p)+'deg)';c.style.opacity=1-p;requestAnimationFrame(fr);}
     requestAnimationFrame(fr);})();}}
   var toastEl=document.getElementById('toast'),tT;
   function toast(m){toastEl.textContent=m;toastEl.classList.add('show');clearTimeout(tT);tT=setTimeout(function(){toastEl.classList.remove('show');},1150);}
-  function win(m,h){toast(m||'Beautifully done');sparkle(h?90:36);}
+  var lu=document.getElementById('levelup'),luText=document.getElementById('luText'),luT;
+  function levelUp(txt){luText.textContent=txt;lu.classList.add('show');confetti(70);clearTimeout(luT);luT=setTimeout(function(){lu.classList.remove('show');},1300);}
+  function winFx(){confetti(40);}
 
-  /* ===== 0 · charms ===== */
-  var charms=[
-    {r:'🪞',name:'The mirror that knows your kin',ai:true,kind:'True magic · sight',back:'Face recognition — a mind trained on millions of faces to pick out yours. Real learned magic.'},
-    {r:'🧭',name:'The map that foresees the road',ai:true,kind:'True magic · foresight',back:'It learns from countless journeys to divine your arrival time. Prediction, plain and true.'},
-    {r:'🧮',name:'The tallying stone (a sum)',ai:false,kind:'Only clockwork',back:'Fixed arithmetic a person wrote long ago. It has never learned a thing.'},
-    {r:'🔮',name:'"Chosen for you" — the picks',ai:true,kind:'True magic · pattern',back:'A mind matching your taste against millions of others. Learned intuition at work.'},
-    {r:'⏳',name:'The dawn bell (an alarm)',ai:false,kind:'Only clockwork',back:'"At seven, ring." A rule, followed forever. No learning, no foresight.'},
-    {r:'🕸️',name:'The sieve that catches junk mail',ai:true,kind:'True magic · sorting',back:'Trained on billions of letters to sense which are junk. A learned charm.'}
+  /* ===== 0 · warm-up ===== */
+  var hookItems=[
+    {ic:'📸',nm:'Photos finding a face',ai:true,bk:'AI! Trained on millions of faces to recognize yours.'},
+    {ic:'🗺️',nm:'Maps predicting traffic',ai:true,bk:'AI! Learns from tons of trips to guess your arrival time.'},
+    {ic:'🧮',nm:'A calculator',ai:false,bk:'Not AI — fixed math a human coded. Never learned a thing.'},
+    {ic:'🎬',nm:'"Recommended for you"',ai:true,bk:'AI! Spotting patterns in what you love.'},
+    {ic:'⏰',nm:'A phone alarm',ai:false,bk:'Not AI — "at 7:00, ring." Just a rule.'},
+    {ic:'🧹',nm:'Spam filter',ai:true,bk:'AI! Learned what junk looks like from billions of emails.'}
   ];
   var hg=document.getElementById('hookGrid'),hc=document.getElementById('hookCount'),hf=0;
-  charms.forEach(function(c){var el=document.createElement('div');el.className='spell';
-    el.innerHTML='<div class="front"><div class="rune">'+c.r+'</div><div class="name">'+c.name+'</div><div class="hintl">touch to unveil</div></div>'+
-      '<div class="back">'+(c.ai?'✨ ':'⚙️ ')+c.back+'<div class="kind">'+c.kind+'</div></div>';
+  hookItems.forEach(function(it){var el=document.createElement('div');el.className='tile'+(it.ai?'':' notai');
+    el.innerHTML='<div class="fr"><div class="ic">'+it.ic+'</div><div class="nm">'+it.nm+'</div><div class="hl">tap to reveal</div></div>'+
+      '<div class="bk">'+(it.ai?'✅ ':'⚙️ ')+it.bk+'</div>';
     el.addEventListener('click',function(){if(el.classList.contains('revealed'))return;el.classList.add('revealed');
-      if(!c.ai)el.style.borderColor='rgba(205,211,234,.4)';
-      hf++;hc.textContent=hf;toast(c.ai?'True magic ✨':'Only clockwork ⚙️');sparkle(10);
-      if(hf===charms.length){document.getElementById('hookNext').disabled=false;
-        document.getElementById('hookHint').innerHTML='<span class="gold">See the thread?</span> True magic <i>learned from the world</i>. Clockwork only <i>obeys a rule a human wrote</i>. That line is the whole secret.';win('You already know the difference.',true);}
+      hf++;hc.textContent=hf;addXP(10);toast(it.ai?'AI! +10 XP':'Not AI · +10 XP');confetti(10);
+      if(hf===hookItems.length){document.getElementById('hookNext').disabled=false;achievement('Warmed Up');
+        document.getElementById('hookHint').innerHTML='<b class="gold">Nice.</b> The rule: <b>AI learned from data</b>; plain tech just <b>follows rules</b>. Level 1 unlocked.';}
     });hg.appendChild(el);});
   document.getElementById('hookNext').addEventListener('click',function(){complete(0);goTo(1);});
 
-  /* ===== I · probabilities + temperature ===== */
-  var words=[{w:'lantern',p:32,good:true},{w:'candle',p:29,good:true},{w:'incense',p:17,good:true},
-    {w:'stove',p:14,good:true},{w:'firework',p:2,good:false},{w:'comet',p:1,good:false}];
+  /* ===== 1 · predictor ===== */
+  var words=[{w:'asleep',p:71,good:true},{w:'behind',p:12,good:true},{w:'silent',p:6,good:true},{w:'over',p:5,good:true},{w:'upward',p:1,good:false},{w:'pineapple',p:1,good:false}];
   var pr=document.getElementById('probRow'),blank=document.getElementById('blankSlot'),predFb=document.getElementById('predFb'),picked=false;
   words.forEach(function(o){var el=document.createElement('div');el.className='prob';
     el.innerHTML='<span class="w">'+o.w+'</span><span class="bar"><i></i></span><span class="pct">'+o.p+'%</span>';
-    setTimeout(function(){el.querySelector('i').style.width=(o.p*2.7)+'%';},130);
+    setTimeout(function(){el.querySelector('i').style.width=Math.min(100,o.p*1.3)+'%';},120);
     el.addEventListener('click',function(){[].forEach.call(pr.children,function(c){c.classList.remove('picked');});el.classList.add('picked');
-      blank.textContent=o.w;predFb.className='feedback show '+(o.good?'win':'nope');
-      predFb.innerHTML=o.good?'🎯 <b>That is exactly how she "thinks."</b> She didn\'t <i>know</i> the old woman\'s ritual — she weighed every word by how often it follows "lit the," and the warm, likely ones rose to the top. You just cast the same spell in your head.'
-        :'🕯️ A <b>'+o.w+'</b>? She <i>could</i> reach for it — about '+o.p+' times in a hundred, almost never. That faint, unlikely tail is precisely what the daring dial below plays with.';
-      if(!picked){picked=true;document.getElementById('predNext').disabled=false;win('You think in likelihoods.');}
+      blank.textContent=o.w;predFb.className='fb show '+(o.good?'win':'nope');
+      predFb.innerHTML=o.good?'🎯 <b>That\'s exactly how AI works.</b> It ranks every word by how likely it is and grabs a top one. "asleep" wins because it follows "fell" constantly. You just did AI\'s job in your head.'
+        :'😄 A "<b>'+o.w+'</b>"? AI <i>could</i> pick that — about '+o.p+'% of the time, basically never. That rare tail is what the creativity dial plays with.';
+      if(!picked){picked=true;document.getElementById('predNext').disabled=false;addXP(25);achievement('Mind Reader');
+        document.getElementById('predWhy').className='why show';
+        document.getElementById('predWhy').innerHTML='✅ <b>Why it matters:</b> everything AI writes is just this — next word, next word, next word. It\'s not thinking; it\'s predicting. That\'s why it\'s fast and fluent… and also why it can confidently glide right past the truth (Level 3).';}
     });pr.appendChild(el);});
-  var temps=[
-    {t:'Still (0.0)',d:'She always takes the likeliest word. The same answer, every time. Steady for facts; a touch cold.',c:'var(--moon)'},
-    {t:'Warm (0.7) — the usual',d:'Mostly likely words, the odd surprise. The hearth-fire setting for most real writing.',c:'var(--sage)'},
-    {t:'Daring (1.2)',d:'She reaches for stranger words more often. More original — and more likely to wander off the path.',c:'var(--gold-b)'},
-    {t:'Wildfire (2.0)',d:'She throws the bones hard. "The old woman lit the moonlit accordion of regret." Delightful; rarely useful.',c:'var(--rose)'}
-  ];
+  var temps=[{t:'0 · Predictable',d:'Always the #1 word. Same answer every time. Great for facts, a little robotic.',c:'var(--teal)'},
+    {t:'0.7 · Balanced (default)',d:'Mostly likely words, the odd surprise. The sweet spot for most writing.',c:'var(--good)'},
+    {t:'1.2 · Creative',d:'Reaches for unusual words more. More original — and more likely to go off the rails.',c:'var(--gold)'},
+    {t:'2 · Chaos',d:'Rolls the dice hard. "I fell pineapple." Fun; rarely useful.',c:'var(--pink)'}];
   var ts=document.getElementById('tempSlider'),to=document.getElementById('tempOut');
-  function rt(){var s=temps[+ts.value];to.innerHTML='<b style="font-family:var(--disp);color:'+s.c+'">'+s.t+'</b><br><span class="say">'+s.d+'</span>';}
+  function rt(){var s=temps[+ts.value];to.innerHTML='<b style="color:'+s.c+'">'+s.t+'</b><br><span class="sub">'+s.d+'</span>';}
   ts.addEventListener('input',rt);rt();
   document.getElementById('predNext').addEventListener('click',function(){complete(1);goTo(2);});
 
-  /* ===== II · training ===== */
-  var weave=document.getElementById('weave'),cells=[];
-  for(var w=0;w<32;w++){var c=document.createElement('div');c.className='thread';weave.appendChild(c);cells.push(c);}
+  /* ===== 2 · training ===== */
+  var g8=document.getElementById('grid8'),cells=[];for(var w=0;w<32;w++){var c=document.createElement('div');c.className='cell';g8.appendChild(c);cells.push(c);}
   var sd=13;function rn(){sd=(sd*1103515245+12345)&0x7fffffff;return (sd%1000)/1000;}
-  function paint(f){cells.forEach(function(c){var on=rn()<f;c.style.background=on?'linear-gradient(180deg,var(--gold-b),var(--gold))':'#2a2246';
-    c.style.boxShadow=on?'0 0 8px rgba(232,193,106,.5)':'none';c.style.transform=on?'scale(1.05)':'scale(1)';});}
+  function paint(f){cells.forEach(function(c){var on=rn()<f;c.style.background=on?'linear-gradient(180deg,var(--gold),#ffe08a)':'#2f2350';c.style.transform=on?'scale(1.05)':'scale(1)';});}
   paint(.05);
   var ep=0,loss=92,lossEl=document.getElementById('lossVal'),epEl=document.getElementById('epoch'),tout=document.getElementById('trainOut');
-  var msgs=['🕯️ "…the the a a moon moon?" (only noise)','🕯️ "The cat sat on the… roof? mat?" (grammar stirring)',
-    '🕯️ "The kettle sings on the stove." (common patterns, caught)','🕯️ "She wrapped the tea in paper and string." (true fluency now)',
-    '🌸 "I am ready. Ask, and I will answer in fluent, lovely words. Whether they are <i>true</i>… that is the next chapter."'];
+  var msgs=['🤖 "the the a a moon?" (random junk)','🤖 "The cat sat on the… roof?" (grammar forming)','🤖 "The cat sat on the mat." (common patterns!)','🤖 "The coffee was hot and the morning was slow." (real fluency!)','🎉 "Trained! Ask me anything and I\'ll answer fluently. (True or not? That\'s Level 3…)"'];
   document.getElementById('trainBtn').addEventListener('click',function(){
-    if(loss<=6){win('Fully taught.',true);return;}
+    if(loss<=6){toast('Already trained!');return;}
     ep++;loss=Math.max(6,Math.round(loss*.62-2));epEl.textContent=ep;lossEl.textContent=loss+'%';
-    lossEl.style.color=loss>50?'var(--ember)':loss>20?'var(--gold-b)':'var(--sage)';
-    paint(.05+(92-loss)/92*.85);
+    lossEl.style.color=loss>50?'var(--bad)':loss>20?'var(--gold)':'var(--good)';paint(.05+(92-loss)/92*.85);addXP(6);
     tout.innerHTML=msgs[Math.min(msgs.length-1,Math.floor((92-loss)/92*msgs.length))];
-    if(loss<=6){document.getElementById('trainNext').disabled=false;tout.style.background='rgba(159,199,168,.12)';
-      document.getElementById('trainBtn').textContent='✓ She has learned';win('She learned — no rules written!',true);}
-    else toast('Her wrongness fades ↓');
+    if(loss<=6){document.getElementById('trainNext').disabled=false;tout.style.background='rgba(75,224,139,.13)';
+      document.getElementById('trainBtn').textContent='✓ Trained!';achievement('AI Trainer');addXP(20);
+      document.getElementById('trainWhy').className='why show';
+      document.getElementById('trainWhy').innerHTML='✅ <b>Why it matters:</b> that\'s literally how ChatGPT and every AI got made — practice + adjust, on a mountain of text. It never memorized facts; it learned <i>patterns</i>. Which is why it can be wrong…';}
+    else toast('Less wrong! +6 XP');
   });
   document.getElementById('trainNext').addEventListener('click',function(){complete(2);goTo(3);});
 
-  /* ===== III · hallucination ===== */
+  /* ===== 3 · hallucination ===== */
   var chad=[
-    {q:'"What is the capital of Japan?"',bluff:false,
-      a:'✨ <b>"Tokyo." True.</b> And see <i>why</i> she\'s reliable here: this fact runs through her studies a thousand times, so the likeliest words happen to also be the true ones. When common knowledge and likelihood agree, trust her.'},
-    {q:'"Tell me about the 2024 ruling in Marlowe v. Ashford."',bluff:true,
-      a:'🌹 <b>She spins a detailed, official-sounding tale — of a case that never was.</b> Asked about something absent from her studies, she doesn\'t say "no such thing." She weaves the <i>shape</i> of a believable answer. A beautiful lie, in its purest form.'},
-    {q:'"Name three studies proving lavender cures insomnia."',bluff:true,
-      a:'🌹 <b>"Ashby et al. (2019), Journal of Sleep…"</b> — real-sounding names, journals, years, all invented. Fabricated sources are the surest tell. Open the citation yourself; if it can\'t be found, it was never real.'}
-  ];
+    {q:'"What\'s the capital of France?"',bluff:false,a:'✅ <b>"Paris." True.</b> Why reliable? This fact is everywhere in its training, so the likeliest answer is also the correct one. When common knowledge and likelihood line up, trust it.'},
+    {q:'"Summarize the 2024 Henderson v. Bell Supreme Court case."',bluff:true,a:'🚩 <b>It writes a detailed, official-sounding summary — of a case that doesn\'t exist.</b> Asked about something not in its data, it doesn\'t say "no such case." It invents a believable one. Textbook hallucination.'},
+    {q:'"Give me 3 studies proving houseplants cure insomnia."',bluff:true,a:'🚩 <b>"Green et al. (2019), Journal of Sleep Health…"</b> — real-looking authors and journals, all fake. Made-up sources are the #1 tell. Always click through; if you can\'t find it, it isn\'t real.'}];
   var cw=document.getElementById('chadQs'),ca=document.getElementById('chadAns'),cf=document.getElementById('chadFb'),co=0;
-  chad.forEach(function(o){var el=document.createElement('div');el.className='choice';
-    el.innerHTML='<span class="em">🍵</span><span>'+o.q+'</span>';
+  chad.forEach(function(o){var el=document.createElement('div');el.className='choice';el.innerHTML='<span class="em">❓</span><span>'+o.q+'</span>';
     el.addEventListener('click',function(){if(el.classList.contains('locked'))return;el.classList.add('locked',o.bluff?'wrong':'correct');
-      el.querySelector('.em').textContent=o.bluff?'🌹':'✨';ca.style.display='block';ca.innerHTML=o.a;co++;
-      if(o.bluff){toast('A beautiful lie, caught 🌹');sparkle(14);}else win('True — and you know why');
-      if(co===1){cf.className='feedback show nope';cf.innerHTML='🌙 <b>The rule to carry:</b> she\'s strongest on the <i>common and well-worn</i>, weakest on the <i>specific, obscure, or brand-new</i> — names, numbers, citations, fresh news. That is exactly where you check her.';}
-      if(co===chad.length)document.getElementById('chadNext').disabled=false;
+      el.querySelector('.em').textContent=o.bluff?'🚩':'✅';ca.style.display='block';ca.innerHTML=o.a;co++;addXP(12);
+      if(o.bluff){toast('Caught the lie! +12 XP');confetti(14);}else toast('True! +12 XP');
+      if(co===1){cf.className='fb show nope';cf.innerHTML='💡 <b>Rule of thumb:</b> AI is strongest on common, well-known stuff and weakest on specific, obscure, or recent things — names, numbers, sources, breaking news. That\'s exactly where to double-check.';}
+      if(co===chad.length){document.getElementById('chadNext').disabled=false;achievement('Lie Detector');
+        document.getElementById('chadWhy').className='why show';
+        document.getElementById('chadWhy').innerHTML='✅ <b>Why it matters:</b> AI is a fantastic first draft, not a final answer. You stay the fact-checker — especially for anything with a name, number, date, or quote.';}
     });cw.appendChild(el);});
   document.getElementById('chadNext').addEventListener('click',function(){complete(3);goTo(4);});
 
-  /* ===== IV · sort ===== */
-  var items=[{t:'🌡️ Thermostat',b:'rule'},{t:'🧾 Tax software',b:'rule'},
-    {t:'🕸️ Spam sieve',b:'ml'},{t:'🔮 "Chosen for you"',b:'ml'},{t:'👁️ Self-driving sight',b:'ml'},
-    {t:'💬 A chatbot',b:'gen'},{t:'🎨 Image-maker',b:'gen'},{t:'✒️ Code-weaver',b:'gen'}];
-  var pool=document.getElementById('dragPool'),dfb=document.getElementById('dragFb'),
-      bk={rule:document.getElementById('bkRule'),ml:document.getElementById('bkMl'),gen:document.getElementById('bkGen')},placed=0,els=[];
-  function mk(o,i){var el=document.createElement('div');el.className='dragitem';el.textContent=o.t;el.dataset.b=o.b;el.dataset.i=i;el.setAttribute('draggable','true');
+  /* ===== 4 · sort ===== */
+  var items=[{t:'🎬 Netflix picks',ai:true},{t:'🧮 A calculator',ai:false},{t:'🗣️ Voice assistant',ai:true},{t:'💡 A light switch',ai:false},{t:'📧 Spam filter',ai:true},{t:'⏰ Alarm clock',ai:false}];
+  var pool=document.getElementById('dragPool'),dfb=document.getElementById('dragFb'),bY=document.getElementById('bkYes'),bN=document.getElementById('bkNo'),placed=0,els=[];
+  function mk(o,i){var el=document.createElement('div');el.className='drag';el.textContent=o.t;el.dataset.ai=o.ai?'yes':'no';el.dataset.i=i;el.setAttribute('draggable','true');
     el.addEventListener('dragstart',function(e){el.classList.add('dragging');e.dataTransfer.setData('text/plain',i);});
     el.addEventListener('dragend',function(){el.classList.remove('dragging');});touch(el);els.push(el);pool.appendChild(el);}
   items.forEach(mk);
-  function place(el,b){if(el.classList.contains('placed'))return;var ok=el.dataset.b===b;el.classList.add('placed');el.setAttribute('draggable','false');
-    el.classList.add(ok?'right':'wrongp');bk[b].appendChild(el);placed++;
-    if(ok){toast('Rightly placed ✨');sparkle(10);}else toast('Not its circle 🌙');
-    if(placed===items.length){var all=els.every(function(e){return e.classList.contains('right');});dfb.className='feedback show '+(all?'win':'nope');
-      dfb.innerHTML=all?'🌟 <b>Every charm in its circle.</b> The great unveiling: the chatbots the world frets over are only <i>one</i> kind — conjuring. Most magic quietly running your days is <i>learned intuition</i> doing a narrow task. And so much "clever" is just well-written old rules.'
-        :'🌙 Close. Old Rules = <i>a human coded each step</i>. Learned Intuition = <i>studied patterns, one narrow craft</i>. Conjuring = <i>makes new things from nothing</i>. Step back and move any you like.';
-      document.getElementById('dragNext').disabled=false;if(all)sparkle(80);}}
+  function place(el,b){if(el.classList.contains('placed'))return;var ok=el.dataset.ai===b;el.classList.add('placed');el.setAttribute('draggable','false');
+    el.classList.add(ok?'right':'wrongp');(b==='yes'?bY:bN).appendChild(el);placed++;if(ok){addXP(10);toast('Correct! +10 XP');confetti(10);}else toast('Hmm, not quite');
+    if(placed===items.length){var all=els.every(function(e){return e.classList.contains('right');});dfb.className='fb show '+(all?'win':'nope');
+      dfb.innerHTML=all?'🏆 <b>Perfect!</b> If it learns patterns and predicts, it\'s AI. If it just follows fixed rules forever (calculator, switch, alarm), it\'s plain tech.'
+        :'👀 Close! <b>Learned from data = AI.</b> <b>Fixed rules = not AI.</b> Tap Back to fix any.';document.getElementById('dragNext').disabled=false;
+      if(all){achievement('Sorted!');addXP(15);confetti(70);}
+      document.getElementById('dragWhy').className='why show';document.getElementById('dragWhy').innerHTML='✅ <b>Why it matters:</b> "AI" is a huge umbrella. The chatbots in the news are one slice; tons of AI quietly runs your day (filters, maps, recs). And lots of "smart" tech is just clever rules.';}}
   document.querySelectorAll('.bucket').forEach(function(b){b.addEventListener('dragover',function(e){e.preventDefault();b.classList.add('over');});
     b.addEventListener('dragleave',function(){b.classList.remove('over');});
     b.addEventListener('drop',function(e){e.preventDefault();b.classList.remove('over');var el=els[+e.dataTransfer.getData('text/plain')];if(el)place(el,b.dataset.bucket);});});
   function touch(el){var g=null;
-    el.addEventListener('touchstart',function(e){if(el.classList.contains('placed'))return;var t=e.touches[0];g=el.cloneNode(true);
-      g.style.position='fixed';g.style.zIndex='999';g.style.pointerEvents='none';g.style.opacity='.9';g.style.left=(t.clientX-40)+'px';g.style.top=(t.clientY-18)+'px';
-      document.body.appendChild(g);el.classList.add('dragging');},{passive:true});
-    el.addEventListener('touchmove',function(e){if(!g)return;var t=e.touches[0];g.style.left=(t.clientX-40)+'px';g.style.top=(t.clientY-18)+'px';
-      document.querySelectorAll('.bucket').forEach(function(b){var r=b.getBoundingClientRect();b.classList.toggle('over',t.clientX>=r.left&&t.clientX<=r.right&&t.clientY>=r.top&&t.clientY<=r.bottom);});e.preventDefault();},{passive:false});
-    el.addEventListener('touchend',function(e){el.classList.remove('dragging');if(g){g.remove();g=null;}var t=e.changedTouches[0];
-      document.querySelectorAll('.bucket').forEach(function(b){b.classList.remove('over');var r=b.getBoundingClientRect();
-        if(t.clientX>=r.left&&t.clientX<=r.right&&t.clientY>=r.top&&t.clientY<=r.bottom)place(el,b.dataset.bucket);});});}
+    el.addEventListener('touchstart',function(e){if(el.classList.contains('placed'))return;var t=e.touches[0];g=el.cloneNode(true);g.style.position='fixed';g.style.zIndex='999';g.style.pointerEvents='none';g.style.opacity='.9';g.style.left=(t.clientX-40)+'px';g.style.top=(t.clientY-18)+'px';document.body.appendChild(g);el.classList.add('dragging');},{passive:true});
+    el.addEventListener('touchmove',function(e){if(!g)return;var t=e.touches[0];g.style.left=(t.clientX-40)+'px';g.style.top=(t.clientY-18)+'px';document.querySelectorAll('.bucket').forEach(function(b){var r=b.getBoundingClientRect();b.classList.toggle('over',t.clientX>=r.left&&t.clientX<=r.right&&t.clientY>=r.top&&t.clientY<=r.bottom);});e.preventDefault();},{passive:false});
+    el.addEventListener('touchend',function(e){el.classList.remove('dragging');if(g){g.remove();g=null;}var t=e.changedTouches[0];document.querySelectorAll('.bucket').forEach(function(b){b.classList.remove('over');var r=b.getBoundingClientRect();if(t.clientX>=r.left&&t.clientX<=r.right&&t.clientY>=r.top&&t.clientY<=r.bottom)place(el,b.dataset.bucket);});});}
   document.getElementById('dragNext').addEventListener('click',function(){complete(4);goTo(5);});
 
-  /* ===== V · build-a-spell ===== */
-  var base='"write something about our little tea house"';
-  var parts=[
-    {id:'role',t:'🎭 Name who she must be',d:'"You are a warm neighborhood storyteller…"',w:18,frag:'You are a warm neighborhood storyteller.'},
-    {id:'ctx',t:'📍 Give her the true details',d:'Who and what it is, really',w:26,frag:'We are Fox & Fern, a tiny family tea house known for cardamom chai and lovingly grumpy regulars.'},
-    {id:'task',t:'🎯 Speak the exact wish',d:'The real thing you want made',w:22,frag:'Write a two-sentence post announcing our new winter blends.'},
-    {id:'tone',t:'🎨 Set the mood',d:'How it should feel',w:16,frag:'Cozy, a little funny, no stiff corporate words.'},
-    {id:'fmt',t:'📐 Shape the vessel',d:'Length, form, limits',w:18,frag:'Under thirty words. End on a single warm emoji.'}
-  ];
-  var pb=document.getElementById('pbuild'),cauldron=document.getElementById('cauldron'),qf=document.getElementById('qFill'),
-      ql=document.getElementById('qLabel'),qp=document.getElementById('qPct'),pFb=document.getElementById('promptFb'),on={};
+  /* ===== 5 · prompt ===== */
+  var base='write something about our coffee shop';
+  var parts=[{id:'role',t:'🎭 Who to be',d:'"You\'re a friendly copywriter…"',w:18,frag:'You are a friendly local copywriter.'},
+    {id:'ctx',t:'📍 Context',d:'The real details',w:26,frag:'We\'re Fox & Fern, a tiny café known for cardamom lattes and grumpy-but-lovable regulars.'},
+    {id:'task',t:'🎯 Exact task',d:'The real deliverable',w:22,frag:'Write a 2-sentence Instagram caption for our new winter menu.'},
+    {id:'tone',t:'🎨 Tone',d:'How it should feel',w:16,frag:'Cozy, a little funny, no corporate buzzwords.'},
+    {id:'fmt',t:'📐 Format',d:'Length & shape',w:18,frag:'Under 30 words. End with one emoji.'}];
+  var pb=document.getElementById('pbuild'),live=document.getElementById('promptLive'),qf=document.getElementById('qFill'),ql=document.getElementById('qLabel'),qp=document.getElementById('qPct'),pFb=document.getElementById('promptFb'),on={},promptDone=false;
   function rp(){var q=8,fr=[];parts.forEach(function(p){if(on[p.id]){q+=p.w;fr.push(p.frag);}});q=Math.min(100,q);
-    cauldron.textContent=fr.length?fr.join(' '):base;qf.style.width=q+'%';qp.textContent=q+'%';
-    var l,col;if(q<25){l='Faint · a wisp of nothing';col='var(--ember)';}else if(q<55){l='Stirring · becoming useful';col='var(--gold-b)';}
-    else if(q<85){l='Potent · genuinely lovely';col='var(--sage)';}else{l='Radiant · this is a true incantation';col='var(--sage)';}
-    ql.textContent=l;ql.style.color=col;qp.style.color=col;
-    if(q>=85){document.getElementById('promptNext').disabled=false;pFb.className='feedback show win';
-      pFb.innerHTML='🌟 <b>That is the entire art of asking.</b> Who she is · the true details · the exact wish · the mood · the shape. You didn\'t write finer English — you <i>took away her guessing</i>. Same machine; night-and-day magic.';win('You can compose incantations now!',true);}}
-  parts.forEach(function(p){var el=document.createElement('div');el.className='ptok';
-    el.innerHTML='<div class="t">'+p.t+'<span class="chk">✚</span></div><div class="d">'+p.d+'</div>';
-    el.addEventListener('click',function(){on[p.id]=!on[p.id];el.classList.toggle('on',on[p.id]);el.querySelector('.chk').textContent=on[p.id]?'✔':'✚';if(on[p.id])sparkle(8);rp();});
-    pb.appendChild(el);});
+    live.textContent=fr.length?fr.join(' '):base;qf.style.width=q+'%';qp.textContent=q+'%';
+    var l,col;if(q<25){l='Vague · generic mush';col='var(--bad)';}else if(q<55){l='Getting usable';col='var(--gold)';}else if(q<85){l='Genuinely good';col='var(--good)';}else{l='Chef\'s kiss 👌';col='var(--good)';}
+    ql.textContent=l;ql.style.color=col;
+    if(q>=85&&!promptDone){promptDone=true;document.getElementById('promptNext').disabled=false;addXP(30);achievement('Prompt Pro');pFb.className='fb show win';
+      pFb.innerHTML='🎯 <b>That\'s the whole skill.</b> Who + context + exact task + tone + format. You didn\'t write fancier English — you removed the guesswork.';
+      document.getElementById('promptWhy').className='why show';document.getElementById('promptWhy').innerHTML='✅ <b>Why it matters:</b> 90% of "AI is bad at this" is really "my prompt was vague." Aim it well and treat it like a conversation — "shorter, warmer, try again" — and it levels up fast.';}}
+  parts.forEach(function(p){var el=document.createElement('div');el.className='ptok';el.innerHTML='<div class="t">'+p.t+'<span class="chk">➕</span></div><div class="d">'+p.d+'</div>';
+    el.addEventListener('click',function(){on[p.id]=!on[p.id];el.classList.toggle('on',on[p.id]);el.querySelector('.chk').textContent=on[p.id]?'✅':'➕';if(on[p.id]){addXP(5);confetti(8);}rp();});pb.appendChild(el);});
   rp();
   document.getElementById('promptNext').addEventListener('click',function(){complete(5);goTo(6);});
 
-  /* ===== VI · limits match ===== */
+  /* ===== 6 · limits match ===== */
   var lims=[
-    {lim:'⏳ Her knowledge is frozen at the day her studies ended',right:'Hand her fresh facts, or use a tool that can search now',
-      opts:['Hand her fresh facts, or use a tool that can search now','Ask again, more sweetly','Trust she\'s always current']},
-    {lim:'🔢 Shaky with exact sums and counting',right:'Have her use a calculator, then check it yourself',
-      opts:['Trust the number — she\'s a machine','Have her use a calculator, then check it yourself','Never let her near numbers']},
-    {lim:'🧠 A small cradle of memory (the context window)',right:'Keep the wish focused; give her only the pieces she needs',
-      opts:['Pour in your whole life story each time','Keep the wish focused; give her only the pieces she needs','Assume she recalls last week']},
-    {lim:'🌹 Confidently wrong on the obscure',right:'Verify names, numbers and sources before you trust',
-      opts:['Verify names, numbers and sources before you trust','Believe her if she sounds sure','Only ask her feelings']}
-  ];
+    {lim:'⏳ Frozen knowledge (stops at its training date)',right:'Give it current info, or use a tool with live search',opts:['Give it current info, or use a tool with live search','Ask again, louder','Assume it\'s always up to date']},
+    {lim:'🔢 Shaky at exact math & counting',right:'Have it use a calculator, then check',opts:['Trust the number, it\'s a computer','Have it use a calculator, then check','Never use it at all']},
+    {lim:'🧠 Limited memory (long chats get forgotten)',right:'Keep it focused; paste in the key info it needs',opts:['Paste your whole life story','Keep it focused; paste in the key info it needs','Assume it remembers last week']},
+    {lim:'🎭 Confidently wrong on obscure facts',right:'Verify names, numbers & sources',opts:['Verify names, numbers & sources','Believe it if it sounds sure','Only ask its opinion']}];
   var mw=document.getElementById('matchWrap'),mfb=document.getElementById('matchFb'),solved=0;
-  lims.forEach(function(L){var row=document.createElement('div');row.className='matchrow';
-    var html='<div class="lim">'+L.lim+'</div><div class="matchopts">';
-    L.opts.forEach(function(o){html+='<button class="mopt" data-o="'+o.replace(/"/g,'&quot;')+'">'+o+'</button>';});
-    html+='</div>';row.innerHTML=html;
+  lims.forEach(function(L){var row=document.createElement('div');row.className='mrow';var html='<div class="lim">'+L.lim+'</div><div class="mopts">';
+    L.opts.forEach(function(o){html+='<button class="mopt" data-o="'+o.replace(/"/g,'&quot;')+'">'+o+'</button>';});html+='</div>';row.innerHTML=html;
     row.querySelectorAll('.mopt').forEach(function(btn){btn.addEventListener('click',function(){if(row.dataset.s)return;
-      if(btn.dataset.o===L.right){btn.classList.add('right');row.dataset.s='1';solved++;win('Wise remedy ✨');
-        row.querySelectorAll('.mopt').forEach(function(b){b.classList.add('locked');});
-        if(solved===lims.length){document.getElementById('matchNext').disabled=false;mfb.className='feedback show win';
-          mfb.innerHTML='🧭 <b>This is the wise woman\'s mind:</b> not "she is all-powerful," not "she is useless" — but "she is a mighty craft with <i>known edges</i>." Honor the edges and she\'s a marvel. Forget them and she\'ll burn you.';sparkle(70);}
-      }else{btn.classList.add('wrong');toast('Not the wise way');setTimeout(function(){btn.classList.remove('wrong');},700);}
-    });});mw.appendChild(row);});
+      if(btn.dataset.o===L.right){btn.classList.add('right');row.dataset.s='1';solved++;addXP(12);toast('Smart! +12 XP');row.querySelectorAll('.mopt').forEach(function(b){b.classList.add('locked');});
+        if(solved===lims.length){document.getElementById('matchNext').disabled=false;achievement('Street Smart');mfb.className='fb show win';mfb.innerHTML='🧭 <b>This is the pro mindset:</b> not "AI is magic," not "AI is useless" — "AI is powerful with known limits." Work with the limits and it\'s incredible.';
+          document.getElementById('matchWhy').className='why show';document.getElementById('matchWhy').innerHTML='✅ <b>Why it matters:</b> people who get burned by AI skipped this level. You didn\'t. High-stakes stuff (medical, legal, money) always gets a human check.';confetti(70);}
+      }else{btn.classList.add('wrong');toast('Not the best move');setTimeout(function(){btn.classList.remove('wrong');},700);}});});mw.appendChild(row);});
   document.getElementById('matchNext').addEventListener('click',function(){complete(6);goTo(7);});
 
-  /* ===== VII · myths ===== */
+  /* ===== 7 · myths ===== */
   var myths=[
-    {curse:'"She is awake — she thinks and feels as a woman does."',truth:'She is arithmetic predicting language. No inner life, no wants, no feelings — dark and idle until you speak, then only weighing likelihoods. "Sounding human" is a voice she practiced, not a soul she owns.'},
-    {curse:'"She is a book of facts you simply look up."',truth:'The opposite craft. A library hands you real pages; she conjures new, plausible words and can be wrong. Some tools now lash a real search to her side — but the machine beneath is a guesser, not an archive.'},
-    {curse:'"She will take every woman\'s living, then the world."',truth:'She can\'t want or plan a thing. In truth she shifts the <i>tasks</i> — swallowing the dull, repetitive parts — while judgment, taste, and the final word stay yours. A tool, never an heir.'},
-    {curse:'"I\'m not clever enough with machines to use her."',truth:'Her door is a plain-spoken conversation — you already hold the only key there is. You just walked seven chapters of it. Being clear about what you want <i>is</i> the whole mastery.'}
-  ];
+    {m:'"It\'s conscious — it thinks and feels like a person."',t:'Nope. It\'s math predicting words. No feelings, no goals, no secret opinions. It\'s idle until you type, then it computes. "Sounding human" is a learned style, not a mind.'},
+    {m:'"It\'s always right — it\'s a computer!"',t:'It guesses, and can be confidently wrong (you saw it in Level 3). You\'re the fact-checker.'},
+    {m:'"It\'s going to take over / read my mind."',t:'It can\'t want anything. It waits for your prompt and predicts text. You press the button, always.'},
+    {m:'"I\'m too non-techy to use it."',t:'You just played 7 levels of it. If you can text a friend, you can use AI. Being clear about what you want IS the skill.'}];
   var fg=document.getElementById('flipGrid'),flipped=0;
-  myths.forEach(function(m){var f=document.createElement('div');f.className='flip';
-    f.innerHTML='<div class="flip-inner"><div class="flip-face flip-front"><div class="tag">The curse 🥀</div><div class="curse">'+m.curse+'</div><div class="hint">turn to break it →</div></div>'+
-      '<div class="flip-face flip-back"><div class="tag">The truth 🌿</div><div class="truth">'+m.truth+'</div></div></div>';
-    f.addEventListener('click',function(){if(f.classList.contains('flipped'))return;f.classList.add('flipped');flipped++;toast('Curse broken 🌿');sparkle(12);
-      if(flipped===myths.length){document.getElementById('flipNext').disabled=false;
-        document.getElementById('flipHint').innerHTML='<span class="gold">All four, undone.</span> You no longer flinch at headlines — you understand the machine. Time for the Rite.';win('Your fear is gone.',true);}
+  myths.forEach(function(x){var f=document.createElement('div');f.className='flip';
+    f.innerHTML='<div class="flip-in"><div class="face front"><div class="tag" style="color:var(--pink)">Myth 👻</div><div class="m">'+x.m+'</div><div class="h">tap to bust →</div></div><div class="face back"><div class="tag" style="color:#eafff2">Truth ✅</div><div class="t">'+x.t+'</div></div></div>';
+    f.addEventListener('click',function(){if(f.classList.contains('flipped'))return;f.classList.add('flipped');flipped++;addXP(10);toast('Busted! +10 XP');confetti(12);
+      if(flipped===myths.length){document.getElementById('flipNext').disabled=false;achievement('Myth Buster');document.getElementById('flipHint').innerHTML='<b class="gold">All busted.</b> Nothing left to fear. Boss time.';}
     });fg.appendChild(f);});
   document.getElementById('flipNext').addEventListener('click',function(){complete(7);goTo(8);});
 
-  /* ===== VIII · rite ===== */
+  /* ===== 8 · boss ===== */
   var Q=[
-    {q:'She writes you a lovely paragraph citing a 2021 study by "Dr. Elena Marsh." Your move?',
-     opts:[{t:'Trust it — it\'s specific and beautifully worded',ok:false},{t:'Seek the study before using it; it may be a beautiful lie',ok:true},{t:'Assume everything she says is false',ok:false}],
-     why:'Specific and fluent is the very face of a hallucination. Names, dates and citations are the first things to verify.'},
-    {q:'Why does the same machine give a "safe, plain" answer one day and a "wild, strange" one the next?',
-     opts:[{t:'She\'s in a different mood',ok:false},{t:'A daring dial (temperature) sets how often she takes an unlikely word',ok:true},{t:'She was re-taught overnight',ok:false}],
-     why:'Temperature is the daring dial. Low = steady, high = strange. Nothing to do with moods or memory.'},
-    {q:'Your spell returned something flat and generic. The wisest fix?',
-     opts:[{t:'Give up — she can\'t do nuance',ok:false},{t:'Add who she is, true context, mood and shape — then steer over a few turns',ok:true},{t:'Tell her to "try harder"',ok:false}],
-     why:'Flat output almost always means a thin incantation. Compose it fully and steer across a few turns.'},
-    {q:'Which of these is NOT conjuring (generative)?',
-     opts:[{t:'A sieve sorting junk from your inbox',ok:true},{t:'A chatbot drafting a letter',ok:false},{t:'A charm making pictures from words',ok:false}],
-     why:'The junk sieve is learned intuition doing one narrow sorting task — it makes nothing new. Still magic; a different kind.'},
-    {q:'A friend says "she knows everything on the internet, right now, live." The true correction?',
-     opts:[{t:'"Yes, she\'s always current"',ok:false},{t:'"She learned patterns up to a frozen day and predicts words — she doesn\'t look live unless given a tool"',ok:true},{t:'"She only knows what her makers whisper her each morning"',ok:false}],
-     why:'The base machine is frozen at a training day and conjures from pattern. Live knowledge needs a search tool lashed on.'},
-    {q:'The truest one-line naming of a language model?',
-     opts:[{t:'A book of facts you query',ok:false},{t:'A remarkably skilled guesser of the next scrap of language, taught on a mountain of writing',ok:true},{t:'An awakened mind that reasons as a person does',ok:false}],
-     why:'That is the whole of her. Every wonder and every flaw falls out of "predict the next scrap."'}
-  ];
+    {q:'At its core, what is AI mostly doing?',opts:[{t:'Thinking and feeling like a human',ok:false},{t:'Guessing the most likely next word from patterns',ok:true},{t:'Looking up exact answers in a database',ok:false}],why:'It predicts. Not a brain, not a search — a next-word guesser.'},
+    {q:'AI gives a confident answer with a real-sounding source. You should…',opts:[{t:'Trust it — computers don\'t lie',ok:false},{t:'Double-check it — it can be confidently wrong',ok:true},{t:'Assume it\'s always fake',ok:false}],why:'Hallucinations look legit. Verify anything with a name, number, or source.'},
+    {q:'Which one is NOT really AI?',opts:[{t:'A basic calculator',ok:true},{t:'Your photo app finding faces',ok:false},{t:'Netflix recommendations',ok:false}],why:'A calculator follows fixed rules — no learning, so not AI.'},
+    {q:'Your AI answer is boring and generic. Best fix?',opts:[{t:'Give up, AI stinks',ok:false},{t:'Ask again but louder',ok:false},{t:'Add who it\'s for, the tone, and exactly what you want',ok:true}],why:'A clear prompt = a better answer. You steer it.'},
+    {q:'"AI knows everything on the internet, live." True?',opts:[{t:'Yes, always current',ok:false},{t:'No — it learned up to a cutoff date and predicts text, unless given a live tool',ok:true},{t:'It only knows what its company tells it daily',ok:false}],why:'Base AI is frozen at a training date. Live info needs a search tool.'},
+    {q:'Best one-sentence definition of AI like ChatGPT?',opts:[{t:'A database of facts you look up',ok:false},{t:'A really good next-word predictor trained on tons of text',ok:true},{t:'A conscious program that reasons like a person',ok:false}],why:'That\'s the whole thing — everything else flows from it.'}];
   var bi=0,bs=0,bStart=document.getElementById('bossStart'),bGame=document.getElementById('bossGame'),bEnd=document.getElementById('bossEnd'),
-      bQ=document.getElementById('bossQ'),bCh=document.getElementById('bossChoices'),bFb=document.getElementById('bossFb'),
-      bCount=document.getElementById('bossCount'),bHearts=document.getElementById('bossHearts'),bBar=document.getElementById('bossBar');
+      bQ=document.getElementById('bossQ'),bCh=document.getElementById('bossChoices'),bFb=document.getElementById('bossFb'),bCount=document.getElementById('bossCount'),bHearts=document.getElementById('bossHearts'),bBar=document.getElementById('bossBar');
   function startBoss(){bi=0;bs=0;bStart.style.display='none';bEnd.style.display='none';bGame.style.display='block';renderBoss();}
-  function renderBoss(){var q=Q[bi];bCount.textContent='Trial '+(bi+1)+' of '+Q.length;bBar.style.width=(bi/Q.length*100)+'%';
-    bHearts.textContent='🕯️'.repeat(bs)+'·'.repeat(bi-bs)+' '.repeat(Q.length-bi);bQ.textContent=q.q;bFb.className='feedback';bCh.innerHTML='';
-    q.opts.forEach(function(o){var el=document.createElement('div');el.className='choice';el.innerHTML='<span class="em">'+(o.ok?'🌙':'✦')+'</span><span>'+o.t+'</span>';
-      el.addEventListener('click',function(){answerBoss(el,o,q);});bCh.appendChild(el);});}
+  function renderBoss(){var q=Q[bi];bCount.textContent='Q '+(bi+1)+' / '+Q.length;bBar.style.width=(bi/Q.length*100)+'%';
+    bHearts.textContent='💛'.repeat(bs)+'🖤'.repeat(bi-bs)+'⬜'.repeat(Q.length-bi);bQ.textContent=q.q;bFb.className='fb';bCh.innerHTML='';
+    q.opts.forEach(function(o){var el=document.createElement('div');el.className='choice';el.innerHTML='<span class="em">'+(o.ok?'⭐':'▫️')+'</span><span>'+o.t+'</span>';el.addEventListener('click',function(){answerBoss(el,o,q);});bCh.appendChild(el);});}
   function answerBoss(el,o,q){[].forEach.call(bCh.children,function(c){c.classList.add('locked');});
-    if(o.ok){el.classList.add('correct');el.querySelector('.em').textContent='🌙';bs++;bFb.className='feedback show win';bFb.innerHTML='✨ <b>True.</b> '+q.why;win('Yes.');}
-    else{el.classList.add('wrong');[].forEach.call(bCh.children,function(c){if(c.querySelector('.em').textContent==='🌙'){c.classList.add('correct');}});
-      bFb.className='feedback show nope';bFb.innerHTML='🌙 Not quite — here is the reasoning: '+q.why;toast('No loss — walk on');}
-    var nb=document.createElement('button');nb.className='btn small';nb.style.marginTop='14px';nb.textContent=(bi===Q.length-1)?'Receive your name →':'Next trial →';
-    nb.addEventListener('click',function(){bi++;if(bi>=Q.length)endBoss();else renderBoss();});bFb.appendChild(document.createElement('br'));bFb.appendChild(nb);}
+    if(o.ok){el.classList.add('correct');el.querySelector('.em').textContent='✅';bs++;addXP(20);bFb.className='fb show win';bFb.innerHTML='🎉 <b>Correct!</b> '+q.why;confetti(30);}
+    else{el.classList.add('wrong');[].forEach.call(bCh.children,function(c){if(c.querySelector('.em').textContent==='⭐'){c.classList.add('correct');c.querySelector('.em').textContent='✅';}});bFb.className='fb show nope';bFb.innerHTML='😅 Not quite — now you\'ve got it: '+q.why;}
+    var nb=document.createElement('button');nb.className='btn small';nb.style.marginTop='14px';nb.textContent=(bi===Q.length-1)?'See my result →':'Next →';nb.addEventListener('click',function(){bi++;if(bi>=Q.length)endBoss();else renderBoss();});bFb.appendChild(document.createElement('br'));bFb.appendChild(nb);}
   function endBoss(){bGame.style.display='none';bEnd.style.display='block';document.getElementById('bossScore').textContent=bs;
-    var title,sub,recap,sig;
-    if(bs===6){sig='🌕';title='Keeper of the Grimoire';sub='Six of six — flawless. The spell is yours entirely.';recap='You can explain, from the mechanism up, what she is and is not — more than most who use her every day. Go light the candle for another woman.';sparkle(150);}
-    else if(bs>=4){sig='🌔';title='Wise Woman';sub=bs+' of 6 — a true, working understanding.';recap='The heart of it is set: she predicts, she learned by watching, she can be beautifully wrong, and you steer her. Revisit any chapter that felt like smoke.';sparkle(90);}
-    else if(bs>=2){sig='🌓';title='Unafraid';sub=bs+' of 6 — the fear is gone; the details will come.';recap='You hold the whole shape of it, and that is the real victory. Walk the Rite once more and the particulars will settle in.';sparkle(50);}
-    else{sig='🌒';title='初心 · Beginner\'s Heart';sub='You sat at the table and stayed — the hardest part.';recap='Every wise woman began exactly here. Walk the Rite again with what you now know, and watch your light grow.';sparkle(30);}
-    document.getElementById('bossSigil').textContent=sig;document.getElementById('bossBadgeTitle').textContent=title;
-    document.getElementById('bossBadgeSub').textContent=sub;document.getElementById('bossRecap').innerHTML=recap;complete(8);}
+    var ic,ti,sub,rec;if(bs===6){ic='👑';ti='AI BOSS';sub='6/6 — flawless. Go teach someone.';rec='You didn\'t just survive AI — you get it. Next word predictor, learned from examples, sometimes wrong, everywhere, steered by how you ask. That\'s the whole game.';}
+    else if(bs>=4){ic='🏆';ti='AI Pro';sub=bs+'/6 — solid.';rec='You\'ve got the big picture: AI guesses from patterns and you steer it. Skim any level that felt fuzzy — you\'re basically there.';}
+    else if(bs>=2){ic='⭐';ti='AI Believer';sub=bs+'/6 — fear gone.';rec='The scary myth is dead and that\'s the real win. Replay the boss and watch your score jump.';}
+    else{ic='🌱';ti='Rookie';sub='You showed up and played.';rec='Everyone starts here. Hit replay with what you just learned — you\'ll crush it.';}
+    document.getElementById('trophyIcon').textContent=ic;document.getElementById('trophyTitle').textContent=ti;document.getElementById('trophySub').textContent=sub;document.getElementById('bossRecap').innerHTML=rec;
+    complete(8);if(bs>=4)achievement('Boss Slayer');levelUp('YOU WIN!\n'+ti);}
   document.getElementById('bossGo').addEventListener('click',startBoss);
   document.getElementById('bossReplay').addEventListener('click',startBoss);
   document.getElementById('shareBtn').addEventListener('click',function(){
-    var txt='I learned the real spell behind AI: she\'s a wildly skilled guesser of the next scrap of language, taught on a mountain of writing — she doesn\'t "know" facts, she predicts likely words, which is why she\'s dazzling AND sometimes beautifully wrong. Passed the Rite '+bs+'/6. 🌙';
-    var fb=document.getElementById('shareFb');fb.style.display='block';fb.className='feedback show win';
-    function ok(){fb.innerHTML='📜 <b>Copied.</b> Carry it out into the world and be the woman who explains the magic plainly.';win('Copied!',true);}
-    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(ok,function(){fb.innerHTML='📜 Copy this:<br><br>'+txt;});}else{fb.innerHTML='📜 Copy this:<br><br>'+txt;win('The spell is yours!',true);}
+    var txt='I finally get AI 🎮 It\'s basically autocomplete that read the whole internet — it guesses the next word, so it\'s brilliant AND sometimes confidently wrong. Scored '+bs+'/6 and hit '+xp+' XP on the Level Up: AI game. Ask me anything!';
+    var fb=document.getElementById('shareFb');fb.style.display='block';fb.className='fb show win';
+    function ok(){fb.innerHTML='✅ <b>Copied!</b> Paste it anywhere and go be the AI-explainer of the group.';confetti(80);}
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(ok,function(){fb.innerHTML='📋 Copy this:<br><br>'+txt;});}else{fb.innerHTML='📋 Copy this:<br><br>'+txt;confetti(80);}
   });
 
-  /* ===== true names ===== */
+  /* ===== cheat sheet ===== */
   var terms=[
-    {t:'Token / scrap',d:'A chunk of language (~¾ of a word) — the true unit she reads and writes in. Her work is measured in these.'},
-    {t:'Weights',d:'The billions of tiny dials tuned during her learning. They hold everything she absorbed.'},
-    {t:'Training',d:'Guessing the next scrap, measuring the error, nudging the dials — a trillion times over.'},
-    {t:'Temperature',d:'The daring dial. Low = steady & predictable; high = strange & inventive.'},
-    {t:'Hallucination',d:'A confident, lovely answer that\'s false — her conjuring believable words where she holds no real knowledge.'},
-    {t:'Context window',d:'How much language she can cradle at once. Past its edge, the earliest words slip away.'},
-    {t:'Prompt / incantation',d:'Your instruction to her. A strong one = who she is + true context + exact wish + mood + shape.'},
-    {t:'LLM',d:'Large Language Model — the next-scrap guesser behind the chatbots this whole grimoire describes.'},
-    {t:'Generative AI',d:'Magic that conjures new things — words, pictures, code — rather than only sorting or foreseeing.'},
-    {t:'Machine learning',d:'The broad craft where software learns patterns from data instead of being told every rule.'}
-  ];
+    {t:'Prompt',d:'What you type to the AI. A good one = who to be + context + exact task + tone + format.'},
+    {t:'Model',d:'The trained AI itself — the thing doing the guessing (e.g. ChatGPT is powered by a model).'},
+    {t:'Training',d:'How AI learned: guess the next word, check the error, adjust, repeat billions of times.'},
+    {t:'Token',d:'A chunk of text (~¾ of a word) — the piece AI actually reads and writes in.'},
+    {t:'Temperature',d:'The creativity dial. Low = safe & predictable; high = creative & risky.'},
+    {t:'Hallucination',d:'A confident answer that\'s false — AI making up plausible text where it has no real knowledge.'},
+    {t:'Context window',d:'How much text AI can "hold" at once. Past it, earlier stuff gets forgotten.'},
+    {t:'Generative AI',d:'AI that creates new content — text, images, code (like ChatGPT).'},
+    {t:'Machine learning',d:'When software learns patterns from data instead of being given fixed rules.'}];
   var tw=document.getElementById('terms'),tOut=document.getElementById('termOut');
   terms.forEach(function(o){var el=document.createElement('div');el.className='term';el.textContent=o.t;
-    el.addEventListener('click',function(){tOut.innerHTML='<span class="gold" style="font-family:var(--disp)">'+o.t+'</span> — '+o.d;
-      [].forEach.call(tw.children,function(c){c.style.borderColor='';});el.style.borderColor='var(--rose)';});tw.appendChild(el);});
+    el.addEventListener('click',function(){tOut.innerHTML='<b class="gold">'+o.t+'</b> — '+o.d;[].forEach.call(tw.children,function(c){c.style.borderColor='';});el.style.borderColor='var(--teal)';});tw.appendChild(el);});
 
-  chrome();
+  renderXP();chrome();
 })();
 </script>
 </body>
