@@ -8,36 +8,51 @@ import { useEffect, useState } from "react";
  */
 
 export type AchievementId =
-  | "banner"           // opened devtools / banner saw load
-  | "codex-global"     // touched window.codex (we patch get)
-  | "codex-feed"       // called codex.feed
-  | "codex-truce"      // called codex.attempt_truce
-  | "codex-bf"         // ran codex.bf(...)
-  | "codex-compile"    // ran codex.compile()
-  | "codex-diff"       // ran codex.diff()
-  | "konami"           // entered the konami code
-  | "stenwge-typed"    // typed "stenwge"
-  | "cheatsheet"       // pressed ?
-  | "chapter-jump"     // pressed a chapter key
-  | "pause"            // toggled play/pause
-  | "restart"          // pressed r
-  | "moon-click"       // clicked the moon (chapter 5 jump)
-  | "api-codex"        // fetched /api/codex
-  | "api-teapot"       // fetched /api/teapot
-  | "api-raft"         // fetched /api/raft
-  | "api-dream"        // fetched /api/dream
-  | "robots"           // fetched /robots.txt
-  | "security"         // fetched /.well-known/security.txt
-  | "bird-page"        // visited /the-bird
-  | "idle-cursor"      // sat still long enough to see the cursor-bird
-  | "secret-mode";     // 7 clicks on play button
+  | "banner"
+  | "codex-global"
+  | "codex-feed"
+  | "codex-truce"
+  | "codex-bf"
+  | "codex-bfwasm"
+  | "codex-lisp"
+  | "codex-compile"
+  | "codex-diff"
+  | "konami"
+  | "stenwge-typed"
+  | "cheatsheet"
+  | "chapter-jump"
+  | "pause"
+  | "restart"
+  | "moon-click"
+  | "api-codex"
+  | "api-teapot"
+  | "api-raft"
+  | "api-dream"
+  | "api-verify"
+  | "robots"
+  | "security"
+  | "bird-page"
+  | "idle-cursor"
+  | "secret-mode"
+  | "repl-open"
+  | "repl-lisp"
+  | "repl-js"
+  | "repl-bf"
+  | "repl-curl"
+  | "lab-visit"
+  | "lab-raft"
+  | "lab-gs"
+  | "lab-merkle"
+  | "lab-dream";
 
 const DESCRIPTIONS: Record<AchievementId, string> = {
   "banner": "opened the console",
   "codex-global": "touched window.codex",
   "codex-feed": "fed the mouse",
   "codex-truce": "ran the truce",
-  "codex-bf": "ran brainfuck in-browser",
+  "codex-bf": "ran brainfuck (interpreter)",
+  "codex-bfwasm": "compiled bf → wasm at runtime",
+  "codex-lisp": "evaluated a lisp expression",
   "codex-compile": "compiled the codex",
   "codex-diff": "diffed yesterday's tale",
   "konami": "↑↑↓↓←→←→ba",
@@ -51,11 +66,22 @@ const DESCRIPTIONS: Record<AchievementId, string> = {
   "api-teapot": "found the teapot",
   "api-raft": "ran consensus",
   "api-dream": "made the codex dream",
+  "api-verify": "requested a signed manifest",
   "robots": "read the robots poem",
   "security": "read security.txt",
   "bird-page": "found the bird's room",
   "idle-cursor": "stayed perfectly still",
   "secret-mode": "clicked play seven times",
+  "repl-open": "opened the repl (` key)",
+  "repl-lisp": "evaluated lisp in the repl",
+  "repl-js": "evaluated js in the repl",
+  "repl-bf": "jit-compiled bf in the repl",
+  "repl-curl": "curled a url from the repl",
+  "lab-visit": "found /lab",
+  "lab-raft": "visited /lab/raft",
+  "lab-gs": "watched reaction-diffusion",
+  "lab-merkle": "verified the merkle chain",
+  "lab-dream": "streamed a dream over sse",
 };
 
 const ALL_IDS = Object.keys(DESCRIPTIONS) as AchievementId[];

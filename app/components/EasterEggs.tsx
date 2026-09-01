@@ -2,6 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Achievements, AchievementsPanel } from "./Achievements";
+import { lispEvalStrict } from "../lib/lisp";
+import { bfwasm as bfwasmRun } from "../lib/bfwasm";
+import Repl from "./Repl";
 
 /**
  * Easter eggs for the curious. None are required for the experience.
@@ -210,6 +213,60 @@ function installCodexGlobal() {
         return null;
       }
     },
+    async bfwasm(program: string, input?: string) {
+      Achievements.unlock("codex-bfwasm");
+      try {
+        const r = await bfwasmRun(program, input ?? "");
+        // eslint-disable-next-line no-console
+        console.log(
+          `%c🔧 bf→wasm: ${r.bytesEmitted} bytes emitted · compile ${r.compileMs.toFixed(1)}ms · exec ${r.execMs.toFixed(1)}ms`,
+          "color:#9bd0a5;font-family:ui-monospace",
+        );
+        // eslint-disable-next-line no-console
+        console.log(
+          `%chexdump (first 64):%c ${Array.from(r.wasm.slice(0, 64))
+            .map((b) => b.toString(16).padStart(2, "0"))
+            .join(" ")}`,
+          "color:#f4dca3;font-family:ui-monospace",
+          "color:#888;font-family:ui-monospace",
+        );
+        return r.output;
+      } catch (e: any) {
+        // eslint-disable-next-line no-console
+        console.error(e?.message ?? e);
+        return null;
+      }
+    },
+    lisp(source: string) {
+      Achievements.unlock("codex-lisp");
+      const r = lispEvalStrict(source);
+      if (!r.ok) {
+        // eslint-disable-next-line no-console
+        console.error(r.error);
+        return null;
+      }
+      if (r.log) {
+        // eslint-disable-next-line no-console
+        console.log("%c" + r.log, "color:#d0d0d0;font-family:ui-monospace");
+      }
+      // eslint-disable-next-line no-console
+      console.log(
+        `%c${r.value}`,
+        "color:#9ec9ff;font-family:ui-monospace;font-weight:bold",
+      );
+      return r.value;
+    },
+    repl() {
+      // dispatch a synthetic key event to open the repl
+      const ev = new KeyboardEvent("keydown", { key: "`" });
+      window.dispatchEvent(ev);
+      return "repl toggled — press ` again to close";
+    },
+    lab() {
+      window.open("/lab", "_blank");
+      Achievements.unlock("lab-visit");
+      return "→ /lab";
+    },
     compile() {
       Achievements.unlock("codex-compile");
       const report = [
@@ -281,19 +338,23 @@ function installCodexGlobal() {
       console.log("%ccodex.help()", "color:#f4dca3;font-weight:bold");
       // eslint-disable-next-line no-console
       console.table({
-        "codex.mouse": "lactose intolerant",
-        "codex.cat": "vegetarian",
-        "codex.feed(item)": "feed the mouse",
-        "codex.attempt_truce()": "run the canonical truce sequence",
-        "codex.bf(prog, input?)": "run a real brainfuck program",
-        "codex.compile()": "fake-build report",
-        "codex.diff()": "yesterday's tale vs today's",
-        "codex.open(n)": "seek to chapter 1..8",
-        "codex.pause() / restart()": "controls",
-        "fetch('/api/codex')": "story manifest",
-        "fetch('/api/teapot')": "418",
-        "fetch('/api/raft')": "consensus vote",
-        "fetch('/api/dream')": "the codex dreams",
+        "codex.mouse":               "lactose intolerant",
+        "codex.cat":                 "vegetarian",
+        "codex.feed(item)":          "feed the mouse",
+        "codex.attempt_truce()":     "run the canonical truce sequence",
+        "codex.bf(p, in?)":          "brainfuck (interpreter)",
+        "codex.bfwasm(p, in?)":      "brainfuck → live WebAssembly JIT",
+        "codex.lisp(src)":           "real lisp: define/lambda/let/recursion",
+        "codex.compile()":           "fake-build report",
+        "codex.diff()":              "yesterday's tale vs today's",
+        "codex.open(n)":             "seek to chapter 1..8",
+        "codex.repl()":              "toggle the on-page REPL (or press `)",
+        "codex.lab()":               "open the research wing",
+        "fetch('/api/codex')":       "story manifest (+ merkle chain)",
+        "fetch('/api/verify')":      "signed manifest",
+        "fetch('/api/teapot')":      "418",
+        "fetch('/api/raft')":        "consensus vote",
+        "fetch('/api/dream')":       "the codex dreams (SSE-capable)",
       });
       return "🐦";
     },
@@ -395,6 +456,7 @@ export default function EasterEggs() {
       "/api/teapot": "api-teapot",
       "/api/raft": "api-raft",
       "/api/dream": "api-dream",
+      "/api/verify": "api-verify",
       "/robots.txt": "robots",
       "/.well-known/security.txt": "security",
     };
@@ -529,6 +591,7 @@ export default function EasterEggs() {
   return (
     <>
       <AchievementsPanel />
+      <Repl />
 
       {/* Konami visual */}
       {konami && (
@@ -595,6 +658,9 @@ export default function EasterEggs() {
               <li>
                 <span className="text-stone-50">still 3s</span> — see the bird
               </li>
+              <li>
+                <span className="text-stone-50">`</span> (backtick) — repl overlay
+              </li>
             </ul>
             <div className="mt-5 pt-5 border-t border-stone-800 text-stone-400 space-y-1">
               <div>
@@ -610,7 +676,7 @@ export default function EasterEggs() {
               <div>
                 hidden:{" "}
                 <code className="text-stone-200">
-                  /the-bird · /robots.txt · /.well-known/security.txt
+                  /lab · /the-bird · /robots.txt · /.well-known/security.txt
                 </code>
               </div>
             </div>
