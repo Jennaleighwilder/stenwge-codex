@@ -58,6 +58,30 @@ const PAPERS = [
       "The /api/dream endpoint speaks SSE. Watch a poem arrive one word at a time — a tiny, honest imitation of token streaming from an LLM.",
     tags: ["streaming", "network"],
   },
+  {
+    href: "/lab/nca",
+    id: "07",
+    title: "neural cellular automata, growing on the GPU",
+    abstract:
+      "16 channels per cell packed into 4 float textures via WebGL2 MRT. Each frame every cell perceives its neighborhood with 3 kernels, runs a 48→32→16 ReLU MLP, applies the residual, and fires with 50% probability. Click to plant new seeds.",
+    tags: ["ml", "gpu", "shaders"],
+  },
+  {
+    href: "/lab/moon",
+    id: "08",
+    title: "the moon, ray-marched",
+    abstract:
+      "One fragment shader. Mouse, cat, boot, sea, and moon are all signed distance functions traced with 96 sphere-marching steps per pixel. Normals from finite differences, shadows from a soft-shadow ray, AO from 5 short samples. No polygons.",
+    tags: ["graphics", "sdf", "shaders"],
+  },
+  {
+    href: "/lab/shader",
+    id: "09",
+    title: "a live GLSL playground",
+    abstract:
+      "Write GLSL 300 es and watch it recompile as you type. Errors are surfaced straight from the driver. Four presets to warm up the shader instinct.",
+    tags: ["graphics", "editor"],
+  },
 ];
 
 export default function LabIndex() {

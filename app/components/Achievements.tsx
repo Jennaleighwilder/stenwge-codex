@@ -43,7 +43,14 @@ export type AchievementId =
   | "lab-raft"
   | "lab-gs"
   | "lab-merkle"
-  | "lab-dream";
+  | "lab-dream"
+  | "lab-nca"
+  | "lab-moon"
+  | "lab-shader"
+  | "codex-speak"
+  | "codex-airdrop"
+  | "api-airdrop"
+  | "ed25519-verified";
 
 const DESCRIPTIONS: Record<AchievementId, string> = {
   "banner": "opened the console",
@@ -82,6 +89,13 @@ const DESCRIPTIONS: Record<AchievementId, string> = {
   "lab-gs": "watched reaction-diffusion",
   "lab-merkle": "verified the merkle chain",
   "lab-dream": "streamed a dream over sse",
+  "lab-nca": "grew neural cellular automata",
+  "lab-moon": "ray-marched the moon",
+  "lab-shader": "compiled a live shader",
+  "codex-speak": "made the codex speak (klatt formants)",
+  "codex-airdrop": "downloaded the offline codex",
+  "api-airdrop": "requested /api/airdrop",
+  "ed25519-verified": "verified an ed25519 signature",
 };
 
 const ALL_IDS = Object.keys(DESCRIPTIONS) as AchievementId[];

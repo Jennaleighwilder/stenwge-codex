@@ -18,10 +18,14 @@ type Manifest = {
 };
 
 type Sig = {
-  algorithm: string;
   tip: string;
-  signature: string;
-  publicHint: string;
+  hmac: { algorithm: string; signature: string; publicHint: string };
+  ed25519: {
+    algorithm: string;
+    signature: string;
+    publicKey: string;
+    note?: string;
+  };
 };
 
 async function sha256Hex(s: string): Promise<string> {
@@ -53,12 +57,40 @@ type ChapterCheck = {
   ok: boolean;
 };
 
+function b64ToBytes(b64: string): Uint8Array {
+  const bin = atob(b64);
+  const out = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+  return out;
+}
+
+async function verifyEd25519(pkB64: string, sigB64: string, msg: string): Promise<boolean> {
+  try {
+    const key = await crypto.subtle.importKey(
+      "raw",
+      b64ToBytes(pkB64) as BufferSource,
+      { name: "Ed25519" },
+      false,
+      ["verify"],
+    );
+    return await crypto.subtle.verify(
+      "Ed25519",
+      key,
+      b64ToBytes(sigB64) as BufferSource,
+      new TextEncoder().encode(msg),
+    );
+  } catch {
+    return false;
+  }
+}
+
 export default function MerkleLab() {
   const [manifest, setManifest] = useState<Manifest | null>(null);
   const [sig, setSig] = useState<Sig | null>(null);
   const [checks, setChecks] = useState<ChapterCheck[] | null>(null);
   const [tipOk, setTipOk] = useState<boolean | null>(null);
-  const [sigOk, setSigOk] = useState<boolean | null>(null);
+  const [hmacOk, setHmacOk] = useState<boolean | null>(null);
+  const [edOk, setEdOk] = useState<boolean | null>(null);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string>("");
 
@@ -94,8 +126,21 @@ export default function MerkleLab() {
       setChecks(cs);
       setTipOk(parent === m.tip && parent === s.tip);
 
-      const localSig = await hmacSha256Hex(s.publicHint, s.tip);
-      setSigOk(localSig === s.signature);
+      const localHmac = await hmacSha256Hex(s.hmac.publicHint, s.tip);
+      setHmacOk(localHmac === s.hmac.signature);
+
+      const ed = await verifyEd25519(s.ed25519.publicKey, s.ed25519.signature, s.tip);
+      setEdOk(ed);
+      if (ed) {
+        try {
+          const raw = localStorage.getItem("fcri:achievements");
+          const arr = raw ? JSON.parse(raw) : [];
+          if (arr.indexOf("ed25519-verified") === -1) {
+            arr.push("ed25519-verified");
+            localStorage.setItem("fcri:achievements", JSON.stringify(arr));
+          }
+        } catch {}
+      }
     } catch (e: any) {
       setErr(e?.message ?? String(e));
     } finally {
@@ -134,16 +179,23 @@ export default function MerkleLab() {
         >
           {busy ? "verifying…" : "re-verify"}
         </button>
-        {tipOk === true && sigOk === true && (
-          <span className="text-emerald-300 text-[11px] font-mono">
-            ✓ chain verified · tip matches · signature verified
-          </span>
+        {tipOk === true && (
+          <span className="text-emerald-300 text-[11px] font-mono">✓ chain</span>
         )}
         {tipOk === false && (
-          <span className="text-rose-300 text-[11px] font-mono">✗ tip mismatch</span>
+          <span className="text-rose-300 text-[11px] font-mono">✗ chain</span>
         )}
-        {sigOk === false && (
-          <span className="text-rose-300 text-[11px] font-mono">✗ signature mismatch</span>
+        {hmacOk === true && (
+          <span className="text-emerald-300 text-[11px] font-mono">✓ hmac</span>
+        )}
+        {hmacOk === false && (
+          <span className="text-rose-300 text-[11px] font-mono">✗ hmac</span>
+        )}
+        {edOk === true && (
+          <span className="text-emerald-300 text-[11px] font-mono">✓ ed25519</span>
+        )}
+        {edOk === false && (
+          <span className="text-rose-300 text-[11px] font-mono">✗ ed25519 (browser may lack Ed25519 support)</span>
         )}
         {err && <span className="text-rose-300 text-[11px]">{err}</span>}
       </div>
@@ -161,12 +213,16 @@ export default function MerkleLab() {
           {sig && (
             <>
               <div className="flex justify-between text-stone-500 mt-2">
-                <span>signature</span>
-                <code className="text-stone-300">{sig.signature.slice(0, 48)}…</code>
+                <span>hmac.signature</span>
+                <code className="text-stone-300">{sig.hmac.signature.slice(0, 48)}…</code>
               </div>
               <div className="flex justify-between text-stone-500">
-                <span>algorithm</span>
-                <code className="text-stone-300">{sig.algorithm}</code>
+                <span>ed25519.publicKey</span>
+                <code className="text-stone-300">{sig.ed25519.publicKey.slice(0, 44)}…</code>
+              </div>
+              <div className="flex justify-between text-stone-500">
+                <span>ed25519.signature</span>
+                <code className="text-stone-300">{sig.ed25519.signature.slice(0, 48)}…</code>
               </div>
             </>
           )}

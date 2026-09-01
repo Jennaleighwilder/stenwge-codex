@@ -16,14 +16,17 @@ export default function LabLayout({ children }: { children: ReactNode }) {
           >
             fcri / research
           </Link>
-          <nav className="flex items-center gap-4 text-stone-500">
+          <nav className="flex items-center gap-3 text-stone-500 flex-wrap justify-end">
             <Link href="/lab/lisp" className="hover:text-stone-100">lisp</Link>
             <Link href="/lab/bf" className="hover:text-stone-100">bf→wasm</Link>
             <Link href="/lab/raft" className="hover:text-stone-100">raft</Link>
             <Link href="/lab/gray-scott" className="hover:text-stone-100">gray-scott</Link>
             <Link href="/lab/merkle" className="hover:text-stone-100">merkle</Link>
             <Link href="/lab/dream" className="hover:text-stone-100">dream</Link>
-            <Link href="/" className="text-stone-400 hover:text-stone-100 border-l border-stone-800 pl-4">← codex</Link>
+            <Link href="/lab/nca" className="hover:text-stone-100">nca</Link>
+            <Link href="/lab/moon" className="hover:text-stone-100">moon</Link>
+            <Link href="/lab/shader" className="hover:text-stone-100">shader</Link>
+            <Link href="/" className="text-stone-400 hover:text-stone-100 border-l border-stone-800 pl-3">← codex</Link>
           </nav>
         </div>
       </header>

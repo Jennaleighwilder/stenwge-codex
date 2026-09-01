@@ -1,17 +1,20 @@
 import { NextResponse } from "next/server";
-import { createHash, createHmac } from "node:crypto";
+import { createHash, createHmac, createPrivateKey, sign } from "node:crypto";
+import {
+  PUBLIC_KEY_BASE64,
+  PRIVATE_KEY_PKCS8_BASE64,
+  b64ToBytes,
+} from "../../lib/ed25519-keys";
 
 export const runtime = "nodejs";
 
 /**
- * /api/verify — an HMAC-signed statement of what the manifest currently is.
+ * /api/verify — a signed statement of the manifest's current tip.
  *
- * We compute the merkle tip of the current chapters and return:
- *   { tip, algorithm, signature, publicHint }
- *
- * The signature is HMAC-SHA-256(tip, key). `publicHint` is the same key,
- * exposed intentionally so /lab/merkle can verify the signature in the
- * browser — this is a demonstration of the mechanism, not a security scheme.
+ * Returns two independent signatures over the tip:
+ *   - HMAC-SHA-256 with a public key hint (symbolic, verifiable in browser)
+ *   - Ed25519 with a real asymmetric keypair (private key in server env,
+ *     public key exposed here for browser verification via WebCrypto).
  */
 
 const CHAPTERS: [number, string, string][] = [
@@ -41,15 +44,34 @@ const HMAC_KEY = "the-tale-persists";
 
 export async function GET() {
   const tip = tipOf();
-  const sig = createHmac("sha256", HMAC_KEY).update(tip).digest("hex");
+  const hmac = createHmac("sha256", HMAC_KEY).update(tip).digest("hex");
+
+  // ed25519 sign the tip bytes
+  const prvDer = Buffer.from(b64ToBytes(PRIVATE_KEY_PKCS8_BASE64));
+  const privateKey = createPrivateKey({
+    key: prvDer,
+    format: "der",
+    type: "pkcs8",
+  });
+  const tipBytes = Buffer.from(tip, "utf8");
+  const ed25519Sig = sign(null, tipBytes, privateKey).toString("base64");
+
   return NextResponse.json(
     {
-      algorithm: "HMAC-SHA-256",
       tip,
-      signature: sig,
-      publicHint: HMAC_KEY,
+      hmac: {
+        algorithm: "HMAC-SHA-256",
+        signature: hmac,
+        publicHint: HMAC_KEY,
+      },
+      ed25519: {
+        algorithm: "Ed25519",
+        signature: ed25519Sig,
+        publicKey: PUBLIC_KEY_BASE64,
+        note: "verify with WebCrypto: crypto.subtle.verify('Ed25519', pk, sig, utf8(tip))",
+      },
       note:
-        "Recompute the tip locally (walk the chapters), then HMAC-SHA-256(tip, publicHint) should match `signature`. See /lab/merkle for a live verifier.",
+        "the tip is sha-256 over the last chapter's content_hash chain. see /lab/merkle for a live verifier that walks and rebuilds the chain in-browser.",
     },
     {
       headers: {

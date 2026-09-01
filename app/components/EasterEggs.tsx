@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Achievements, AchievementsPanel } from "./Achievements";
 import { lispEvalStrict } from "../lib/lisp";
 import { bfwasm as bfwasmRun } from "../lib/bfwasm";
+import { speak as klattSpeak } from "../lib/klatt";
 import Repl from "./Repl";
 
 /**
@@ -267,6 +268,19 @@ function installCodexGlobal() {
       Achievements.unlock("lab-visit");
       return "→ /lab";
     },
+    speak(text: string, opts?: { f0?: number; rate?: number }) {
+      Achievements.unlock("codex-speak");
+      klattSpeak(text ?? "hello, the tale persists.", opts).catch((e) => {
+        // eslint-disable-next-line no-console
+        console.error(e);
+      });
+      return "🔊 klatt formants firing";
+    },
+    airdrop() {
+      Achievements.unlock("codex-airdrop");
+      window.location.href = "/api/airdrop";
+      return "downloading offline codex…";
+    },
     compile() {
       Achievements.unlock("codex-compile");
       const report = [
@@ -350,6 +364,8 @@ function installCodexGlobal() {
         "codex.open(n)":             "seek to chapter 1..8",
         "codex.repl()":              "toggle the on-page REPL (or press `)",
         "codex.lab()":               "open the research wing",
+        "codex.speak(text, {f0})":   "make the codex speak (klatt formant synth)",
+        "codex.airdrop()":           "download an offline single-file codex",
         "fetch('/api/codex')":       "story manifest (+ merkle chain)",
         "fetch('/api/verify')":      "signed manifest",
         "fetch('/api/teapot')":      "418",
@@ -457,6 +473,7 @@ export default function EasterEggs() {
       "/api/raft": "api-raft",
       "/api/dream": "api-dream",
       "/api/verify": "api-verify",
+      "/api/airdrop": "api-airdrop",
       "/robots.txt": "robots",
       "/.well-known/security.txt": "security",
     };
