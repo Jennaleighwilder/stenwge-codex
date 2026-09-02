@@ -53,6 +53,12 @@ export async function GET(req: Request) {
       badge: "HUMAN-SUPPLIED",
       source: "author's own claim, this file",
     },
+    redaction: {
+      value:
+        "One third party's name, title, and employer appeared in an earlier version of this portrait, inside an OBSERVED directory listing. They were removed at the author's request. The redaction is marked in place as <redacted> rather than rewritten away, so the evidence contract still holds: what you see is the real listing with one name withheld.",
+      badge: "HUMAN-SUPPLIED",
+      source: "author's own request",
+    },
     evidence_contract: {
       badge: "OBSERVED",
       source: "MASTER_BUILD_PROMPT.md § 'Evidence contract'",

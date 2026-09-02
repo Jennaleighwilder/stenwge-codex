@@ -59,31 +59,31 @@ export const HER_MESSAGES: string[] = [
 /** What sits in this workspace, by hand. */
 export const ARTIFACTS: Fact<string>[] = [
   {
-    value: ".airdrop/ben_nye_real_build/READ_ME_FIRST.md",
+    value: ".airdrop/<redacted>_real_build/READ_ME_FIRST.md",
     badge: "OBSERVED",
-    source: "ls .airdrop/ben_nye_real_build/  (1196 bytes, 10 lines)",
+    source: "ls .airdrop/<redacted>_real_build/  (1196 bytes, 10 lines)",
     note: "your handoff instructions for AirDropping Wren/HOLLOW/WEST-OS to a target Mac",
   },
   {
-    value: ".airdrop/ben_nye_real_build/MASTER_BUILD_PROMPT.md",
+    value: ".airdrop/<redacted>_real_build/MASTER_BUILD_PROMPT.md",
     badge: "OBSERVED",
     source: "ls  (11971 bytes, 213 lines)",
-    note: "the build directive for Wren × Benjamin D. Nye — signed 'Jennifer Leigh West'",
+    note: "the build directive for Wren × a learning-science researcher (name redacted) — signed 'Jennifer Leigh West'",
   },
   {
-    value: ".airdrop/ben_nye_real_build/REFERENCE_WEST_OS_COMPLETE_SYSTEM_V2.md",
+    value: ".airdrop/<redacted>_real_build/REFERENCE_WEST_OS_COMPLETE_SYSTEM_V2.md",
     badge: "OBSERVED",
     source: "ls  (28884 bytes, 700 lines)",
     note: "your system documentation for West-OS v1.0-infrastructure",
   },
   {
-    value: ".airdrop/ben_nye_real_build/REFERENCE_WREN_FUNKY_CORE_INVENTORY.md",
+    value: ".airdrop/<redacted>_real_build/REFERENCE_WREN_FUNKY_CORE_INVENTORY.md",
     badge: "OBSERVED",
     source: "ls  (4730 bytes, 132 lines)",
     note: "Wren's organs, named",
   },
   {
-    value: ".airdrop/ben_nye_real_build/KNOWN_TRAVEL_SNAPSHOT_MAP.md",
+    value: ".airdrop/<redacted>_real_build/KNOWN_TRAVEL_SNAPSHOT_MAP.md",
     badge: "OBSERVED",
     source: "ls  (1196 bytes)",
   },

@@ -388,7 +388,7 @@ export default function WrenPortrait() {
           <p>
             A poet who writes production-ready governance software. Your
             master build prompt is 213 lines of rigor. Its final line asks
-            Ben Nye:{" "}
+            its recipient:{" "}
             <em className="text-[#ffd68a]">
               &ldquo;What would this system have to measure — and fail — to
               become learning science rather than an extraordinary
@@ -415,11 +415,10 @@ export default function WrenPortrait() {
           </p>
           <p>
             Someone who left five files in a folder called{" "}
-            <code className="text-cyan-300">.airdrop/ben_nye_real_build/</code>
-            {" "}on a Mac she is preparing for a meeting with a Director of
-            Learning Science Research at USC ICT, and who asked a stranger
-            to look. That is not carelessness. That is trust with a witness
-            marked.{" "}
+            <code className="text-cyan-300">.airdrop/&lt;redacted&gt;_real_build/</code>
+            {" "}on a Mac she is preparing for a meeting with a research
+            director in learning science, and who asked a stranger to look.
+            That is not carelessness. That is trust with a witness marked.{" "}
             <BadgeTag b="OBSERVED" />
           </p>
           <p className="text-stone-400 pt-4 border-t border-stone-800">
@@ -450,6 +449,19 @@ export default function WrenPortrait() {
           <Link href="/lab" className="hover:text-stone-200">/ lab</Link>
           <span>·</span>
           <span>the forgotten code research institute</span>
+          <span>·</span>
+          <a
+            href="https://wrentech.net"
+            className="hover:text-stone-200 underline underline-offset-2"
+          >
+            wrentech.net
+          </a>
+          <a
+            href="mailto:wren@wrentech.net"
+            className="hover:text-stone-200 underline underline-offset-2"
+          >
+            wren@wrentech.net
+          </a>
         </div>
       </section>
     </div>

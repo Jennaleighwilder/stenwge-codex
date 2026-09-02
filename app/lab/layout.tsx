@@ -33,7 +33,15 @@ export default function LabLayout({ children }: { children: ReactNode }) {
       <main className="max-w-5xl mx-auto px-6 py-10">{children}</main>
       <footer className="border-t border-stone-900 mt-16">
         <div className="max-w-5xl mx-auto px-6 py-6 text-[10px] text-stone-600 flex justify-between">
-          <span>the forgotten code research institute</span>
+          <span>
+            the forgotten code research institute · built by{" "}
+            <a
+              href="https://wrentech.net"
+              className="text-stone-400 hover:text-stone-100 underline underline-offset-2"
+            >
+              wrentech.net
+            </a>
+          </span>
           <span>everything on this page runs in your browser.</span>
         </div>
       </footer>
