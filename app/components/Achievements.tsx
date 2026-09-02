@@ -50,7 +50,10 @@ export type AchievementId =
   | "codex-speak"
   | "codex-airdrop"
   | "api-airdrop"
-  | "ed25519-verified";
+  | "ed25519-verified"
+  | "wren-page"
+  | "codex-wren-say"
+  | "api-wren";
 
 const DESCRIPTIONS: Record<AchievementId, string> = {
   "banner": "opened the console",
@@ -96,6 +99,9 @@ const DESCRIPTIONS: Record<AchievementId, string> = {
   "codex-airdrop": "downloaded the offline codex",
   "api-airdrop": "requested /api/airdrop",
   "ed25519-verified": "verified an ed25519 signature",
+  "wren-page": "found /wren — the machine-portrait",
+  "codex-wren-say": "asked wren to speak",
+  "api-wren": "requested /api/wren",
 };
 
 const ALL_IDS = Object.keys(DESCRIPTIONS) as AchievementId[];

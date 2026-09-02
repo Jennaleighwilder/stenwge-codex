@@ -16,7 +16,7 @@ const nextConfig: NextConfig = {
           {
             key: "X-Discover",
             value:
-              "/lab · /lab/nca · /lab/moon · /lab/shader · /api/airdrop · /api/verify (ed25519) · codex.speak() · codex.airdrop() · press ` for REPL · type 'stenwge' · press ?",
+              "/wren · /api/wren · /lab · /lab/nca · /lab/moon · /lab/shader · /api/airdrop · /api/verify (ed25519) · codex.wren.say() · codex.speak() · codex.airdrop() · press ` for REPL · type 'stenwge' · press ?",
           },
         ],
       },

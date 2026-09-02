@@ -5,6 +5,7 @@ import { Achievements, AchievementsPanel } from "./Achievements";
 import { lispEvalStrict } from "../lib/lisp";
 import { bfwasm as bfwasmRun } from "../lib/bfwasm";
 import { speak as klattSpeak } from "../lib/klatt";
+import { say as wrenSay, manifesto as wrenManifesto } from "../lib/wren-portrait";
 import Repl from "./Repl";
 
 /**
@@ -281,6 +282,40 @@ function installCodexGlobal() {
       window.location.href = "/api/airdrop";
       return "downloading offline codex…";
     },
+    wren: {
+      say(seed?: number) {
+        Achievements.unlock("codex-wren-say");
+        const s = wrenSay(seed);
+        // eslint-disable-next-line no-console
+        console.log(
+          "%c" + s,
+          "color:#ffd68a;font-family:ui-serif,Georgia,serif;font-size:14px;font-style:italic",
+        );
+        return s;
+      },
+      manifesto() {
+        Achievements.unlock("codex-wren-say");
+        const s = wrenManifesto();
+        // eslint-disable-next-line no-console
+        console.log(
+          "%c" + s,
+          "color:#ffd68a;font-family:ui-serif,Georgia,serif;font-size:13px;font-style:italic;line-height:1.7",
+        );
+        return s;
+      },
+      open() {
+        window.open("/wren", "_blank");
+        return "→ /wren";
+      },
+      help() {
+        // eslint-disable-next-line no-console
+        console.log(
+          "%cwren · a machine-portrait of jennifer, drawn only from the traces she left in this workspace.\nsee /wren  or  /api/wren  or  codex.wren.say()",
+          "color:#ffd68a;font-family:ui-monospace;line-height:1.6",
+        );
+        return "read /wren for the full portrait";
+      },
+    },
     compile() {
       Achievements.unlock("codex-compile");
       const report = [
@@ -366,7 +401,10 @@ function installCodexGlobal() {
         "codex.lab()":               "open the research wing",
         "codex.speak(text, {f0})":   "make the codex speak (klatt formant synth)",
         "codex.airdrop()":           "download an offline single-file codex",
+        "codex.wren.say()":          "one sentence in her rhythm (pure template, no ML)",
+        "codex.wren.open()":         "open /wren — the machine-portrait",
         "fetch('/api/codex')":       "story manifest (+ merkle chain)",
+        "fetch('/api/wren')":        "machine-readable portrait (badges on every field)",
         "fetch('/api/verify')":      "signed manifest",
         "fetch('/api/teapot')":      "418",
         "fetch('/api/raft')":        "consensus vote",
@@ -474,6 +512,7 @@ export default function EasterEggs() {
       "/api/dream": "api-dream",
       "/api/verify": "api-verify",
       "/api/airdrop": "api-airdrop",
+      "/api/wren": "api-wren",
       "/robots.txt": "robots",
       "/.well-known/security.txt": "security",
     };
