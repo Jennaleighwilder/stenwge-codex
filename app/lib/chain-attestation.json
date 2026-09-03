@@ -1,0 +1,10 @@
+{
+  "algorithm": "Ed25519",
+  "signed": "manifest tip (ASCII hex string)",
+  "tip": "d00573115cbcccf8899fbbaf783ec3b816eeff24c9b34eeb7aa29fce8be131da",
+  "signature": "S7HPWwUG6iMbrkfA4wWBjNQDFyZ7VcB4jdS9OOFY5hmCe2GGfreHoBNYyUbOvRubMd1eEZ6nZEgXoT3gIKXyCw==",
+  "publicKey": "WN39s1ogdcRqfdeqyNqWspz4deXeUvFI5fWhm4hvZX0=",
+  "signedAt": "2026-09-03T16:05:18.158Z",
+  "rotated_from": "the committed demo pair formerly in app/lib/ed25519-keys.ts",
+  "note": "If the chapters change, the tip changes and this signature stops matching. /api/verify recomputes the tip and refuses to present a stale signature as current."
+}

@@ -4,7 +4,7 @@
   "sealSha256": "9e478ae1da88c2dd9af7706c32bd11623d339670651fed62d0f27a988cc94a47",
   "signature": "tTS0SYF2qJUSeVOWXJYvc6z4y0uNngspE9L5WmEC0AAK79XXyum6WKTjClwpMfXE2fXgj9bcDApd1nxMzWEACA==",
   "publicKey": "WN39s1ogdcRqfdeqyNqWspz4deXeUvFI5fWhm4hvZX0=",
-  "signedAt": "2026-09-03T05:47:19.964Z",
+  "signedAt": "2026-09-03T16:05:18.157Z",
   "verify": {
     "note": "The signature is over the ASCII of sealSha256, not over raw bytes of the digest.",
     "webcrypto": "crypto.subtle.verify('Ed25519', pk, sig, new TextEncoder().encode(sealSha256))",

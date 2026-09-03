@@ -22,7 +22,12 @@
  * person. It proves the seal has not been altered since it was signed.
  */
 
-import { generateKeyPairSync, sign, createPublicKey } from "node:crypto";
+import {
+  generateKeyPairSync,
+  sign,
+  createPublicKey,
+  createHash,
+} from "node:crypto";
 import { readFileSync, writeFileSync, existsSync, chmodSync } from "node:fs";
 import { join, dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -31,6 +36,27 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const KEY_PATH = join(ROOT, ".evidence-signing.key");
 const SEAL_PATH = join(ROOT, "app/lib/evidence-seal.json");
 const ATTEST_PATH = join(ROOT, "app/lib/evidence-attestation.json");
+const CHAIN_PATH = join(ROOT, "app/lib/chain-attestation.json");
+
+/** The story chain, mirrored from /api/verify. Chapter text is public. */
+const CHAPTERS = [
+  [1, "spec", "if you give a mouse a cookie."],
+  [2, "bug", "but the mouse is lactose intolerant."],
+  [3, "dup bug", "and the cat is a vegetarian."],
+  [4, "patch", "so the milk goes to the cat. the cookie stays with the mouse."],
+  [5, "prod", "they run, the rest of their lives, in a worn boot under the moon."],
+  [6, "root cause", "you are the strange input. you are the variance."],
+  [7, "commit", 'git commit -m "the tale persists"'],
+];
+
+function tipOf() {
+  const h = (s) => createHash("sha256").update(s).digest("hex");
+  let parent = h("genesis");
+  for (const [id, kicker, line] of CHAPTERS) {
+    parent = h(`${parent}\n${id}\t${kicker}\t${line}`);
+  }
+  return parent;
+}
 
 function loadOrCreateKey() {
   if (existsSync(KEY_PATH)) {
@@ -97,7 +123,34 @@ function main() {
   };
 
   writeFileSync(ATTEST_PATH, JSON.stringify(attestation, null, 2) + "\n");
-  console.log(`signed seal ${seal.sealSha256.slice(0, 16)}…`);
+
+  // The story chain gets the same treatment. It previously "signed" itself
+  // at request time with a private key committed to the public repository —
+  // a signature anyone with a clone could forge. Signed here instead, by a
+  // key that never enters the repo or the deployment.
+  const tip = tipOf();
+  const chainSig = sign(null, Buffer.from(tip, "utf8"), pem);
+  writeFileSync(
+    CHAIN_PATH,
+    JSON.stringify(
+      {
+        algorithm: "Ed25519",
+        signed: "manifest tip (ASCII hex string)",
+        tip,
+        signature: chainSig.toString("base64"),
+        publicKey: publicRaw.toString("base64"),
+        signedAt: new Date().toISOString(),
+        rotated_from: "the committed demo pair formerly in app/lib/ed25519-keys.ts",
+        note:
+          "If the chapters change, the tip changes and this signature stops matching. /api/verify recomputes the tip and refuses to present a stale signature as current.",
+      },
+      null,
+      2
+    ) + "\n"
+  );
+
+  console.log(`signed seal  ${seal.sealSha256.slice(0, 16)}…`);
+  console.log(`signed chain ${tip.slice(0, 16)}…`);
   console.log(`  public key: ${attestation.publicKey}`);
 }
 

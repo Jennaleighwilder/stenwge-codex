@@ -1,31 +1,38 @@
 /**
- * Ed25519 key material for the codex.
+ * Ed25519 public key material for the codex.
  *
- * These are static keys used only for signing the manifest. Anyone can
- * verify a signature over the manifest tip using the public key here plus
- * WebCrypto's Ed25519 support (Chrome 113+, Firefox 130+, Safari 17+).
+ * ─────────────────────────────────────────────────────────────────────────
+ * ROTATED. This file used to export PRIVATE_KEY_PKCS8_BASE64 — a PKCS8
+ * private key, committed to a public repository, used by /api/verify to
+ * sign the manifest tip at request time.
  *
- * DO NOT reuse this key material for anything else — it's here to
- * demonstrate the protocol, not to secure real things.
+ * That made the signature meaningless. Anyone who cloned the repo held the
+ * signing key and could produce a signature indistinguishable from the
+ * site's own. A signature that everyone can forge attests to nothing; it
+ * only looks like it does, which is worse than having none.
  *
- * Generated once, offline, with:
- *   const { publicKey, privateKey } = await crypto.subtle.generateKey(
- *     { name: "Ed25519" }, true, ["sign", "verify"]);
- *   const pub = await crypto.subtle.exportKey("raw", publicKey);
- *   const prv = await crypto.subtle.exportKey("pkcs8", privateKey);
+ * The chain is now signed at build time by a key that never enters this
+ * repository or the deployment (see scripts/sign-seal.mjs). Only the
+ * signature and the public key ship — in app/lib/chain-attestation.json.
  *
- * We ship both as base64. The private key sits ONLY on the server side
- * (imported at request time in the /api/verify route). The public key is
- * safe to publish.
+ * Stated plainly, because the point of this project is not overstating
+ * things: the old private key remains in this repository's git history and
+ * must be treated as permanently compromised. History has not been
+ * rewritten, since that would require a force-push over published commits.
+ * Nothing depends on the old key any more, and the public key below is the
+ * new one. Signatures made with the old key no longer verify against it.
+ * ─────────────────────────────────────────────────────────────────────────
  */
 
-// 32-byte raw public key
-export const PUBLIC_KEY_BASE64 =
-  "pLcxBmZfEjxrPR3Hkkir+ZLS9wwYXI2iJ5JEhZBtV5g=";
+/** 32-byte raw public key of the current signing key. Safe to publish. */
+export const PUBLIC_KEY_BASE64 = "WN39s1ogdcRqfdeqyNqWspz4deXeUvFI5fWhm4hvZX0=";
 
-// PKCS8 private key (server-side only; but committed in this demo)
-export const PRIVATE_KEY_PKCS8_BASE64 =
-  "MC4CAQAwBQYDK2VwBCIEIOtHUt+7zU8GyRA0ClE1Lxohks2K4cOdIaDwj2xYEHXh";
+/**
+ * The retired key, kept only so anyone who archived an old signature can
+ * see why it no longer verifies. Do not use it for anything.
+ */
+export const RETIRED_PUBLIC_KEY_BASE64 =
+  "pLcxBmZfEjxrPR3Hkkir+ZLS9wwYXI2iJ5JEhZBtV5g=";
 
 export function b64ToBytes(b64: string): Uint8Array {
   const bin = atob(b64);
