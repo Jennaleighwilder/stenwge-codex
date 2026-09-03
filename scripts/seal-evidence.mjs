@@ -22,7 +22,14 @@ import { createHash } from "node:crypto";
 import { readFileSync, writeFileSync, existsSync, readdirSync } from "node:fs";
 import { join, dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { grade, commit, estimateBits, BRINE_THRESHOLD_BITS } from "./lib/salt.mjs";
+import {
+  grade,
+  commit,
+  estimateBits,
+  fileTag,
+  band,
+  BRINE_THRESHOLD_BITS,
+} from "./lib/salt.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const PRIVATE_ROOT = join(ROOT, ".airdrop", "ben_nye_real_build");
@@ -130,15 +137,14 @@ function sealLineSpan(cite, idx) {
     hides: sealedSpan.hides,
     spanDigest: sealedSpan.digest,
     spanSalt: sealedSpan.salt,
-    spanBits: estimateBits(text),
     verify: sealedSpan.verify,
-    spanChars: text.length,
-    // The whole-file digest stays unsalted on purpose: a 4-30KB document is
-    // far past any brute-force horizon, and an unsalted file digest is the
-    // one number a holder can check with nothing but `shasum FILE`.
-    fileSha256: sha256(whole),
-    fileBytes: Buffer.byteLength(whole, "utf8"),
-    fileLines: whole.split("\n").length,
+    // Banded, not exact: a precise character count fingerprints text that
+    // nobody outside was given. The band justifies the grade and stops there.
+    spanBand: band(text.length),
+    bitsBand: band(estimateBits(text), [32, 64, 128, 256, 512, 1024]),
+    // Keyed file tag rather than sha-256(file): a holder confirms their copy,
+    // an outsider gets a value that cross-references against nothing.
+    fileTag: fileTag(readFileSync(path), span.file),
   };
 }
 
@@ -166,8 +172,9 @@ function sealSectionRef(cite, idx) {
     file: m[1],
     section: needle,
     reason: found ? undefined : `section "${needle}" not found in ${m[1]}`,
-    fileSha256: sha256(whole),
-    fileBytes: Buffer.byteLength(whole, "utf8"),
+    grade: "brine",
+    hides: true,
+    fileTag: fileTag(readFileSync(path), m[1]),
   };
 }
 
@@ -200,9 +207,14 @@ function sealArtifactClaim({ cite, basename }, idx) {
     file: basename,
     status: problems.length ? "FAIL" : "SEALED",
     reason: problems.length ? problems.join("; ") : undefined,
-    fileSha256: sha256(whole),
+    grade: "brine",
+    hides: true,
+    // These two are published deliberately: the portrait itself asserts
+    // "(641 bytes, 10 lines)" on the page, so withholding them here would
+    // hide nothing and only break the check that caught the 1196/641 error.
     fileBytes: realBytes,
     fileLines: realLines,
+    fileTag: fileTag(readFileSync(path), basename),
   };
 }
 

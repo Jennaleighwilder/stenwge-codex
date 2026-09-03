@@ -154,7 +154,10 @@ export default function AuditPage() {
           heading and anyone can guess their way to it — they hold the digest,
           they try candidates, they get a match. So each span is committed
           under the weakest grade that is still sound for the entropy it
-          actually has, measured rather than assumed.
+          actually has, measured rather than assumed. Every grade over a
+          private source is keyed by that source, so every private
+          commitment hides — the grades differ in what is published beside
+          the digest, never in whether the span is exposed.
         </p>
         <div className="space-y-8">
           {[
@@ -168,9 +171,10 @@ export default function AuditPage() {
             {
               name: "salt",
               tone: "text-amber-200 border-amber-400/60",
-              hides: "does NOT hide the span",
-              body: "A private source whose span carries enough entropy that guessing is hopeless anyway. The published salt is not a secret and is not pretending to be one — it buys domain separation, so identical text in two citations produces unrelated digests and no precomputed table covers the corpus.",
-              recipe: "{ printf '%s\\n' \"$SALT\"; sed -n 'A,Bp' FILE; } | shasum -a 256",
+              hides: "hides the span",
+              body: "A private source whose span carries enough entropy that guessing was already hard. Keyed exactly like brine, because a commitment that does not hide has no business sitting beside ones that do. The published salt is a public per-citation separator — it is not the thing doing the hiding, and it never was.",
+              recipe:
+                "KEY=$(printf '%s' \"fcri:brine:v1|CITE\" | openssl dgst -sha256 \\\n  -mac HMAC -macopt hexkey:\"$(xxd -p -c 99999999 FILE | tr -d '\\n')\" | awk '{print $NF}')\n{ printf '%s\\n' \"$SALT\"; sed -n 'A,Bp' FILE; } | openssl dgst -sha256 -mac HMAC -macopt hexkey:\"$KEY\"",
             },
             {
               name: "brine",
@@ -207,7 +211,12 @@ export default function AuditPage() {
           No key material exists in this repository or in the deployment. Brine
           keys are derived from the source documents themselves, so there is
           nothing to leak, nothing to rotate, and nothing you must ask anyone
-          for in order to check a quotation.
+          for in order to check a quotation. Span lengths and entropy appear
+          as coarse bands rather than exact counts, and file identity is a
+          keyed tag rather than sha-256 of the file — so a digest here
+          cannot be paired with a precise length to narrow a guess, and
+          cannot be used as a lookup key against a document you were never
+          given.
         </p>
       </section>
 

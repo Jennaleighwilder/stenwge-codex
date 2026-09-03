@@ -43,11 +43,14 @@ export type SealEntry = {
   spanDigest?: string;
   /** published salt — present for salt grade only, never a secret */
   spanSalt?: string;
-  /** estimated bits an attacker must search to guess the span */
-  spanBits?: number;
+  /** coarse band for the span's length — never the exact count */
+  spanBand?: string;
+  /** coarse band for estimated guessing entropy */
+  bitsBand?: string;
   /** plain-language statement of how to reproduce this digest */
   verify?: string;
-  spanChars?: number;
+  /** keyed file identifier — NOT sha-256(file), which would cross-reference */
+  fileTag?: string;
   fileSha256?: string;
   fileBytes?: number;
   fileLines?: number;
@@ -152,6 +155,9 @@ export function sealLabel(entry?: SealEntry): string | undefined {
   if (entry.kind === "line-span" && entry.lines && entry.spanDigest) {
     const alg = entry.grade === "brine" ? "hmac-sha-256" : "sha-256";
     return `${entry.grade} · ${alg}(${entry.file}:${entry.lines[0]}-${entry.lines[1]}) = ${entry.spanDigest.slice(0, 16)}…`;
+  }
+  if (entry.fileTag) {
+    return `${entry.grade ?? "sealed"} · file-tag(${entry.file ?? "source"}) = ${entry.fileTag.slice(0, 16)}…`;
   }
   if (entry.fileSha256) {
     return `sha-256(${entry.file ?? "source"}) = ${entry.fileSha256.slice(0, 16)}…`;

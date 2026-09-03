@@ -44,11 +44,11 @@ export async function GET() {
       salt: {
         applies_to:
           "private sources whose span carries enough entropy that guessing is infeasible",
-        hides_span: false,
+        hides_span: true,
         purpose:
-          "domain separation — identical spans in different citations get unrelated digests, and no precomputed table spans the corpus",
+          "keyed exactly like brine, so the span is hidden; the published salt is a public per-citation separator, not the thing doing the hiding",
         recipe:
-          "{ printf '%s\\n' \"$SALT\"; sed -n 'A,Bp' FILE; } | shasum -a 256",
+          "KEY=$(printf '%s' \"fcri:brine:v1|CITE\" | openssl dgst -sha256 -mac HMAC -macopt hexkey:\"$(xxd -p -c 99999999 FILE | tr -d '\\n')\" | awk '{print $NF}'); { printf '%s\\n' \"$SALT\"; sed -n 'A,Bp' FILE; } | openssl dgst -sha256 -mac HMAC -macopt hexkey:\"$KEY\"",
       },
       brine: {
         applies_to:
@@ -59,6 +59,8 @@ export async function GET() {
         recipe:
           "KEY=$(printf '%s' \"fcri:brine:v1|CITE\" | openssl dgst -sha256 -mac HMAC -macopt hexkey:\"$(xxd -p -c 99999999 FILE | tr -d '\\n')\" | awk '{print $NF}'); sed -n 'A,Bp' FILE | openssl dgst -sha256 -mac HMAC -macopt hexkey:\"$KEY\"",
       },
+      metadata_policy:
+        "Span lengths and entropy are published as coarse bands, never exact counts, so a digest cannot be paired with a precise length to narrow a guess. File identity is a keyed tag rather than sha-256(file), so it confirms a holder's copy without acting as a universal lookup key.",
       no_stored_secret:
         "No key material exists anywhere in this repository or deployment. Brine keys are derived from the source documents themselves.",
     },
@@ -80,9 +82,10 @@ export async function GET() {
             hides_span: r.entry.hides ?? false,
             span_digest: r.entry.spanDigest,
             span_salt: r.entry.spanSalt,
-            span_entropy_bits: r.entry.spanBits,
+            span_length_band: r.entry.spanBand,
+            span_entropy_band: r.entry.bitsBand,
             how_to_verify: r.entry.verify,
-            file_sha256: r.entry.fileSha256,
+            file_tag: r.entry.fileTag,
             file_bytes: r.entry.fileBytes,
             label: sealLabel(r.entry),
           }

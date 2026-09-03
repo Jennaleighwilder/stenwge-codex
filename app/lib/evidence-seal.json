@@ -1,5 +1,5 @@
 {
-  "sealedAt": "2026-09-03T05:28:12.299Z",
+  "sealedAt": "2026-09-03T05:33:49.909Z",
   "algorithm": "sha-256",
   "sourcesPresent": true,
   "note": "Digests only. No source content is published here. Anyone holding a cited file can recompute sha-256 over the named line span and compare.",
@@ -14,45 +14,55 @@
       "kind": "listing",
       "file": "READ_ME_FIRST.md",
       "status": "SEALED",
-      "fileSha256": "9177562c1916a209e221c9032e7a990d07cd755565c93a0d9582b8f18dd1631f",
+      "grade": "brine",
+      "hides": true,
       "fileBytes": 641,
-      "fileLines": 11
+      "fileLines": 11,
+      "fileTag": "4e5f2dcdb8d878d154ceaa97d7794f9ba9d1ad798ad3f286e9db6edf8cd30e43"
     },
     "ls  (11971 bytes, 213 lines)": {
       "cite": "ls  (11971 bytes, 213 lines)",
       "kind": "listing",
       "file": "MASTER_BUILD_PROMPT.md",
       "status": "SEALED",
-      "fileSha256": "f9e80a49c867935c33028720cd19c26df229738ce42180276f99b4f0211ef43d",
+      "grade": "brine",
+      "hides": true,
       "fileBytes": 11971,
-      "fileLines": 214
+      "fileLines": 214,
+      "fileTag": "f669ccccb71274dd02e82e6f5e6e0c4a1b5eb31e8d61270138005f19fb8301ed"
     },
     "ls  (28884 bytes, 700 lines)": {
       "cite": "ls  (28884 bytes, 700 lines)",
       "kind": "listing",
       "file": "REFERENCE_WEST_OS_COMPLETE_SYSTEM_V2.md",
       "status": "SEALED",
-      "fileSha256": "caa6dd33cc5043928f853afbd8d5610cd0d93d54d4387f3ae16a163c873541f1",
+      "grade": "brine",
+      "hides": true,
       "fileBytes": 28884,
-      "fileLines": 701
+      "fileLines": 701,
+      "fileTag": "623063e586d2295c98fa66832c736758d3baecb60c1f6cde15bab6d6e52f7e8a"
     },
     "ls  (4730 bytes, 132 lines)": {
       "cite": "ls  (4730 bytes, 132 lines)",
       "kind": "listing",
       "file": "REFERENCE_WREN_FUNKY_CORE_INVENTORY.md",
       "status": "SEALED",
-      "fileSha256": "962c8f1c54e0f91fb3662159f944d31747f722a1da99f8fb6e0518037a951f78",
+      "grade": "brine",
+      "hides": true,
       "fileBytes": 4730,
-      "fileLines": 133
+      "fileLines": 133,
+      "fileTag": "79abec2fb726a3d0473d6aaccebf5f0bc8b51f1b39a97fc70868cd520d970524"
     },
     "ls  (1196 bytes)": {
       "cite": "ls  (1196 bytes)",
       "kind": "listing",
       "file": "KNOWN_TRAVEL_SNAPSHOT_MAP.md",
       "status": "SEALED",
-      "fileSha256": "cca75959574db9b13791e9732833877ec24cf2c740212f8f31a3ded15e18434f",
+      "grade": "brine",
+      "hides": true,
       "fileBytes": 1196,
-      "fileLines": 43
+      "fileLines": 43,
+      "fileTag": "d53e6f00618fcda8e5f527d1fe7acefeb18e8de1a15c89af4e1241ee83db8586"
     },
     "REFERENCE_WREN_FUNKY_CORE_INVENTORY.md:5-6": {
       "cite": "REFERENCE_WREN_FUNKY_CORE_INVENTORY.md:5-6",
@@ -66,12 +76,10 @@
       "grade": "brine",
       "hides": true,
       "spanDigest": "4f826637db8f4b8670ee6852844fd186993bfb5535b1248fbfdf1f77beef2f06",
-      "spanBits": 21,
       "verify": "HMAC-SHA-256 over the cited span, keyed by HMAC(file bytes, domain|citation) — derivable by any holder of the source file, by nobody else",
-      "spanChars": 24,
-      "fileSha256": "962c8f1c54e0f91fb3662159f944d31747f722a1da99f8fb6e0518037a951f78",
-      "fileBytes": 4730,
-      "fileLines": 133
+      "spanBand": "<=32",
+      "bitsBand": "<=32",
+      "fileTag": "79abec2fb726a3d0473d6aaccebf5f0bc8b51f1b39a97fc70868cd520d970524"
     },
     "REFERENCE_WREN_FUNKY_CORE_INVENTORY.md:24-28": {
       "cite": "REFERENCE_WREN_FUNKY_CORE_INVENTORY.md:24-28",
@@ -83,15 +91,13 @@
         28
       ],
       "grade": "salt",
-      "hides": false,
-      "spanDigest": "696f3b8946f69f9ed42a55b4c015b2996d0a527a2b095eedae5cdba51e91328b",
+      "hides": true,
+      "spanDigest": "b79f37689e64253fc647a83a2d7276e77f7c9061eb0971c69d07472b3e54121d",
       "spanSalt": "de5aa6105cdeea0f3672722c37a343ed419a33c8ff96dedc5bc0a62bd8a41775",
-      "spanBits": 147,
-      "verify": "sha-256 over the published salt line followed by the cited span",
-      "spanChars": 134,
-      "fileSha256": "962c8f1c54e0f91fb3662159f944d31747f722a1da99f8fb6e0518037a951f78",
-      "fileBytes": 4730,
-      "fileLines": 133
+      "verify": "HMAC-SHA-256 over the published salt line followed by the cited span, keyed by HMAC(file bytes, domain|citation)",
+      "spanBand": "129-256",
+      "bitsBand": "129-256",
+      "fileTag": "79abec2fb726a3d0473d6aaccebf5f0bc8b51f1b39a97fc70868cd520d970524"
     },
     "REFERENCE_WREN_FUNKY_CORE_INVENTORY.md:41-43": {
       "cite": "REFERENCE_WREN_FUNKY_CORE_INVENTORY.md:41-43",
@@ -103,15 +109,13 @@
         43
       ],
       "grade": "salt",
-      "hides": false,
-      "spanDigest": "87396b783d9edcb24167be29bef7bdc414cf5dab466883ef21b93b648e75267c",
+      "hides": true,
+      "spanDigest": "4a5b40e62f6d39384bba79db75d3047b27331a1ebba7c9408cfe4c7b9cd2b652",
       "spanSalt": "be7e51377f1e9ca15822cae7bffafb12ae91724f3f62b82b28164b347fd5e271",
-      "spanBits": 175,
-      "verify": "sha-256 over the published salt line followed by the cited span",
-      "spanChars": 159,
-      "fileSha256": "962c8f1c54e0f91fb3662159f944d31747f722a1da99f8fb6e0518037a951f78",
-      "fileBytes": 4730,
-      "fileLines": 133
+      "verify": "HMAC-SHA-256 over the published salt line followed by the cited span, keyed by HMAC(file bytes, domain|citation)",
+      "spanBand": "129-256",
+      "bitsBand": "129-256",
+      "fileTag": "79abec2fb726a3d0473d6aaccebf5f0bc8b51f1b39a97fc70868cd520d970524"
     },
     "REFERENCE_WREN_FUNKY_CORE_INVENTORY.md:56-58": {
       "cite": "REFERENCE_WREN_FUNKY_CORE_INVENTORY.md:56-58",
@@ -125,12 +129,10 @@
       "grade": "brine",
       "hides": true,
       "spanDigest": "31947e1a23127d7c7b7e2316376220fe7a841a650efc9429dc8812cc38346ba2",
-      "spanBits": 29,
       "verify": "HMAC-SHA-256 over the cited span, keyed by HMAC(file bytes, domain|citation) — derivable by any holder of the source file, by nobody else",
-      "spanChars": 26,
-      "fileSha256": "962c8f1c54e0f91fb3662159f944d31747f722a1da99f8fb6e0518037a951f78",
-      "fileBytes": 4730,
-      "fileLines": 133
+      "spanBand": "<=32",
+      "bitsBand": "<=32",
+      "fileTag": "79abec2fb726a3d0473d6aaccebf5f0bc8b51f1b39a97fc70868cd520d970524"
     },
     "REFERENCE_WREN_FUNKY_CORE_INVENTORY.md:71-72": {
       "cite": "REFERENCE_WREN_FUNKY_CORE_INVENTORY.md:71-72",
@@ -144,12 +146,10 @@
       "grade": "brine",
       "hides": true,
       "spanDigest": "b8991e4df51d8f7e1ded45dd3d0a6607804a419023afa7a3c426cb2430283cdb",
-      "spanBits": 28,
       "verify": "HMAC-SHA-256 over the cited span, keyed by HMAC(file bytes, domain|citation) — derivable by any holder of the source file, by nobody else",
-      "spanChars": 25,
-      "fileSha256": "962c8f1c54e0f91fb3662159f944d31747f722a1da99f8fb6e0518037a951f78",
-      "fileBytes": 4730,
-      "fileLines": 133
+      "spanBand": "<=32",
+      "bitsBand": "<=32",
+      "fileTag": "79abec2fb726a3d0473d6aaccebf5f0bc8b51f1b39a97fc70868cd520d970524"
     },
     "REFERENCE_WREN_FUNKY_CORE_INVENTORY.md:83-85": {
       "cite": "REFERENCE_WREN_FUNKY_CORE_INVENTORY.md:83-85",
@@ -163,12 +163,10 @@
       "grade": "brine",
       "hides": true,
       "spanDigest": "211d1caf107d96fa94a89c7c967f69ccc27251ebaf8a3c94e05ee891f743ceac",
-      "spanBits": 103,
       "verify": "HMAC-SHA-256 over the cited span, keyed by HMAC(file bytes, domain|citation) — derivable by any holder of the source file, by nobody else",
-      "spanChars": 117,
-      "fileSha256": "962c8f1c54e0f91fb3662159f944d31747f722a1da99f8fb6e0518037a951f78",
-      "fileBytes": 4730,
-      "fileLines": 133
+      "spanBand": "65-128",
+      "bitsBand": "65-128",
+      "fileTag": "79abec2fb726a3d0473d6aaccebf5f0bc8b51f1b39a97fc70868cd520d970524"
     },
     "REFERENCE_WREN_FUNKY_CORE_INVENTORY.md:97-99": {
       "cite": "REFERENCE_WREN_FUNKY_CORE_INVENTORY.md:97-99",
@@ -180,15 +178,13 @@
         99
       ],
       "grade": "salt",
-      "hides": false,
-      "spanDigest": "da41a1015e40d74895000f887ec7fe4882822ff3d40047be6362ae8d6f437e17",
+      "hides": true,
+      "spanDigest": "35f870f2a26778fe86fda1f55a9936bd5d2a8caf755d147afc80c42960989e52",
       "spanSalt": "1ec89bc4320db3af94a5d178c2a1f5934b2f479a7bd16e96679759f5a81b7a82",
-      "spanBits": 136,
-      "verify": "sha-256 over the published salt line followed by the cited span",
-      "spanChars": 155,
-      "fileSha256": "962c8f1c54e0f91fb3662159f944d31747f722a1da99f8fb6e0518037a951f78",
-      "fileBytes": 4730,
-      "fileLines": 133
+      "verify": "HMAC-SHA-256 over the published salt line followed by the cited span, keyed by HMAC(file bytes, domain|citation)",
+      "spanBand": "129-256",
+      "bitsBand": "129-256",
+      "fileTag": "79abec2fb726a3d0473d6aaccebf5f0bc8b51f1b39a97fc70868cd520d970524"
     },
     "REFERENCE_WREN_FUNKY_CORE_INVENTORY.md:110-112": {
       "cite": "REFERENCE_WREN_FUNKY_CORE_INVENTORY.md:110-112",
@@ -202,12 +198,10 @@
       "grade": "brine",
       "hides": true,
       "spanDigest": "c8d75147e1c34a5cfb09735183dfa0f65c31b174003c341e0daa20df53cc2d28",
-      "spanBits": 96,
       "verify": "HMAC-SHA-256 over the cited span, keyed by HMAC(file bytes, domain|citation) — derivable by any holder of the source file, by nobody else",
-      "spanChars": 87,
-      "fileSha256": "962c8f1c54e0f91fb3662159f944d31747f722a1da99f8fb6e0518037a951f78",
-      "fileBytes": 4730,
-      "fileLines": 133
+      "spanBand": "65-128",
+      "bitsBand": "65-128",
+      "fileTag": "79abec2fb726a3d0473d6aaccebf5f0bc8b51f1b39a97fc70868cd520d970524"
     },
     "REFERENCE_WREN_FUNKY_CORE_INVENTORY.md:123-124": {
       "cite": "REFERENCE_WREN_FUNKY_CORE_INVENTORY.md:123-124",
@@ -221,12 +215,10 @@
       "grade": "brine",
       "hides": true,
       "spanDigest": "d72a9d21ff6b0fd0bc655d42b22dbb2a483de79c1e7e32286124dc08ab9d0154",
-      "spanBits": 85,
       "verify": "HMAC-SHA-256 over the cited span, keyed by HMAC(file bytes, domain|citation) — derivable by any holder of the source file, by nobody else",
-      "spanChars": 77,
-      "fileSha256": "962c8f1c54e0f91fb3662159f944d31747f722a1da99f8fb6e0518037a951f78",
-      "fileBytes": 4730,
-      "fileLines": 133
+      "spanBand": "65-128",
+      "bitsBand": "65-128",
+      "fileTag": "79abec2fb726a3d0473d6aaccebf5f0bc8b51f1b39a97fc70868cd520d970524"
     },
     "REFERENCE_WEST_OS_COMPLETE_SYSTEM_V2.md:6 (Copyright Reg. No. 1-14949237971), §III Service 08": {
       "cite": "REFERENCE_WEST_OS_COMPLETE_SYSTEM_V2.md:6 (Copyright Reg. No. 1-14949237971), §III Service 08",
@@ -240,12 +232,10 @@
       "grade": "brine",
       "hides": true,
       "spanDigest": "7cbbeb8bbf07f3be07114c21e33122dad2a794335565b0139579cad8a6cea709",
-      "spanBits": 85,
       "verify": "HMAC-SHA-256 over the cited span, keyed by HMAC(file bytes, domain|citation) — derivable by any holder of the source file, by nobody else",
-      "spanChars": 77,
-      "fileSha256": "caa6dd33cc5043928f853afbd8d5610cd0d93d54d4387f3ae16a163c873541f1",
-      "fileBytes": 28884,
-      "fileLines": 701
+      "spanBand": "65-128",
+      "bitsBand": "65-128",
+      "fileTag": "623063e586d2295c98fa66832c736758d3baecb60c1f6cde15bab6d6e52f7e8a"
     },
     "REFERENCE_WEST_OS_COMPLETE_SYSTEM_V2.md:4": {
       "cite": "REFERENCE_WEST_OS_COMPLETE_SYSTEM_V2.md:4",
@@ -259,12 +249,10 @@
       "grade": "brine",
       "hides": true,
       "spanDigest": "64802ec0afc018a5da0e785ee136c46e38436248643578ff59e3416e130ca50f",
-      "spanBits": 37,
       "verify": "HMAC-SHA-256 over the cited span, keyed by HMAC(file bytes, domain|citation) — derivable by any holder of the source file, by nobody else",
-      "spanChars": 34,
-      "fileSha256": "caa6dd33cc5043928f853afbd8d5610cd0d93d54d4387f3ae16a163c873541f1",
-      "fileBytes": 28884,
-      "fileLines": 701
+      "spanBand": "33-64",
+      "bitsBand": "33-64",
+      "fileTag": "623063e586d2295c98fa66832c736758d3baecb60c1f6cde15bab6d6e52f7e8a"
     },
     "MASTER_BUILD_PROMPT.md:5": {
       "cite": "MASTER_BUILD_PROMPT.md:5",
@@ -276,15 +264,13 @@
         5
       ],
       "grade": "salt",
-      "hides": false,
-      "spanDigest": "4e82505b8a0cd5458641be45181be4520d1f482f9f120f1db54ad86b84566285",
+      "hides": true,
+      "spanDigest": "8cf4f016c4604c9a3f81679a4510df25876b0604638855872f5b0992f3d4f829",
       "spanSalt": "5963aacec55f9d3241a5495dc54d5d946b793a57fd32b2f8ba79297c0b0e9b87",
-      "spanBits": 238,
-      "verify": "sha-256 over the published salt line followed by the cited span",
-      "spanChars": 227,
-      "fileSha256": "f9e80a49c867935c33028720cd19c26df229738ce42180276f99b4f0211ef43d",
-      "fileBytes": 11971,
-      "fileLines": 214
+      "verify": "HMAC-SHA-256 over the published salt line followed by the cited span, keyed by HMAC(file bytes, domain|citation)",
+      "spanBand": "129-256",
+      "bitsBand": "129-256",
+      "fileTag": "f669ccccb71274dd02e82e6f5e6e0c4a1b5eb31e8d61270138005f19fb8301ed"
     },
     "MASTER_BUILD_PROMPT.md:92": {
       "cite": "MASTER_BUILD_PROMPT.md:92",
@@ -298,12 +284,10 @@
       "grade": "brine",
       "hides": true,
       "spanDigest": "62c59676695df98fbb92f61f8706e396b12220599cbf392a7c44107205f1b694",
-      "spanBits": 112,
       "verify": "HMAC-SHA-256 over the cited span, keyed by HMAC(file bytes, domain|citation) — derivable by any holder of the source file, by nobody else",
-      "spanChars": 105,
-      "fileSha256": "f9e80a49c867935c33028720cd19c26df229738ce42180276f99b4f0211ef43d",
-      "fileBytes": 11971,
-      "fileLines": 214
+      "spanBand": "65-128",
+      "bitsBand": "65-128",
+      "fileTag": "f669ccccb71274dd02e82e6f5e6e0c4a1b5eb31e8d61270138005f19fb8301ed"
     },
     "MASTER_BUILD_PROMPT.md:161": {
       "cite": "MASTER_BUILD_PROMPT.md:161",
@@ -317,12 +301,10 @@
       "grade": "brine",
       "hides": true,
       "spanDigest": "dc8d2195aaadafecbd490374d0436e047015ac99a86f5b15c4101033b9997997",
-      "spanBits": 119,
       "verify": "HMAC-SHA-256 over the cited span, keyed by HMAC(file bytes, domain|citation) — derivable by any holder of the source file, by nobody else",
-      "spanChars": 109,
-      "fileSha256": "f9e80a49c867935c33028720cd19c26df229738ce42180276f99b4f0211ef43d",
-      "fileBytes": 11971,
-      "fileLines": 214
+      "spanBand": "65-128",
+      "bitsBand": "65-128",
+      "fileTag": "f669ccccb71274dd02e82e6f5e6e0c4a1b5eb31e8d61270138005f19fb8301ed"
     },
     "MASTER_BUILD_PROMPT.md:125": {
       "cite": "MASTER_BUILD_PROMPT.md:125",
@@ -334,15 +316,13 @@
         125
       ],
       "grade": "salt",
-      "hides": false,
-      "spanDigest": "bac3c2fd3807ba8722647a5a653935c5e054dae863a6a4e3256041b2feb30746",
+      "hides": true,
+      "spanDigest": "0620add7434e86f90423e15a625cfe18de1986746fd6fb8e712f53f2419e243f",
       "spanSalt": "48a2c45e2471fcb1c3e2249297302f0480f8ba62740d79e5530b4d00825a371e",
-      "spanBits": 131,
-      "verify": "sha-256 over the published salt line followed by the cited span",
-      "spanChars": 149,
-      "fileSha256": "f9e80a49c867935c33028720cd19c26df229738ce42180276f99b4f0211ef43d",
-      "fileBytes": 11971,
-      "fileLines": 214
+      "verify": "HMAC-SHA-256 over the published salt line followed by the cited span, keyed by HMAC(file bytes, domain|citation)",
+      "spanBand": "129-256",
+      "bitsBand": "129-256",
+      "fileTag": "f669ccccb71274dd02e82e6f5e6e0c4a1b5eb31e8d61270138005f19fb8301ed"
     },
     "MASTER_BUILD_PROMPT.md:128": {
       "cite": "MASTER_BUILD_PROMPT.md:128",
@@ -354,15 +334,13 @@
         128
       ],
       "grade": "salt",
-      "hides": false,
-      "spanDigest": "ea3357e91eb97915f3ea31b005e996ce062ec0f0c0e8eb7b016ae89cde58adbd",
+      "hides": true,
+      "spanDigest": "f544a3041558a97d54b14bfc6e7e9a9589492181617cd0acfe3579808ae91026",
       "spanSalt": "9b41e2388134c930147c43721cf3c4076282cb188045acecbd92dc91eb368059",
-      "spanBits": 192,
-      "verify": "sha-256 over the published salt line followed by the cited span",
-      "spanChars": 232,
-      "fileSha256": "f9e80a49c867935c33028720cd19c26df229738ce42180276f99b4f0211ef43d",
-      "fileBytes": 11971,
-      "fileLines": 214
+      "verify": "HMAC-SHA-256 over the published salt line followed by the cited span, keyed by HMAC(file bytes, domain|citation)",
+      "spanBand": "129-256",
+      "bitsBand": "129-256",
+      "fileTag": "f669ccccb71274dd02e82e6f5e6e0c4a1b5eb31e8d61270138005f19fb8301ed"
     },
     "MASTER_BUILD_PROMPT.md:153 (her palette, verbatim)": {
       "cite": "MASTER_BUILD_PROMPT.md:153 (her palette, verbatim)",
@@ -376,12 +354,10 @@
       "grade": "brine",
       "hides": true,
       "spanDigest": "2ded34b99a58415a0158ba8b36722278bd03440a242424ed570dfcdace3b3de0",
-      "spanBits": 50,
       "verify": "HMAC-SHA-256 over the cited span, keyed by HMAC(file bytes, domain|citation) — derivable by any holder of the source file, by nobody else",
-      "spanChars": 57,
-      "fileSha256": "f9e80a49c867935c33028720cd19c26df229738ce42180276f99b4f0211ef43d",
-      "fileBytes": 11971,
-      "fileLines": 214
+      "spanBand": "33-64",
+      "bitsBand": "33-64",
+      "fileTag": "f669ccccb71274dd02e82e6f5e6e0c4a1b5eb31e8d61270138005f19fb8301ed"
     },
     "MASTER_BUILD_PROMPT.md:154": {
       "cite": "MASTER_BUILD_PROMPT.md:154",
@@ -395,12 +371,10 @@
       "grade": "brine",
       "hides": true,
       "spanDigest": "85c7b6a6d8afda6aad8dd2fd47115da2889a602722cb304b054b45a65b56f483",
-      "spanBits": 52,
       "verify": "HMAC-SHA-256 over the cited span, keyed by HMAC(file bytes, domain|citation) — derivable by any holder of the source file, by nobody else",
-      "spanChars": 59,
-      "fileSha256": "f9e80a49c867935c33028720cd19c26df229738ce42180276f99b4f0211ef43d",
-      "fileBytes": 11971,
-      "fileLines": 214
+      "spanBand": "33-64",
+      "bitsBand": "33-64",
+      "fileTag": "f669ccccb71274dd02e82e6f5e6e0c4a1b5eb31e8d61270138005f19fb8301ed"
     },
     "MASTER_BUILD_PROMPT.md:159": {
       "cite": "MASTER_BUILD_PROMPT.md:159",
@@ -414,12 +388,10 @@
       "grade": "brine",
       "hides": true,
       "spanDigest": "4f3263f650905b788444617f0b19b38d70b0fc47920cedc176479de2f6eec947",
-      "spanBits": 35,
       "verify": "HMAC-SHA-256 over the cited span, keyed by HMAC(file bytes, domain|citation) — derivable by any holder of the source file, by nobody else",
-      "spanChars": 40,
-      "fileSha256": "f9e80a49c867935c33028720cd19c26df229738ce42180276f99b4f0211ef43d",
-      "fileBytes": 11971,
-      "fileLines": 214
+      "spanBand": "33-64",
+      "bitsBand": "33-64",
+      "fileTag": "f669ccccb71274dd02e82e6f5e6e0c4a1b5eb31e8d61270138005f19fb8301ed"
     },
     "app/lib/wren-portrait.ts :: say() — pure template generator over her observed vocabulary and rhythm": {
       "cite": "app/lib/wren-portrait.ts :: say() — pure template generator over her observed vocabulary and rhythm",
@@ -450,8 +422,9 @@
       "status": "SEALED",
       "file": "MASTER_BUILD_PROMPT.md",
       "section": "Evidence contract",
-      "fileSha256": "f9e80a49c867935c33028720cd19c26df229738ce42180276f99b4f0211ef43d",
-      "fileBytes": 11971
+      "grade": "brine",
+      "hides": true,
+      "fileTag": "f669ccccb71274dd02e82e6f5e6e0c4a1b5eb31e8d61270138005f19fb8301ed"
     },
     "hand-lifted from HER_MESSAGES + REFERENCE_WREN_FUNKY_CORE_INVENTORY.md": {
       "cite": "hand-lifted from HER_MESSAGES + REFERENCE_WREN_FUNKY_CORE_INVENTORY.md",
@@ -480,15 +453,13 @@
         132
       ],
       "grade": "salt",
-      "hides": false,
-      "spanDigest": "0cf95f86ab8db7a5e3722ccaec478485c4569a940896924e466be69bd562743a",
+      "hides": true,
+      "spanDigest": "40ba173c648d8591f12442178ee2bcb4041f8cd1f07905ea67ce3f3e02e3e581",
       "spanSalt": "06757c5b63639df657a96b4952e0349dd2071fc11a714616d1cd069c0c87c8e9",
-      "spanBits": 2240,
-      "verify": "sha-256 over the published salt line followed by the cited span",
-      "spanChars": 4558,
-      "fileSha256": "962c8f1c54e0f91fb3662159f944d31747f722a1da99f8fb6e0518037a951f78",
-      "fileBytes": 4730,
-      "fileLines": 133
+      "verify": "HMAC-SHA-256 over the published salt line followed by the cited span, keyed by HMAC(file bytes, domain|citation)",
+      "spanBand": ">1024",
+      "bitsBand": ">1024",
+      "fileTag": "79abec2fb726a3d0473d6aaccebf5f0bc8b51f1b39a97fc70868cd520d970524"
     },
     "MASTER_BUILD_PROMPT.md:120": {
       "cite": "MASTER_BUILD_PROMPT.md:120",
@@ -502,12 +473,10 @@
       "grade": "brine",
       "hides": true,
       "spanDigest": "b04874d075d85fa45d83b88e2b4985b1dba2cb2e7966d19f79b19c0bc10cf4be",
-      "spanBits": 104,
       "verify": "HMAC-SHA-256 over the cited span, keyed by HMAC(file bytes, domain|citation) — derivable by any holder of the source file, by nobody else",
-      "spanChars": 118,
-      "fileSha256": "f9e80a49c867935c33028720cd19c26df229738ce42180276f99b4f0211ef43d",
-      "fileBytes": 11971,
-      "fileLines": 214
+      "spanBand": "65-128",
+      "bitsBand": "65-128",
+      "fileTag": "f669ccccb71274dd02e82e6f5e6e0c4a1b5eb31e8d61270138005f19fb8301ed"
     },
     "conversation message 4: 'I'm a stenwge bird ain't I'": {
       "cite": "conversation message 4: 'I'm a stenwge bird ain't I'",

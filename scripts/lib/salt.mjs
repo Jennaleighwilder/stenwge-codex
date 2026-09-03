@@ -29,6 +29,7 @@ import { deflateRawSync } from "node:zlib";
 
 export const SALT_DOMAIN = "fcri:salt:v1";
 export const BRINE_DOMAIN = "fcri:brine:v1";
+export const FILE_DOMAIN = "fcri:file:v1";
 
 /** Bits below which a span is considered guessable and must be brined. */
 export const BRINE_THRESHOLD_BITS = 128;
@@ -112,8 +113,42 @@ export function brineKeyFor(fileBytes, cite) {
 }
 
 /**
+ * A file's public identifier, keyed by the file itself.
+ *
+ * NOT sha-256(file). A plain file digest is a universal identifier: it can
+ * be cross-referenced against any other index that has ever hashed the same
+ * bytes, which turns "here is a digest so you can confirm your copy" into
+ * "here is a lookup key for a document you were never given." The keyed tag
+ * gives a holder the same confirmation and gives everyone else an opaque
+ * value that resolves against nothing.
+ */
+export function fileTag(fileBytes, basename) {
+  return createHmac("sha256", fileBytes)
+    .update(`${FILE_DOMAIN}|${basename}`, "utf8")
+    .digest("hex");
+}
+
+/**
+ * Coarse buckets for anything that would otherwise fingerprint a span.
+ * An exact character count is a strong narrowing signal about text nobody
+ * was given; a bucket says enough to justify the grade and no more.
+ */
+export function band(n, edges = [32, 64, 128, 256, 512, 1024]) {
+  let lo = 0;
+  for (const e of edges) {
+    if (n <= e) return lo === 0 ? `<=${e}` : `${lo + 1}-${e}`;
+    lo = e;
+  }
+  return `>${lo}`;
+}
+
+/**
  * Commit to a span under the chosen grade.
  * Returns the digest plus everything a verifier is allowed to know.
+ *
+ * Every grade over a PRIVATE source is keyed by the source file, so every
+ * private commitment hides. The grades differ in what they publish
+ * alongside the digest, not in whether the span is exposed.
  */
 export function commit({ grade: g, cite, text, fileBytes }) {
   if (g === "stone") {
@@ -127,14 +162,20 @@ export function commit({ grade: g, cite, text, fileBytes }) {
   }
 
   if (g === "salt") {
+    // Keyed like brine — a published salt alone never hid anything, and a
+    // commitment that does not hide has no business sitting next to ones
+    // that do. The salt stays as a public per-citation separator.
     const salt = saltFor(cite);
+    const key = brineKeyFor(fileBytes, cite);
     return {
       grade: "salt",
-      // salt line, then the span — reproducible in a shell without tricks.
-      digest: createHash("sha256").update(`${salt}\n${text}`, "utf8").digest("hex"),
+      digest: createHmac("sha256", Buffer.from(key, "hex"))
+        .update(`${salt}\n${text}`, "utf8")
+        .digest("hex"),
       salt,
-      hides: false,
-      verify: "sha-256 over the published salt line followed by the cited span",
+      hides: true,
+      verify:
+        "HMAC-SHA-256 over the published salt line followed by the cited span, keyed by HMAC(file bytes, domain|citation)",
     };
   }
 
