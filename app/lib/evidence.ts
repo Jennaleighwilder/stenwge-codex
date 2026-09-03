@@ -26,6 +26,8 @@ export type Badge =
 
 export type SealStatus = "SEALED" | "FAIL" | "TESTIMONY";
 
+export type Grade = "stone" | "salt" | "brine";
+
 export type SealEntry = {
   cite: string;
   kind: "line-span" | "section" | "listing" | "code" | "testimony";
@@ -33,7 +35,18 @@ export type SealEntry = {
   reason?: string;
   file?: string;
   lines?: [number, number];
-  spanSha256?: string;
+  /** which commitment grade this span was sealed under */
+  grade?: Grade;
+  /** true only for brine: the digest genuinely hides the span */
+  hides?: boolean;
+  /** the commitment itself, under whatever grade was chosen */
+  spanDigest?: string;
+  /** published salt — present for salt grade only, never a secret */
+  spanSalt?: string;
+  /** estimated bits an attacker must search to guess the span */
+  spanBits?: number;
+  /** plain-language statement of how to reproduce this digest */
+  verify?: string;
   spanChars?: number;
   fileSha256?: string;
   fileBytes?: number;
@@ -136,8 +149,9 @@ export function adjudicate(claimed: Badge, source: string): Verdict {
 export function sealLabel(entry?: SealEntry): string | undefined {
   if (!entry) return undefined;
   if (entry.status !== "SEALED") return undefined;
-  if (entry.kind === "line-span" && entry.lines) {
-    return `sha-256(${entry.file}:${entry.lines[0]}-${entry.lines[1]}) = ${entry.spanSha256?.slice(0, 16)}…`;
+  if (entry.kind === "line-span" && entry.lines && entry.spanDigest) {
+    const alg = entry.grade === "brine" ? "hmac-sha-256" : "sha-256";
+    return `${entry.grade} · ${alg}(${entry.file}:${entry.lines[0]}-${entry.lines[1]}) = ${entry.spanDigest.slice(0, 16)}…`;
   }
   if (entry.fileSha256) {
     return `sha-256(${entry.file ?? "source"}) = ${entry.fileSha256.slice(0, 16)}…`;

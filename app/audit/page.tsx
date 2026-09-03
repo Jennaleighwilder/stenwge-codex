@@ -147,6 +147,72 @@ export default function AuditPage() {
 
       <section className="max-w-4xl mx-auto px-6 py-12 border-t border-stone-800/60">
         <h2 className="text-[10px] uppercase tracking-[0.45em] text-stone-500 font-mono mb-4">
+          three grades of salt
+        </h2>
+        <p className="text-stone-400 max-w-2xl leading-relaxed mb-8">
+          A bare digest is not automatically safe. Hash a twenty-four character
+          heading and anyone can guess their way to it — they hold the digest,
+          they try candidates, they get a match. So each span is committed
+          under the weakest grade that is still sound for the entropy it
+          actually has, measured rather than assumed.
+        </p>
+        <div className="space-y-8">
+          {[
+            {
+              name: "stone",
+              tone: "text-stone-200 border-stone-500/60",
+              hides: "nothing to hide",
+              body: "The cited file is public repo code. A bare sha-256 is exactly right: anyone reproduces it with the file and shasum, no ceremony.",
+              recipe: "sed -n 'A,Bp' FILE | shasum -a 256",
+            },
+            {
+              name: "salt",
+              tone: "text-amber-200 border-amber-400/60",
+              hides: "does NOT hide the span",
+              body: "A private source whose span carries enough entropy that guessing is hopeless anyway. The published salt is not a secret and is not pretending to be one — it buys domain separation, so identical text in two citations produces unrelated digests and no precomputed table covers the corpus.",
+              recipe: "{ printf '%s\\n' \"$SALT\"; sed -n 'A,Bp' FILE; } | shasum -a 256",
+            },
+            {
+              name: "brine",
+              tone: "text-cyan-200 border-cyan-400/60",
+              hides: "genuinely hides the span",
+              body: "A private source whose span is short or predictable enough to brute-force. The commitment is an HMAC keyed by HMAC(the file's own bytes, domain|citation). A holder of the file derives the key and verifies unaided; anyone without it has no digest to test guesses against. Publishing sha-256(file) stays safe, because a digest of the key is not the key and HMAC does not extend.",
+              recipe:
+                "KEY=$(printf '%s' \"fcri:brine:v1|CITE\" | openssl dgst -sha256 \\\n  -mac HMAC -macopt hexkey:\"$(xxd -p -c 99999999 FILE | tr -d '\\n')\" | awk '{print $NF}')\nsed -n 'A,Bp' FILE | openssl dgst -sha256 -mac HMAC -macopt hexkey:\"$KEY\"",
+            },
+          ].map((g) => (
+            <div key={g.name} className={`border-l pl-5 ${g.tone.split(" ")[1]}`}>
+              <div className="flex flex-wrap items-baseline gap-3">
+                <span
+                  className={`text-lg font-mono uppercase tracking-widest ${
+                    g.tone.split(" ")[0]
+                  }`}
+                >
+                  {g.name}
+                </span>
+                <span className="text-[10px] font-mono text-stone-500 uppercase tracking-widest">
+                  {g.hides}
+                </span>
+              </div>
+              <p className="text-stone-400 mt-2 leading-relaxed max-w-2xl">
+                {g.body}
+              </p>
+              <pre className="mt-3 text-[10px] font-mono text-cyan-200/80 bg-stone-950 border border-stone-800 p-3 overflow-x-auto whitespace-pre">
+                {g.recipe}
+              </pre>
+            </div>
+          ))}
+        </div>
+        <p className="text-stone-500 text-sm mt-8 leading-relaxed max-w-2xl">
+          No key material exists in this repository or in the deployment. Brine
+          keys are derived from the source documents themselves, so there is
+          nothing to leak, nothing to rotate, and nothing you must ask anyone
+          for in order to check a quotation.
+        </p>
+      </section>
+
+      <section className="max-w-4xl mx-auto px-6 py-12 border-t border-stone-800/60">
+        <h2 className="text-[10px] uppercase tracking-[0.45em] text-stone-500 font-mono mb-4">
           verify it yourself
         </h2>
         <p className="text-stone-400 max-w-2xl leading-relaxed mb-5">
@@ -155,13 +221,18 @@ export default function AuditPage() {
           it, compare:
         </p>
         <pre className="text-[11px] font-mono text-cyan-200/90 bg-stone-950 border border-stone-800 p-4 overflow-x-auto">
-          {`sed -n '120,120p' MASTER_BUILD_PROMPT.md | shasum -a 256
-curl -s /api/evidence | jq -r '.rows[] | select(.citation=="MASTER_BUILD_PROMPT.md:120") | .seal.span_sha256'`}
+          {`# every row tells you its own grade and its own recipe
+curl -s /api/evidence | jq -r '.rows[] | select(.seal) |
+  "\(.seal.grade)\t\(.citation)\t\(.seal.span_digest)"'
+
+# and the exact command for each grade
+curl -s /api/evidence | jq '.grades'`}
         </pre>
         <p className="text-stone-500 text-sm mt-5 leading-relaxed">
-          The digests match or they do not. If they do not, the portrait is
-          misquoting its own sources, and you found it without me handing you
-          anything private.
+          Each row publishes its grade, so you always know which command to
+          run. The digests match or they do not. If they do not, the portrait
+          is misquoting its own sources, and you found it without anyone
+          handing you anything private.
         </p>
       </section>
 

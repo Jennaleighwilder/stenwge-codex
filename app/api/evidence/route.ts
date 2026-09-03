@@ -34,11 +34,33 @@ export async function GET() {
       note: SEAL.note,
     },
     totals,
-    verify: {
-      how: "Recompute sha-256 over the named line span of the cited file and compare to spanSha256.",
-      client: "/lab/evidence",
-      example:
-        "sed -n '120,120p' MASTER_BUILD_PROMPT.md | shasum -a 256",
+    grades: {
+      note: "Each span is committed under the weakest grade that is still sound for its measured entropy. The grade is published so verification is self-describing.",
+      stone: {
+        applies_to: "citations whose source file is public (repo code)",
+        hides_span: false,
+        recipe: "sed -n 'A,Bp' FILE | shasum -a 256",
+      },
+      salt: {
+        applies_to:
+          "private sources whose span carries enough entropy that guessing is infeasible",
+        hides_span: false,
+        purpose:
+          "domain separation — identical spans in different citations get unrelated digests, and no precomputed table spans the corpus",
+        recipe:
+          "{ printf '%s\\n' \"$SALT\"; sed -n 'A,Bp' FILE; } | shasum -a 256",
+      },
+      brine: {
+        applies_to:
+          "private sources whose span is short or predictable enough to brute-force against a bare digest",
+        hides_span: true,
+        purpose:
+          "genuine hiding — the key is HMAC(file bytes, domain|citation), derivable only by a holder of the source file, so an attacker without the file has no digest to test guesses against",
+        recipe:
+          "KEY=$(printf '%s' \"fcri:brine:v1|CITE\" | openssl dgst -sha256 -mac HMAC -macopt hexkey:\"$(xxd -p -c 99999999 FILE | tr -d '\\n')\" | awk '{print $NF}'); sed -n 'A,Bp' FILE | openssl dgst -sha256 -mac HMAC -macopt hexkey:\"$KEY\"",
+      },
+      no_stored_secret:
+        "No key material exists anywhere in this repository or deployment. Brine keys are derived from the source documents themselves.",
     },
     rows: rows.map((r) => ({
       subject: r.subject,
@@ -54,7 +76,12 @@ export async function GET() {
             kind: r.entry.kind,
             file: r.entry.file,
             lines: r.entry.lines,
-            span_sha256: r.entry.spanSha256,
+            grade: r.entry.grade,
+            hides_span: r.entry.hides ?? false,
+            span_digest: r.entry.spanDigest,
+            span_salt: r.entry.spanSalt,
+            span_entropy_bits: r.entry.spanBits,
+            how_to_verify: r.entry.verify,
             file_sha256: r.entry.fileSha256,
             file_bytes: r.entry.fileBytes,
             label: sealLabel(r.entry),

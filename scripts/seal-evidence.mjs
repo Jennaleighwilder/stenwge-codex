@@ -22,6 +22,7 @@ import { createHash } from "node:crypto";
 import { readFileSync, writeFileSync, existsSync, readdirSync } from "node:fs";
 import { join, dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { grade, commit, estimateBits, BRINE_THRESHOLD_BITS } from "./lib/salt.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const PRIVATE_ROOT = join(ROOT, ".airdrop", "ben_nye_real_build");
@@ -109,14 +110,32 @@ function sealLineSpan(cite, idx) {
     };
   }
   const whole = readFileSync(path, "utf8");
+
+  // The cited file is private, so the span is graded by how guessable it is.
+  const g = grade({ isPublicSource: false, text });
+  const sealedSpan = commit({
+    grade: g,
+    cite,
+    text,
+    fileBytes: readFileSync(path),
+  });
+
   return {
     cite,
     kind: "line-span",
     status: "SEALED",
     file: span.file,
     lines: [span.from, span.to],
-    spanSha256: sha256(text),
+    grade: sealedSpan.grade,
+    hides: sealedSpan.hides,
+    spanDigest: sealedSpan.digest,
+    spanSalt: sealedSpan.salt,
+    spanBits: estimateBits(text),
+    verify: sealedSpan.verify,
     spanChars: text.length,
+    // The whole-file digest stays unsalted on purpose: a 4-30KB document is
+    // far past any brute-force horizon, and an unsalted file digest is the
+    // one number a holder can check with nothing but `shasum FILE`.
     fileSha256: sha256(whole),
     fileBytes: Buffer.byteLength(whole, "utf8"),
     fileLines: whole.split("\n").length,
@@ -188,6 +207,7 @@ function sealArtifactClaim({ cite, basename }, idx) {
 }
 
 function sealCodeRef(cite) {
+  // Repo code is public on GitHub: stone grade, nothing to hide.
   // "app/lib/wren-portrait.ts :: say()"
   const m = cite.match(/^([\w/.\-]+\.tsx?)\s*::\s*(\w+)/);
   if (!m) return null;
@@ -202,6 +222,9 @@ function sealCodeRef(cite) {
     status: has ? "SEALED" : "FAIL",
     file: m[1],
     symbol: m[2],
+    grade: "stone",
+    hides: false,
+    verify: "sha-256 over the public repo file",
     reason: has ? undefined : `symbol ${m[2]} not found in ${m[1]}`,
     fileSha256: sha256(src),
   };

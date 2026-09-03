@@ -42,3 +42,7 @@ next-env.d.ts
 
 # unrelated notes accidentally dropped here
 .airdrop/
+
+# evidence contract: brine key material — never commit
+.evidence-master.key
+.evidence-disclosures/
