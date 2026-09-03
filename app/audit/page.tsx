@@ -247,6 +247,46 @@ curl -s /api/evidence | jq '.grades'`}
 
       <section className="max-w-4xl mx-auto px-6 py-12 border-t border-stone-800/60">
         <h2 className="text-[10px] uppercase tracking-[0.45em] text-stone-500 font-mono mb-4">
+          take it off the network
+        </h2>
+        <p className="text-stone-400 max-w-2xl leading-relaxed mb-6">
+          Everything on this page dies with its host. The digests live at a
+          URL; if the domain lapses or the account closes, the proof goes with
+          it and all that is left is a claim again. So the contract also ships
+          as one file that needs nothing:
+        </p>
+        <a
+          href="/wren-evidence.html"
+          className="inline-block border border-cyan-400/50 text-cyan-200 px-5 py-3 font-mono text-xs hover:bg-cyan-400/5"
+        >
+          ↓ wren-evidence.html — the portable verifier
+        </a>
+        <ul className="text-stone-400 space-y-2 max-w-2xl leading-relaxed list-disc pl-5 mt-6">
+          <li>
+            Carries every sealed digest, the Ed25519 signature over them, and
+            the public key.
+          </li>
+          <li>
+            Verifies in your browser with no server and no network — drop a
+            source document on it and it recomputes the commitments locally.
+          </li>
+          <li>
+            Keeps working with this site deleted. Save it to a disk, a drive,
+            an attachment, an archive.
+          </li>
+        </ul>
+        <p className="text-stone-500 text-sm mt-5 leading-relaxed max-w-2xl">
+          The seal is signed by a key that is not in the repository. Note that
+          the Ed25519 pair in{" "}
+          <code className="text-stone-400">app/lib/ed25519-keys.ts</code>{" "}
+          — which signs the story chain — has its private half committed on
+          purpose, as a protocol demonstration. That one carries no
+          attestation weight and is not this key.
+        </p>
+      </section>
+
+      <section className="max-w-4xl mx-auto px-6 py-12 border-t border-stone-800/60">
+        <h2 className="text-[10px] uppercase tracking-[0.45em] text-stone-500 font-mono mb-4">
           what this does not prove
         </h2>
         <ul className="text-stone-400 space-y-2 max-w-2xl leading-relaxed list-disc pl-5">

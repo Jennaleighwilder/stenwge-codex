@@ -6,8 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "seal": "node scripts/seal-evidence.mjs",
-    "prebuild": "node scripts/seal-evidence.mjs --strict"
+    "seal": "node scripts/seal-evidence.mjs && node scripts/sign-seal.mjs && node scripts/make-archive.mjs",
+    "prebuild": "node scripts/seal-evidence.mjs --strict && node scripts/sign-seal.mjs --if-key-present && node scripts/make-archive.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.7",

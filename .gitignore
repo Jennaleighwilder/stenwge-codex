@@ -46,3 +46,4 @@ next-env.d.ts
 # evidence contract: brine key material — never commit
 .evidence-master.key
 .evidence-disclosures/
+.evidence-signing.key
