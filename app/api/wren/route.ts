@@ -98,13 +98,13 @@ export async function GET(req: Request) {
         claim:
           "An engineer who thinks of code as anatomy. Her systems have organs, scars, a nervous warning map, metabolism.",
         badge: "HEURISTIC",
-        source: "REFERENCE_WREN_FUNKY_CORE_INVENTORY.md § 1-9",
+        source: "REFERENCE_WREN_FUNKY_CORE_INVENTORY.md:5-132",
       },
       {
         claim:
           "A poet who writes production-ready governance software. She does not want to be right; she wants to be falsifiable.",
         badge: "OBSERVED",
-        source: "MASTER_BUILD_PROMPT.md:121",
+        source: "MASTER_BUILD_PROMPT.md:120",
       },
       {
         claim: "She names herself in her own vocabulary before she asks a question.",

@@ -61,7 +61,7 @@ export const ARTIFACTS: Fact<string>[] = [
   {
     value: ".airdrop/<redacted>_real_build/READ_ME_FIRST.md",
     badge: "OBSERVED",
-    source: "ls .airdrop/<redacted>_real_build/  (1196 bytes, 10 lines)",
+    source: "ls .airdrop/<redacted>_real_build/  (641 bytes, 10 lines)",
     note: "your handoff instructions for AirDropping Wren/HOLLOW/WEST-OS to a target Mac",
   },
   {
@@ -217,7 +217,7 @@ export const REFUSALS: Fact<string>[] = [
   {
     value: "Beauty must reveal computation. If removing an animation would not remove information, remove the animation.",
     badge: "OBSERVED",
-    source: "MASTER_BUILD_PROMPT.md:162",
+    source: "MASTER_BUILD_PROMPT.md:161",
   },
   {
     value: "Preserve Jennifer's names and metaphors where they correspond to implemented behavior. Add a plain-language gloss beside them; never replace them.",

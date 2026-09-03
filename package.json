@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "seal": "node scripts/seal-evidence.mjs",
+    "prebuild": "node scripts/seal-evidence.mjs --strict"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.7",

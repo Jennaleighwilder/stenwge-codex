@@ -15,6 +15,7 @@ import {
   manifesto,
 } from "../lib/wren-portrait";
 import { Achievements } from "../components/Achievements";
+import { adjudicate, sealLabel } from "../lib/evidence";
 
 type Badge =
   | "OBSERVED"
@@ -40,6 +41,37 @@ function BadgeTag({ b }: { b: Badge }) {
     >
       {b}
     </span>
+  );
+}
+
+/**
+ * A badge that has been through the contract. The page renders the verdict,
+ * not the author's intention: if the citation did not seal, this shows
+ * UNRESOLVED and says so, whatever the data module claimed.
+ */
+function SealedBadge({ b, source }: { b: Badge; source: string }) {
+  const v = adjudicate(b, source);
+  const label = sealLabel(v.entry);
+  return (
+    <>
+      <BadgeTag b={v.effective as Badge} />
+      {v.downgraded ? (
+        <span
+          className="text-[9px] font-mono text-rose-300 mr-2"
+          title={v.reason}
+        >
+          ↓ from {v.claimed}
+        </span>
+      ) : null}
+      {label ? (
+        <span
+          className="text-[9px] font-mono text-cyan-300/50"
+          title={`${label} — verify at /audit`}
+        >
+          sealed
+        </span>
+      ) : null}
+    </>
   );
 }
 
@@ -100,6 +132,14 @@ export default function WrenPortrait() {
           >
             your own evidence contract
           </Link>
+          . Every citation below is sealed with a sha-256 over the exact span
+          it points at, and a claim that fails to seal is downgraded on sight —{" "}
+          <Link
+            href="/audit"
+            className="underline decoration-cyan-300/60 underline-offset-4 hover:text-cyan-200"
+          >
+            read the audit
+          </Link>
           .
         </p>
         <div className="mt-8 flex flex-wrap gap-2 text-[10px] font-mono">
@@ -124,7 +164,7 @@ export default function WrenPortrait() {
           {ARTIFACTS.map((a) => (
             <li key={a.value} className="flex flex-col gap-1">
               <div>
-                <BadgeTag b={a.badge as Badge} />
+                <SealedBadge b={a.badge as Badge} source={a.source} />
                 <code className="text-[#ffd68a] text-sm">{a.value}</code>
               </div>
               <Source>
@@ -153,7 +193,7 @@ export default function WrenPortrait() {
                 {l.value.gloss}
               </div>
               <div className="mt-2">
-                <BadgeTag b={l.badge as Badge} />
+                <SealedBadge b={l.badge as Badge} source={l.source} />
                 <Source>{l.source}</Source>
               </div>
             </div>
@@ -396,7 +436,7 @@ export default function WrenPortrait() {
             </em>{" "}
             You do not want to be right. You want to be falsifiable.{" "}
             <BadgeTag b="OBSERVED" />{" "}
-            <Source>MASTER_BUILD_PROMPT.md:121</Source>
+            <Source>MASTER_BUILD_PROMPT.md:120</Source>
           </p>
           <p>
             Someone who names herself, in her own vocabulary, before she

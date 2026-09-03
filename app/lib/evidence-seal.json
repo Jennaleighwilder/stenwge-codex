@@ -1,0 +1,436 @@
+{
+  "sealedAt": "2026-09-03T01:25:34.064Z",
+  "algorithm": "sha-256",
+  "sourcesPresent": true,
+  "note": "Digests only. No source content is published here. Anyone holding a cited file can recompute sha-256 over the named line span and compare.",
+  "counts": {
+    "SEALED": 30,
+    "TESTIMONY": 5
+  },
+  "sealSha256": "9e478ae1da88c2dd9af7706c32bd11623d339670651fed62d0f27a988cc94a47",
+  "entries": {
+    "ls .airdrop/<redacted>_real_build/  (641 bytes, 10 lines)": {
+      "cite": "ls .airdrop/<redacted>_real_build/  (641 bytes, 10 lines)",
+      "kind": "listing",
+      "file": "READ_ME_FIRST.md",
+      "status": "SEALED",
+      "fileSha256": "9177562c1916a209e221c9032e7a990d07cd755565c93a0d9582b8f18dd1631f",
+      "fileBytes": 641,
+      "fileLines": 11
+    },
+    "ls  (11971 bytes, 213 lines)": {
+      "cite": "ls  (11971 bytes, 213 lines)",
+      "kind": "listing",
+      "file": "MASTER_BUILD_PROMPT.md",
+      "status": "SEALED",
+      "fileSha256": "f9e80a49c867935c33028720cd19c26df229738ce42180276f99b4f0211ef43d",
+      "fileBytes": 11971,
+      "fileLines": 214
+    },
+    "ls  (28884 bytes, 700 lines)": {
+      "cite": "ls  (28884 bytes, 700 lines)",
+      "kind": "listing",
+      "file": "REFERENCE_WEST_OS_COMPLETE_SYSTEM_V2.md",
+      "status": "SEALED",
+      "fileSha256": "caa6dd33cc5043928f853afbd8d5610cd0d93d54d4387f3ae16a163c873541f1",
+      "fileBytes": 28884,
+      "fileLines": 701
+    },
+    "ls  (4730 bytes, 132 lines)": {
+      "cite": "ls  (4730 bytes, 132 lines)",
+      "kind": "listing",
+      "file": "REFERENCE_WREN_FUNKY_CORE_INVENTORY.md",
+      "status": "SEALED",
+      "fileSha256": "962c8f1c54e0f91fb3662159f944d31747f722a1da99f8fb6e0518037a951f78",
+      "fileBytes": 4730,
+      "fileLines": 133
+    },
+    "ls  (1196 bytes)": {
+      "cite": "ls  (1196 bytes)",
+      "kind": "listing",
+      "file": "KNOWN_TRAVEL_SNAPSHOT_MAP.md",
+      "status": "SEALED",
+      "fileSha256": "cca75959574db9b13791e9732833877ec24cf2c740212f8f31a3ded15e18434f",
+      "fileBytes": 1196,
+      "fileLines": 43
+    },
+    "REFERENCE_WREN_FUNKY_CORE_INVENTORY.md:5-6": {
+      "cite": "REFERENCE_WREN_FUNKY_CORE_INVENTORY.md:5-6",
+      "kind": "line-span",
+      "status": "SEALED",
+      "file": "REFERENCE_WREN_FUNKY_CORE_INVENTORY.md",
+      "lines": [
+        5,
+        6
+      ],
+      "spanSha256": "80d92644c35a8a2a1d41eb572f06324d9d14535a5dc5915661196d4569b8fa3d",
+      "spanChars": 24,
+      "fileSha256": "962c8f1c54e0f91fb3662159f944d31747f722a1da99f8fb6e0518037a951f78",
+      "fileBytes": 4730,
+      "fileLines": 133
+    },
+    "REFERENCE_WREN_FUNKY_CORE_INVENTORY.md:24-28": {
+      "cite": "REFERENCE_WREN_FUNKY_CORE_INVENTORY.md:24-28",
+      "kind": "line-span",
+      "status": "SEALED",
+      "file": "REFERENCE_WREN_FUNKY_CORE_INVENTORY.md",
+      "lines": [
+        24,
+        28
+      ],
+      "spanSha256": "e8a6504d095902c64671b274e05f94a3ef688e747b5871edfa3976bb230e63c9",
+      "spanChars": 134,
+      "fileSha256": "962c8f1c54e0f91fb3662159f944d31747f722a1da99f8fb6e0518037a951f78",
+      "fileBytes": 4730,
+      "fileLines": 133
+    },
+    "REFERENCE_WREN_FUNKY_CORE_INVENTORY.md:41-43": {
+      "cite": "REFERENCE_WREN_FUNKY_CORE_INVENTORY.md:41-43",
+      "kind": "line-span",
+      "status": "SEALED",
+      "file": "REFERENCE_WREN_FUNKY_CORE_INVENTORY.md",
+      "lines": [
+        41,
+        43
+      ],
+      "spanSha256": "4c885599251293f10e06f0b4f1667398d26fdcecd3068b6d4eb4ce26967bf8e5",
+      "spanChars": 159,
+      "fileSha256": "962c8f1c54e0f91fb3662159f944d31747f722a1da99f8fb6e0518037a951f78",
+      "fileBytes": 4730,
+      "fileLines": 133
+    },
+    "REFERENCE_WREN_FUNKY_CORE_INVENTORY.md:56-58": {
+      "cite": "REFERENCE_WREN_FUNKY_CORE_INVENTORY.md:56-58",
+      "kind": "line-span",
+      "status": "SEALED",
+      "file": "REFERENCE_WREN_FUNKY_CORE_INVENTORY.md",
+      "lines": [
+        56,
+        58
+      ],
+      "spanSha256": "8a992acb3b97da77884ae7f850a5f31b04b61cb2fb56c60f8fde0390a734b5aa",
+      "spanChars": 26,
+      "fileSha256": "962c8f1c54e0f91fb3662159f944d31747f722a1da99f8fb6e0518037a951f78",
+      "fileBytes": 4730,
+      "fileLines": 133
+    },
+    "REFERENCE_WREN_FUNKY_CORE_INVENTORY.md:71-72": {
+      "cite": "REFERENCE_WREN_FUNKY_CORE_INVENTORY.md:71-72",
+      "kind": "line-span",
+      "status": "SEALED",
+      "file": "REFERENCE_WREN_FUNKY_CORE_INVENTORY.md",
+      "lines": [
+        71,
+        72
+      ],
+      "spanSha256": "0685d7f32aae58f78a806298d431f2d5f52c1413b68551aaff28f4391c528888",
+      "spanChars": 25,
+      "fileSha256": "962c8f1c54e0f91fb3662159f944d31747f722a1da99f8fb6e0518037a951f78",
+      "fileBytes": 4730,
+      "fileLines": 133
+    },
+    "REFERENCE_WREN_FUNKY_CORE_INVENTORY.md:83-85": {
+      "cite": "REFERENCE_WREN_FUNKY_CORE_INVENTORY.md:83-85",
+      "kind": "line-span",
+      "status": "SEALED",
+      "file": "REFERENCE_WREN_FUNKY_CORE_INVENTORY.md",
+      "lines": [
+        83,
+        85
+      ],
+      "spanSha256": "54a340291202864b4a992944f65a5d701310cfdfa8c08a1ac3101e775168f845",
+      "spanChars": 117,
+      "fileSha256": "962c8f1c54e0f91fb3662159f944d31747f722a1da99f8fb6e0518037a951f78",
+      "fileBytes": 4730,
+      "fileLines": 133
+    },
+    "REFERENCE_WREN_FUNKY_CORE_INVENTORY.md:97-99": {
+      "cite": "REFERENCE_WREN_FUNKY_CORE_INVENTORY.md:97-99",
+      "kind": "line-span",
+      "status": "SEALED",
+      "file": "REFERENCE_WREN_FUNKY_CORE_INVENTORY.md",
+      "lines": [
+        97,
+        99
+      ],
+      "spanSha256": "c0530bb42a9fdeea836c9379d005eef57c161dcd261fb16c3625a8a337176dbf",
+      "spanChars": 155,
+      "fileSha256": "962c8f1c54e0f91fb3662159f944d31747f722a1da99f8fb6e0518037a951f78",
+      "fileBytes": 4730,
+      "fileLines": 133
+    },
+    "REFERENCE_WREN_FUNKY_CORE_INVENTORY.md:110-112": {
+      "cite": "REFERENCE_WREN_FUNKY_CORE_INVENTORY.md:110-112",
+      "kind": "line-span",
+      "status": "SEALED",
+      "file": "REFERENCE_WREN_FUNKY_CORE_INVENTORY.md",
+      "lines": [
+        110,
+        112
+      ],
+      "spanSha256": "04c24644ec8443b02c0dfeed02d4b80cdb24661c20052b464a30641a17440bc5",
+      "spanChars": 87,
+      "fileSha256": "962c8f1c54e0f91fb3662159f944d31747f722a1da99f8fb6e0518037a951f78",
+      "fileBytes": 4730,
+      "fileLines": 133
+    },
+    "REFERENCE_WREN_FUNKY_CORE_INVENTORY.md:123-124": {
+      "cite": "REFERENCE_WREN_FUNKY_CORE_INVENTORY.md:123-124",
+      "kind": "line-span",
+      "status": "SEALED",
+      "file": "REFERENCE_WREN_FUNKY_CORE_INVENTORY.md",
+      "lines": [
+        123,
+        124
+      ],
+      "spanSha256": "87d442d34898d11f463e14e154717e082554d27cb0b310083d8eac1dd1ada39d",
+      "spanChars": 77,
+      "fileSha256": "962c8f1c54e0f91fb3662159f944d31747f722a1da99f8fb6e0518037a951f78",
+      "fileBytes": 4730,
+      "fileLines": 133
+    },
+    "REFERENCE_WEST_OS_COMPLETE_SYSTEM_V2.md:6 (Copyright Reg. No. 1-14949237971), §III Service 08": {
+      "cite": "REFERENCE_WEST_OS_COMPLETE_SYSTEM_V2.md:6 (Copyright Reg. No. 1-14949237971), §III Service 08",
+      "kind": "line-span",
+      "status": "SEALED",
+      "file": "REFERENCE_WEST_OS_COMPLETE_SYSTEM_V2.md",
+      "lines": [
+        6,
+        6
+      ],
+      "spanSha256": "e691e9397d068fa3f8f8a1ae356ee551c796dd0227f3e2421c21e65363e6d10a",
+      "spanChars": 77,
+      "fileSha256": "caa6dd33cc5043928f853afbd8d5610cd0d93d54d4387f3ae16a163c873541f1",
+      "fileBytes": 28884,
+      "fileLines": 701
+    },
+    "REFERENCE_WEST_OS_COMPLETE_SYSTEM_V2.md:4": {
+      "cite": "REFERENCE_WEST_OS_COMPLETE_SYSTEM_V2.md:4",
+      "kind": "line-span",
+      "status": "SEALED",
+      "file": "REFERENCE_WEST_OS_COMPLETE_SYSTEM_V2.md",
+      "lines": [
+        4,
+        4
+      ],
+      "spanSha256": "d1270bd90b2c1946951609b9c76474a64668ccd33a8cfa1dddfe66653b584eb7",
+      "spanChars": 34,
+      "fileSha256": "caa6dd33cc5043928f853afbd8d5610cd0d93d54d4387f3ae16a163c873541f1",
+      "fileBytes": 28884,
+      "fileLines": 701
+    },
+    "MASTER_BUILD_PROMPT.md:5": {
+      "cite": "MASTER_BUILD_PROMPT.md:5",
+      "kind": "line-span",
+      "status": "SEALED",
+      "file": "MASTER_BUILD_PROMPT.md",
+      "lines": [
+        5,
+        5
+      ],
+      "spanSha256": "a6e881c10ed4dced87622414aa3c08be802b43004faafffa113c17fac3616aaf",
+      "spanChars": 227,
+      "fileSha256": "f9e80a49c867935c33028720cd19c26df229738ce42180276f99b4f0211ef43d",
+      "fileBytes": 11971,
+      "fileLines": 214
+    },
+    "MASTER_BUILD_PROMPT.md:92": {
+      "cite": "MASTER_BUILD_PROMPT.md:92",
+      "kind": "line-span",
+      "status": "SEALED",
+      "file": "MASTER_BUILD_PROMPT.md",
+      "lines": [
+        92,
+        92
+      ],
+      "spanSha256": "f7e5df2152a6ed0264b344674026896b7090bba693007f2210c2a15ba5b26293",
+      "spanChars": 105,
+      "fileSha256": "f9e80a49c867935c33028720cd19c26df229738ce42180276f99b4f0211ef43d",
+      "fileBytes": 11971,
+      "fileLines": 214
+    },
+    "MASTER_BUILD_PROMPT.md:161": {
+      "cite": "MASTER_BUILD_PROMPT.md:161",
+      "kind": "line-span",
+      "status": "SEALED",
+      "file": "MASTER_BUILD_PROMPT.md",
+      "lines": [
+        161,
+        161
+      ],
+      "spanSha256": "3b61028ed3186238aa0a20b7ea87f576de1abee7c0ede583b5210ef91b84fc79",
+      "spanChars": 109,
+      "fileSha256": "f9e80a49c867935c33028720cd19c26df229738ce42180276f99b4f0211ef43d",
+      "fileBytes": 11971,
+      "fileLines": 214
+    },
+    "MASTER_BUILD_PROMPT.md:125": {
+      "cite": "MASTER_BUILD_PROMPT.md:125",
+      "kind": "line-span",
+      "status": "SEALED",
+      "file": "MASTER_BUILD_PROMPT.md",
+      "lines": [
+        125,
+        125
+      ],
+      "spanSha256": "b1d734ec9a19f068264d5a291f94bbf20f3d57bb5b4edffec73b73b02d7353b9",
+      "spanChars": 149,
+      "fileSha256": "f9e80a49c867935c33028720cd19c26df229738ce42180276f99b4f0211ef43d",
+      "fileBytes": 11971,
+      "fileLines": 214
+    },
+    "MASTER_BUILD_PROMPT.md:128": {
+      "cite": "MASTER_BUILD_PROMPT.md:128",
+      "kind": "line-span",
+      "status": "SEALED",
+      "file": "MASTER_BUILD_PROMPT.md",
+      "lines": [
+        128,
+        128
+      ],
+      "spanSha256": "2dd73c1fd70f57093813e99a390246480ead58f0fe5245a2a8dc0828f9945434",
+      "spanChars": 232,
+      "fileSha256": "f9e80a49c867935c33028720cd19c26df229738ce42180276f99b4f0211ef43d",
+      "fileBytes": 11971,
+      "fileLines": 214
+    },
+    "MASTER_BUILD_PROMPT.md:153 (her palette, verbatim)": {
+      "cite": "MASTER_BUILD_PROMPT.md:153 (her palette, verbatim)",
+      "kind": "line-span",
+      "status": "SEALED",
+      "file": "MASTER_BUILD_PROMPT.md",
+      "lines": [
+        153,
+        153
+      ],
+      "spanSha256": "7cd819edb55f58f75ae39f27ccfaf376395fe7f5142facbc56f1eaebe1af3d11",
+      "spanChars": 57,
+      "fileSha256": "f9e80a49c867935c33028720cd19c26df229738ce42180276f99b4f0211ef43d",
+      "fileBytes": 11971,
+      "fileLines": 214
+    },
+    "MASTER_BUILD_PROMPT.md:154": {
+      "cite": "MASTER_BUILD_PROMPT.md:154",
+      "kind": "line-span",
+      "status": "SEALED",
+      "file": "MASTER_BUILD_PROMPT.md",
+      "lines": [
+        154,
+        154
+      ],
+      "spanSha256": "f55656ee101ccbe7e1e7bc271f062fad56e9ccbd9145114a6c3541bf0d17e06c",
+      "spanChars": 59,
+      "fileSha256": "f9e80a49c867935c33028720cd19c26df229738ce42180276f99b4f0211ef43d",
+      "fileBytes": 11971,
+      "fileLines": 214
+    },
+    "MASTER_BUILD_PROMPT.md:159": {
+      "cite": "MASTER_BUILD_PROMPT.md:159",
+      "kind": "line-span",
+      "status": "SEALED",
+      "file": "MASTER_BUILD_PROMPT.md",
+      "lines": [
+        159,
+        159
+      ],
+      "spanSha256": "b9b958e4829111d66b4a4e991d1c7d4bc992158cf6ad2082baac6777f8a3d547",
+      "spanChars": 40,
+      "fileSha256": "f9e80a49c867935c33028720cd19c26df229738ce42180276f99b4f0211ef43d",
+      "fileBytes": 11971,
+      "fileLines": 214
+    },
+    "app/lib/wren-portrait.ts :: say() — pure template generator over her observed vocabulary and rhythm": {
+      "cite": "app/lib/wren-portrait.ts :: say() — pure template generator over her observed vocabulary and rhythm",
+      "kind": "code",
+      "status": "SEALED",
+      "file": "app/lib/wren-portrait.ts",
+      "symbol": "say",
+      "fileSha256": "cdf62bf059bcf946d31d6161c7fbcb6f980fae03a6b010faf5c078605bdedca2"
+    },
+    "author's own claim, this file": {
+      "cite": "author's own claim, this file",
+      "kind": "testimony",
+      "status": "TESTIMONY",
+      "reason": "no file backs this claim; it rests on the author's word"
+    },
+    "author's own request": {
+      "cite": "author's own request",
+      "kind": "testimony",
+      "status": "TESTIMONY",
+      "reason": "no file backs this claim; it rests on the author's word"
+    },
+    "MASTER_BUILD_PROMPT.md § 'Evidence contract'": {
+      "cite": "MASTER_BUILD_PROMPT.md § 'Evidence contract'",
+      "kind": "section",
+      "status": "SEALED",
+      "file": "MASTER_BUILD_PROMPT.md",
+      "section": "Evidence contract",
+      "fileSha256": "f9e80a49c867935c33028720cd19c26df229738ce42180276f99b4f0211ef43d",
+      "fileBytes": 11971
+    },
+    "hand-lifted from HER_MESSAGES + REFERENCE_WREN_FUNKY_CORE_INVENTORY.md": {
+      "cite": "hand-lifted from HER_MESSAGES + REFERENCE_WREN_FUNKY_CORE_INVENTORY.md",
+      "kind": "testimony",
+      "status": "TESTIMONY",
+      "reason": "no file backs this claim; it rests on the author's word"
+    },
+    "app/lib/wren-portrait.ts :: computeRhythm() over HER_MESSAGES (verbatim quotes)": {
+      "cite": "app/lib/wren-portrait.ts :: computeRhythm() over HER_MESSAGES (verbatim quotes)",
+      "kind": "code",
+      "status": "SEALED",
+      "file": "app/lib/wren-portrait.ts",
+      "symbol": "computeRhythm",
+      "fileSha256": "cdf62bf059bcf946d31d6161c7fbcb6f980fae03a6b010faf5c078605bdedca2"
+    },
+    "REFERENCE_WREN_FUNKY_CORE_INVENTORY.md:5-132": {
+      "cite": "REFERENCE_WREN_FUNKY_CORE_INVENTORY.md:5-132",
+      "kind": "line-span",
+      "status": "SEALED",
+      "file": "REFERENCE_WREN_FUNKY_CORE_INVENTORY.md",
+      "lines": [
+        5,
+        132
+      ],
+      "spanSha256": "5f266018e85053e8183b2c00e466eda43c2aa73fc54a6d4154f6b59063a6c8fb",
+      "spanChars": 4558,
+      "fileSha256": "962c8f1c54e0f91fb3662159f944d31747f722a1da99f8fb6e0518037a951f78",
+      "fileBytes": 4730,
+      "fileLines": 133
+    },
+    "MASTER_BUILD_PROMPT.md:120": {
+      "cite": "MASTER_BUILD_PROMPT.md:120",
+      "kind": "line-span",
+      "status": "SEALED",
+      "file": "MASTER_BUILD_PROMPT.md",
+      "lines": [
+        120,
+        120
+      ],
+      "spanSha256": "43ae73c98537b0b3a628f9eed69415e4f417641ede853f5f8384164837b83fae",
+      "spanChars": 118,
+      "fileSha256": "f9e80a49c867935c33028720cd19c26df229738ce42180276f99b4f0211ef43d",
+      "fileBytes": 11971,
+      "fileLines": 214
+    },
+    "conversation message 4: 'I'm a stenwge bird ain't I'": {
+      "cite": "conversation message 4: 'I'm a stenwge bird ain't I'",
+      "kind": "testimony",
+      "status": "TESTIMONY",
+      "reason": "no file backs this claim; it rests on the author's word"
+    },
+    "conversation message ": {
+      "cite": "conversation message ",
+      "kind": "testimony",
+      "status": "TESTIMONY",
+      "reason": "no file backs this claim; it rests on the author's word"
+    },
+    "app/lib/wren-portrait.ts :: say()": {
+      "cite": "app/lib/wren-portrait.ts :: say()",
+      "kind": "code",
+      "status": "SEALED",
+      "file": "app/lib/wren-portrait.ts",
+      "symbol": "say",
+      "fileSha256": "cdf62bf059bcf946d31d6161c7fbcb6f980fae03a6b010faf5c078605bdedca2"
+    }
+  }
+}
